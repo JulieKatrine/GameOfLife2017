@@ -8,6 +8,6 @@ public class Main implements Test {
 
     public static void printMe()
     {
-        System.out.println("Hello!");
+        System.out.println("Hey you!");
     }
 }
