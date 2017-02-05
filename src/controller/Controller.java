@@ -1,7 +1,6 @@
 package controller;
 
 import javafx.fxml.Initializable;
-
 import javax.print.DocFlavor;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +18,11 @@ public class Controller implements Initializable, UpdatableObject
 
     }
 
+    @Override
+    public void triggerUpdate()
+    {
+
+    }
 
     private void drawBoard()
     {
@@ -30,9 +34,5 @@ public class Controller implements Initializable, UpdatableObject
 
     }
 
-    @Override
-    public void triggerUpdate() {
-
-    }
 }
 

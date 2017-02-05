@@ -4,17 +4,18 @@ import javafx.animation.AnimationTimer;
 
 public class UpdateTimer extends AnimationTimer
 {
-    // private UpdatebleObject updatebleObj;
+    private UpdatableObject updatebleObj;
     private int delayInMilliseconds = 1000;
     private long time;
 
-  /*  public UpdateTimer(UpdatebleObject obj)
+    public UpdateTimer(UpdatableObject obj)
     {
         updatebleObj = obj;
-    } */
+    }
 
     @Override
-    public void handle(long now) {
+    public void handle(long now)
+    {
 
     }
 

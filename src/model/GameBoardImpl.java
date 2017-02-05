@@ -2,7 +2,6 @@ package model;
 
 public class GameBoardImpl extends GameBoard
 {
-
     private boolean[][] thisGeneration;
     private boolean[][] nextGeneration;
 
@@ -13,22 +12,26 @@ public class GameBoardImpl extends GameBoard
     }
 
     @Override
-    public int getAmountOfLivingNeighbors(Point p) {
+    public int getAmountOfLivingNeighbors(Point p)
+    {
         return 0;
     }
 
     @Override
-    public boolean isCellAliveInNextGeneration(Point p) {
+    public boolean isCellAliveInNextGeneration(Point p)
+    {
         return false;
     }
 
     @Override
-    public void setStateInNextGeneration(boolean state, Point p) {
+    public void setStateInNextGeneration(boolean state, Point p)
+    {
 
     }
 
     @Override
-    public void makeNextGenerationCurrent() {
+    public void makeNextGenerationCurrent()
+    {
 
     }
 }

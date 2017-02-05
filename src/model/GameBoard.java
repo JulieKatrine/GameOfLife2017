@@ -11,12 +11,14 @@ public abstract class GameBoard
         HEIGHT = height;
     }
 
-    public int getHEIGHT(){
-        return HEIGHT;
+    public int getWIDTH()
+    {
+        return WIDTH;
     }
 
-    public int getWIDTH(){
-        return WIDTH;
+    public int getHEIGHT()
+    {
+        return HEIGHT;
     }
 
     public abstract int getAmountOfLivingNeighbors(Point p);

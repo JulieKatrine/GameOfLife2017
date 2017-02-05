@@ -1,21 +1,25 @@
 package model;
 
-public class GameModelImpl implements GameModel {
-
-
+public class GameModelImpl implements GameModel
+{
+    private GameBoard gameBoard;
+    private Simulator simulator;
 
     @Override
-    public void simulateNextGeneration() {
+    public void simulateNextGeneration()
+    {
 
     }
 
     @Override
-    public void setGameBoard(GameBoard board) {
+    public void setGameBoard(GameBoard board)
+    {
 
     }
 
     @Override
-    public GameBoard getGameBoard() {
+    public GameBoard getGameBoard()
+    {
         return null;
     }
 
