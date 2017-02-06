@@ -1,15 +1,18 @@
 package controller;
 
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javax.print.DocFlavor;
+
 import java.net.URL;
 import java.util.ResourceBundle;
+import model.GameModel;
+import view.BoardRenderer;
 
 public class Controller implements Initializable, UpdatableObject
 {
-    //private GameModel gameModel;
+    private GameModel gameModel;
     private BoardLoader boardLoader;
-    //private BoardRender boardRender;
+    private BoardRenderer boardRender;
     private UpdateTimer updateTimer;
 
     @Override
@@ -34,5 +37,34 @@ public class Controller implements Initializable, UpdatableObject
 
     }
 
+    @FXML private void loadNewGameBoard()
+    {
+
+    }
+
+    @FXML private void saveGameBoard()
+    {
+
+    }
+
+    @FXML private void closeApplication()
+    {
+
+    }
+
+    @FXML private void startSimulation()
+    {
+
+    }
+
+    @FXML private void stopSimulation()
+    {
+
+    }
+
+    @FXML private void simulateNextGeneration()
+    {
+
+    }
 }
 

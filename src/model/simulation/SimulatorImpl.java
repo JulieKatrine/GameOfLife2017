@@ -1,4 +1,6 @@
-package model;
+package model.simulation;
+
+import model.GameBoard;
 
 import java.util.List;
 

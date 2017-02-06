@@ -1,4 +1,4 @@
-package model;
+package model.simulation;
 
 public interface Simulator
 {

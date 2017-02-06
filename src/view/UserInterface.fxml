@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.*?>
+
+<AnchorPane fx:id="mainAnchorPane" prefWidth="600" prefHeight="400" fx:controller="controller.Controller" xmlns:fx="http://javafx.com/fxml">
+    <VBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <HBox>
+            <MenuBar HBox.hgrow="ALWAYS">
+                <menus>
+                    <Menu text="File">
+                        <items>
+                            <MenuItem text="Open File..." onAction="#loadNewGameBoard"/>
+                            <MenuItem text="Save As..." onAction="#saveGameBoard"/>
+                            <MenuItem text="Exit" onAction="#closeApplication"/>
+                        </items>
+                    </Menu>
+                    <Menu text="Action">
+                        <items>
+                            <MenuItem text="Start" onAction="#startSimulation"/>
+                            <MenuItem text="Stop" onAction="#stopSimulation"/>
+                            <MenuItem text="Next" onAction="#simulateNextGeneration"/>
+                            <Menu text="Speed">
+                                <CustomMenuItem>
+                                    <content>
+                                        <Slider fx:id="speedSlider" min="1" max="2000" value="1500" blockIncrement="1" />
+                                    </content>
+                                </CustomMenuItem>
+                            </Menu>
+                        </items>
+                    </Menu>
+                    <Menu text="View">
+                        <items>
+                            <Menu text="Cell size">
+                                <CustomMenuItem>
+                                    <content>
+                                        <Slider fx:id="cellSizeSlider" min="1" max="100" value="20" blockIncrement="0.1" />
+                                    </content>
+                                </CustomMenuItem>
+                            </Menu>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+        </HBox>
+        <Canvas fx:id="canvas" width="600" height="400"/>
+    </VBox>
+</AnchorPane>

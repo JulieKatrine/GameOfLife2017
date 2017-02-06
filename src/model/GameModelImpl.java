@@ -1,5 +1,7 @@
 package model;
 
+import model.simulation.Simulator;
+
 public class GameModelImpl implements GameModel
 {
     private GameBoard gameBoard;

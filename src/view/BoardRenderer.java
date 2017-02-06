@@ -3,12 +3,12 @@ package view;
 import javafx.scene.canvas.Canvas;
 import model.GameBoard;
 
-public abstract class BoardRender
+public abstract class BoardRenderer
 {
     protected Canvas canvas;
     protected double cellSize = 20;
 
-    public BoardRender(Canvas canvas)
+    public BoardRenderer(Canvas canvas)
     {
         this.canvas = canvas;
     }
@@ -18,8 +18,5 @@ public abstract class BoardRender
         cellSize = size;
     }
 
-    public void render(GameBoard board)
-    {
-
-    }
+    public abstract void render(GameBoard board);
 }

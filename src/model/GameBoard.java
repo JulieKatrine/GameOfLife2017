@@ -2,23 +2,23 @@ package model;
 
 public abstract class GameBoard
 {
-    protected int WIDTH;
-    protected int HEIGHT;
+    protected int width;
+    protected int height;
 
     public GameBoard(int width, int height)
     {
-        WIDTH = width;
-        HEIGHT = height;
+        this.width = width;
+        this.height = height;
     }
 
-    public int getWIDTH()
+    public int getWidth()
     {
-        return WIDTH;
+        return width;
     }
 
-    public int getHEIGHT()
+    public int getHeight()
     {
-        return HEIGHT;
+        return height;
     }
 
     public abstract int getAmountOfLivingNeighbors(Point p);
@@ -28,5 +28,4 @@ public abstract class GameBoard
     public abstract void setStateInNextGeneration(boolean state, Point p);
 
     public abstract void makeNextGenerationCurrent();
-
 }
