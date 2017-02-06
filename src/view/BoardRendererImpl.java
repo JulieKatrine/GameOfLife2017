@@ -1,7 +1,15 @@
 package view;
 
-public class BoardRendererImpl      //UML sier BoardRendererIml, regner med du mente "Impl"
+import javafx.scene.canvas.Canvas;
+import model.GameBoard;
+
+public class BoardRendererImpl extends BoardRenderer
 {
+    public BoardRendererImpl(Canvas canvas)
+    {
+        super(canvas);
+    }
+
     private void clearCanvas()
     {
 
@@ -12,4 +20,9 @@ public class BoardRendererImpl      //UML sier BoardRendererIml, regner med du m
 
     }
 
+    @Override
+    public void render(GameBoard board)
+    {
+
+    }
 }

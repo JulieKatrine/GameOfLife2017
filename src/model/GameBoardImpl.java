@@ -5,7 +5,6 @@ public class GameBoardImpl extends GameBoard
     private boolean[][] thisGeneration;
     private boolean[][] nextGeneration;
 
-
     public GameBoardImpl(int width, int height)
     {
         super(width, height);
@@ -18,7 +17,7 @@ public class GameBoardImpl extends GameBoard
     }
 
     @Override
-    public boolean isCellAliveInNextGeneration(Point p)
+    public boolean isCellAliveInThisGeneration(Point p)
     {
         return false;
     }

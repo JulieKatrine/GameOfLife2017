@@ -23,7 +23,7 @@ public abstract class GameBoard
 
     public abstract int getAmountOfLivingNeighbors(Point p);
 
-    public abstract boolean isCellAliveInNextGeneration(Point p);
+    public abstract boolean isCellAliveInThisGeneration(Point p);
 
     public abstract void setStateInNextGeneration(boolean state, Point p);
 
