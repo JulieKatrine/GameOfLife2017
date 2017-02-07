@@ -8,6 +8,8 @@ public class GameBoardImpl extends GameBoard
     public GameBoardImpl(int width, int height)
     {
         super(width, height);
+        thisGeneration = new boolean[height][width];
+        nextGeneration = new boolean[height][width];
     }
 
     @Override
@@ -19,18 +21,21 @@ public class GameBoardImpl extends GameBoard
     @Override
     public boolean isCellAliveInThisGeneration(Point p)
     {
-        return false;
+        return thisGeneration[p.y][p.x];
     }
 
     @Override
     public void setStateInNextGeneration(boolean state, Point p)
     {
-
+    nextGeneration[p.y][p.x] = state;
     }
 
     @Override
     public void makeNextGenerationCurrent()
     {
-
+        //Changing nextGeneration to thisGeneration and temporarily fill nextGeneration with the old thisGeneration array.
+        boolean[][] temp = thisGeneration;
+        thisGeneration = nextGeneration;
+        nextGeneration = temp;
     }
 }
