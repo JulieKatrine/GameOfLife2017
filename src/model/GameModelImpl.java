@@ -12,9 +12,8 @@ public class GameModelImpl implements GameModel
     public GameModelImpl()
     {
         //Implements DefaultRuleSet with possibilities to change or add new rules later in the project.
-    SimulatorImpl simulator = new SimulatorImpl();
-        DefaultRuleSet defaultRuleSet = new DefaultRuleSet();
-    simulator.addSimulationRules(defaultRuleSet);
+        simulator = new SimulatorImpl();
+        simulator.addSimulationRules(new DefaultRuleSet());
     }
 
     @Override

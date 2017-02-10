@@ -5,8 +5,8 @@ import javafx.animation.AnimationTimer;
 public class UpdateTimer extends AnimationTimer
 {
     private UpdatableObject updatebleObj;
-    private int delayInMilliseconds = 1000;
-    private long time;
+    private int delayInMilliseconds = 500;
+    private long lastTime;
 
     public UpdateTimer(UpdatableObject obj)
     {
@@ -14,9 +14,14 @@ public class UpdateTimer extends AnimationTimer
     }
 
     @Override
-    public void handle(long now)
+    public void handle(long nowInNanoSeconds)
     {
-
+        long nowInMilliseconds = (nowInNanoSeconds/1000000);
+        if (nowInMilliseconds > (lastTime + (delayInMilliseconds) ) )
+        {
+            updatebleObj.triggerUpdate();
+            lastTime = nowInMilliseconds;
+        }
     }
 
     public void setDelayBetweenUpdates(int delayInMS)
