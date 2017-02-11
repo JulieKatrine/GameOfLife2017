@@ -1,6 +1,6 @@
 package controller;
 
-public interface UpdatableObject {
-
+public interface UpdatableObject
+{
     void triggerUpdate();
 }

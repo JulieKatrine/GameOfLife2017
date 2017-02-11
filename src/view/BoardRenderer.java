@@ -5,7 +5,7 @@ import model.GameBoard;
 
 public abstract class BoardRenderer
 {
-    protected Canvas canvas;
+    protected final Canvas canvas;
     protected double cellSize = 20;
 
     public BoardRenderer(Canvas canvas)

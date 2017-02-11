@@ -33,5 +33,4 @@ public class GameModelImpl implements GameModel
     {
         return gameBoard;
     }
-
 }

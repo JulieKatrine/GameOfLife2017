@@ -13,7 +13,7 @@ public class GameOfLife extends Application
     {
         Parent root = FXMLLoader.load(getClass().getResource("../view/UserInterface.fxml"));
         primaryStage.setTitle("Game of Life");
-        primaryStage.setScene(new Scene(root, 700, 500));
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
     }
 

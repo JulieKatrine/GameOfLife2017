@@ -2,8 +2,8 @@ package model;
 
 public abstract class GameBoard
 {
-    protected int width;
-    protected int height;
+    private int width;
+    private int height;
 
     public GameBoard(int width, int height)
     {
@@ -22,10 +22,7 @@ public abstract class GameBoard
     }
 
     public abstract int getAmountOfLivingNeighbors(Point p);
-
     public abstract boolean isCellAliveInThisGeneration(Point p);
-
     public abstract void setStateInNextGeneration(boolean state, Point p);
-
     public abstract void makeNextGenerationCurrent();
 }

@@ -1,13 +1,14 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.CancellationException;
 
 import javafx.scene.canvas.Canvas;
+import model.BoardLoader;
 import model.GameModel;
 import model.GameModelImpl;
 import view.BoardRenderer;
@@ -20,47 +21,44 @@ public class Controller implements Initializable, UpdatableObject
     private BoardRenderer boardRender;
     private UpdateTimer updateTimer;
 
-    @FXML
-    private Canvas canvas;
+    @FXML private Canvas canvas;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        boardRender = new BoardRendererImpl(canvas);
-        gameModel = new GameModelImpl();
         boardLoader = new BoardLoader();
-        gameModel.setGameBoard(boardLoader.newRandomBoard());
-        boardRender.render(gameModel.getGameBoard());
+        boardRender = new BoardRendererImpl(canvas);
         updateTimer = new UpdateTimer(this);
+        gameModel   = new GameModelImpl();
+        loadNewGameBoard();
     }
 
     @Override
     public void triggerUpdate()
     {
         gameModel.simulateNextGeneration();
+        drawBoard();
+    }
+
+    private void drawBoard()
+    {
         boardRender.render(gameModel.getGameBoard());
     }
 
-
-    private void addEventListeners()
+    @FXML private void simulateNextGeneration()
     {
-
+        triggerUpdate();
     }
 
     @FXML private void loadNewGameBoard()
     {
-        gameModel.setGameBoard(boardLoader.newRandomBoard());
-        boardRender.render(gameModel.getGameBoard());
+        gameModel.setGameBoard(boardLoader.newRandomBoard(40,28));
+        drawBoard();
     }
 
     @FXML private void saveGameBoard()
     {
-
-    }
-
-    @FXML private void closeApplication()
-    {
-
+        //Future feature
     }
 
     @FXML private void startSimulation()
@@ -73,10 +71,14 @@ public class Controller implements Initializable, UpdatableObject
         updateTimer.stop();
     }
 
-    @FXML private void simulateNextGeneration()
+    @FXML private void closeApplication()
     {
-        gameModel.simulateNextGeneration();
-        boardRender.render(gameModel.getGameBoard());
+        Platform.exit();
+    }
+
+    private void addEventListeners()
+    {
+        //TODO: Add event listeners for sliders, canvas etc.
     }
 }
 
