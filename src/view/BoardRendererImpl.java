@@ -8,34 +8,40 @@ import model.Point;
 
 public class BoardRendererImpl extends BoardRenderer
 {
+    private Color deadCellColor = Color.PINK;
+    private Color aliveCellColor = Color.BLACK;
+    private Color gridColor = Color.GRAY;
+
     public BoardRendererImpl(Canvas canvas)
     {
         super(canvas);
-        camera.moveX(canvas.getWidth() / 2);
-        camera.moveY(canvas.getHeight() / 2);
+        camera.move(canvas.getWidth() / 2, canvas.getHeight() / 2);
     }
 
     @Override
     public void render(GameBoard board)
     {
-        clearCanvas();
-        Point centerOffset = new Point((int)(board.getWidth() * cellSize / 2), (int)(board.getHeight() * cellSize / 2 ));
-        renderGrid(board.getWidth(), board.getHeight(), centerOffset);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        double cellSize = camera.getZoom();
         Point cellPos = new Point();
+        Point centerOffset = new Point((int)(board.getWidth() * cellSize / 2), (int)(board.getHeight() * cellSize / 2 ));
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        clearCanvas();
 
         for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
         {
             for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
             {
-                gc.setFill(board.isCellAliveInThisGeneration(cellPos) ? Color.BLACK : Color.WHITE);
+                gc.setFill(board.isCellAliveInThisGeneration(cellPos) ? aliveCellColor : deadCellColor);
                 gc.fillRect(
-                        camera.getPosition().x - centerOffset.x + cellPos.x * super.cellSize,
-                        camera.getPosition().y - centerOffset.y + cellPos.y * super.cellSize,
-                        super.cellSize - 1,
-                        super.cellSize - 1);
+                        camera.getPosition().x - centerOffset.x + cellPos.x * camera.getZoom(),
+                        camera.getPosition().y - centerOffset.y + cellPos.y * camera.getZoom(),
+                        camera.getZoom(),
+                        camera.getZoom());
             }
         }
+
+        renderGrid(board.getWidth(), board.getHeight(), centerOffset);
     }
 
     private void clearCanvas()
@@ -47,7 +53,9 @@ public class BoardRendererImpl extends BoardRenderer
     private void renderGrid(int width, int height, Point offset)
     {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.GRAY);
+        gc.setStroke(gridColor);
+
+        double cellSize = camera.getZoom();
 
         for(int y = 0; y <= height; y++)
             gc.strokeLine(

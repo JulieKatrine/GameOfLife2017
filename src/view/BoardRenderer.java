@@ -6,8 +6,7 @@ import model.GameBoard;
 public abstract class BoardRenderer
 {
     protected final Canvas canvas;
-    protected double cellSize = 20;
-    protected Camera camera;
+    protected final Camera camera;
 
     public BoardRenderer(Canvas canvas)
     {
@@ -15,15 +14,10 @@ public abstract class BoardRenderer
         this.camera = new Camera();
     }
 
-    public void setCellSize(double size)
-    {
-        cellSize = size;
-    }
-
-    public abstract void render(GameBoard board);
-
     public Camera getCamera()
     {
         return camera;
     }
+
+    public abstract void render(GameBoard board);
 }

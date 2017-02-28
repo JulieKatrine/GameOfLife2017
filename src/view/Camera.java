@@ -5,10 +5,12 @@ import model.Point;
 public class Camera
 {
     private Point position;
+    private double zoom;
 
     public Camera ()
     {
-        position = new Point(0, 0);
+        this.position = new Point(0, 0);
+        this.zoom = 20;
     }
 
     public Point getPosition()
@@ -16,14 +18,19 @@ public class Camera
         return position;
     }
 
-    public void moveX(double x)
+    public double getZoom()
+    {
+        return  zoom;
+    }
+
+    public void setZoom(double newZoomValue)
+    {
+        zoom = Math.max(newZoomValue, 1);
+    }
+
+    public void move(double x, double y)
     {
         position.x += x;
-    }
-
-    public void moveY(double y)
-    {
         position.y += y;
     }
-
 }

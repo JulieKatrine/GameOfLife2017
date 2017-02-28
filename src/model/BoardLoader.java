@@ -6,7 +6,7 @@ public class BoardLoader
 {
     public GameBoard newRandomBoard(int width, int height)
     {
-        GameBoard gameBoard = new GameBoardImpl(width, height);
+        GameBoard gameBoard = newEmptyBoard(width, height);
         Point cellPos = new Point();
         Random rnd = new Random();
 
@@ -22,5 +22,10 @@ public class BoardLoader
 
         gameBoard.makeNextGenerationCurrent();
         return gameBoard;
+    }
+
+    public GameBoard newEmptyBoard(int width, int height)
+    {
+        return new GameBoardImpl(width, height);
     }
 }

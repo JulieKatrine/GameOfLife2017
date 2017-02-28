@@ -14,13 +14,12 @@ public class GameOfLife extends Application
     {
         AnchorPane root = FXMLLoader.load(getClass().getResource("../view/UserInterface.fxml"));
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-        primaryStage.setScene(scene);
 
         root.prefWidthProperty().bind(scene.widthProperty());
         root.prefHeightProperty().bind(scene.heightProperty());
 
         primaryStage.setTitle("Game of Life");
-
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
