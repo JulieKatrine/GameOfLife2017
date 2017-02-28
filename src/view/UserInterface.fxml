@@ -44,6 +44,6 @@
                 </menus>
             </MenuBar>
         </HBox>
-        <Canvas fx:id="canvas" width="600" height="400"/>
+        <Canvas fx:id="canvas" width="800" height="600"/>
     </VBox>
 </AnchorPane>

@@ -19,7 +19,7 @@ public class UpdateTimer extends AnimationTimer
         long nowInMilliseconds = (nowInNanoSeconds / 1000000);
         if (nowInMilliseconds > (lastTime + delayInMilliseconds))
         {
-            updatableObj.triggerUpdate();
+            updatableObj.triggerControllerUpdate();
             lastTime = nowInMilliseconds;
         }
     }

@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -8,9 +9,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
 import model.BoardLoader;
 import model.GameModel;
 import model.GameModelImpl;
+import model.Point;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
@@ -20,6 +23,9 @@ public class Controller implements Initializable, UpdatableObject
     private BoardLoader boardLoader;
     private BoardRenderer boardRender;
     private UpdateTimer updateTimer;
+    private double lastX;
+    private double lastY;
+
 
     @FXML private Canvas canvas;
 
@@ -30,14 +36,16 @@ public class Controller implements Initializable, UpdatableObject
         boardRender = new BoardRendererImpl(canvas);
         updateTimer = new UpdateTimer(this);
         gameModel   = new GameModelImpl();
+
+        addEventListeners();
         loadNewGameBoard();
     }
 
     @Override
-    public void triggerUpdate()
+    public void triggerControllerUpdate()
     {
         gameModel.simulateNextGeneration();
-        drawBoard();
+        drawBoard(); //kaller på boardRender i hjelpemetode under
     }
 
     private void drawBoard()
@@ -47,12 +55,12 @@ public class Controller implements Initializable, UpdatableObject
 
     @FXML private void simulateNextGeneration()
     {
-        triggerUpdate();
+        triggerControllerUpdate();
     }
 
     @FXML private void loadNewGameBoard()
     {
-        gameModel.setGameBoard(boardLoader.newRandomBoard(40,28));
+        gameModel.setGameBoard(boardLoader.newRandomBoard(10,10));
         drawBoard();
     }
 
@@ -78,7 +86,28 @@ public class Controller implements Initializable, UpdatableObject
 
     private void addEventListeners()
     {
-        //TODO: Add event listeners for sliders, canvas etc.
+        //FIX: MAKE THIS SHIT WORK!!
+
+        canvas.setOnMouseDragged(new EventHandler<MouseEvent>()
+        {
+            public void handle(MouseEvent event)
+            {
+                double mouseX = event.getX();
+                double mouseY = event.getY();
+
+                double deltaX = lastX - mouseX ;
+                double deltaY = lastY - mouseY;
+
+                System.out.println(mouseX + " " + mouseY + " " + lastX + " " + lastY + " " + deltaX + " " + deltaY);
+                boardRender.getCamera().moveX(deltaX);
+                boardRender.getCamera().moveY(deltaY);
+                drawBoard();
+
+                lastX = mouseX;
+                lastY = mouseY;
+            }
+        });
+
     }
 }
 

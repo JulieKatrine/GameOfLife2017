@@ -7,10 +7,12 @@ public abstract class BoardRenderer
 {
     protected final Canvas canvas;
     protected double cellSize = 20;
+    protected Camera camera;
 
     public BoardRenderer(Canvas canvas)
     {
         this.canvas = canvas;
+        this.camera = new Camera();
     }
 
     public void setCellSize(double size)
@@ -19,4 +21,9 @@ public abstract class BoardRenderer
     }
 
     public abstract void render(GameBoard board);
+
+    public Camera getCamera()
+    {
+        return camera;
+    }
 }

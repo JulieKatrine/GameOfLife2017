@@ -11,11 +11,16 @@ public class BoardRendererImpl extends BoardRenderer
     public BoardRendererImpl(Canvas canvas)
     {
         super(canvas);
+        camera.moveX(canvas.getWidth() / 2);
+        camera.moveY(canvas.getHeight() / 2);
     }
 
     @Override
     public void render(GameBoard board)
     {
+        clearCanvas();
+        Point centerOffset = new Point((int)(board.getWidth() * cellSize / 2), (int)(board.getHeight() * cellSize / 2 ));
+        renderGrid(board.getWidth(), board.getHeight(), centerOffset);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Point cellPos = new Point();
 
@@ -23,23 +28,39 @@ public class BoardRendererImpl extends BoardRenderer
         {
             for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
             {
-                if (board.isCellAliveInThisGeneration(cellPos))
-                    gc.setFill(Color.BLACK);
-                else
-                    gc.setFill(Color.PINK);
-
-                gc.fillRect(cellPos.x * super.cellSize, cellPos.y * super.cellSize, super.cellSize - 1, super.cellSize - 1);
+                gc.setFill(board.isCellAliveInThisGeneration(cellPos) ? Color.BLACK : Color.WHITE);
+                gc.fillRect(
+                        camera.getPosition().x - centerOffset.x + cellPos.x * super.cellSize,
+                        camera.getPosition().y - centerOffset.y + cellPos.y * super.cellSize,
+                        super.cellSize - 1,
+                        super.cellSize - 1);
             }
         }
     }
 
     private void clearCanvas()
     {
-        // TODO: If we decide to only draw living cells, we have to clear the canvas with a colored rectangle first
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void renderGrid(int width, int height)
+    private void renderGrid(int width, int height, Point offset)
     {
-        // TODO: Render a grid of lines
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setStroke(Color.GRAY);
+
+        for(int y = 0; y <= height; y++)
+            gc.strokeLine(
+                    camera.getPosition().x - offset.x,
+                    camera.getPosition().y - offset.y + y * cellSize,
+                    camera.getPosition().x - offset.x + width * cellSize,
+                    camera.getPosition().y - offset.y + y * cellSize);
+
+        for(int x = 0; x <= width; x++)
+            gc.strokeLine(
+                    camera.getPosition().x - offset.x + x * cellSize,
+                    camera.getPosition().y - offset.y,
+                    camera.getPosition().x - offset.x + x * cellSize,
+                    camera.getPosition().y - offset.y + height * cellSize);
     }
 }
