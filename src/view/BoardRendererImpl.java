@@ -10,7 +10,7 @@ public class BoardRendererImpl extends BoardRenderer
 {
     private Color deadCellColor = Color.PINK;
     private Color aliveCellColor = Color.BLACK;
-    private Color gridColor = Color.GRAY;
+    private Color gridColor = Color.BLACK;
 
     public BoardRendererImpl(Canvas canvas)
     {
@@ -21,27 +21,10 @@ public class BoardRendererImpl extends BoardRenderer
     @Override
     public void render(GameBoard board)
     {
-        double cellSize = camera.getZoom();
-        Point cellPos = new Point();
-        Point centerOffset = new Point((int)(board.getWidth() * cellSize / 2), (int)(board.getHeight() * cellSize / 2 ));
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
         clearCanvas();
-
-        for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
-        {
-            for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
-            {
-                gc.setFill(board.isCellAliveInThisGeneration(cellPos) ? aliveCellColor : deadCellColor);
-                gc.fillRect(
-                        camera.getPosition().x - centerOffset.x + cellPos.x * camera.getZoom(),
-                        camera.getPosition().y - centerOffset.y + cellPos.y * camera.getZoom(),
-                        camera.getZoom(),
-                        camera.getZoom());
-            }
-        }
-
-        renderGrid(board.getWidth(), board.getHeight(), centerOffset);
+        renderDeadCells(board);
+        renderGrid(board);
+        renderLivingCells(board);
     }
 
     private void clearCanvas()
@@ -50,25 +33,64 @@ public class BoardRendererImpl extends BoardRenderer
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void renderGrid(int width, int height, Point offset)
+    private void renderDeadCells(GameBoard board)
     {
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        Point camPos = camera.getCenterOffsetRenderingPosition(board);
+        gc.setFill(deadCellColor);
+        gc.fillRect(
+                camPos.x,
+                camPos.y,
+                board.getWidth() * camera.getZoom(),
+                board.getHeight() * camera.getZoom());
+    }
+
+    private void renderGrid(GameBoard board)
+    {
+        double cellSize = camera.getZoom();
+        Point camPos = camera.getCenterOffsetRenderingPosition(board);
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setLineWidth((cellSize < 30) ? cellSize / 30.0 : 0.9);
         gc.setStroke(gridColor);
 
+        for(int y = 0; y <= board.getHeight(); y++)
+            gc.strokeLine(
+                    camPos.x,
+                    camPos.y + y * cellSize,
+                    camPos.x + board.getWidth() * cellSize,
+                    camPos.y + y * cellSize);
+
+        for(int x = 0; x <= board.getWidth(); x++)
+            gc.strokeLine(
+                    camPos.x + x * cellSize,
+                    camPos.y,
+                    camPos.x + x * cellSize,
+                    camPos.y + board.getHeight() * cellSize);
+    }
+
+    private void renderLivingCells(GameBoard board)
+    {
         double cellSize = camera.getZoom();
+        Point camPos = camera.getCenterOffsetRenderingPosition(board);
+        Point cellPos = new Point();
 
-        for(int y = 0; y <= height; y++)
-            gc.strokeLine(
-                    camera.getPosition().x - offset.x,
-                    camera.getPosition().y - offset.y + y * cellSize,
-                    camera.getPosition().x - offset.x + width * cellSize,
-                    camera.getPosition().y - offset.y + y * cellSize);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(aliveCellColor);
 
-        for(int x = 0; x <= width; x++)
-            gc.strokeLine(
-                    camera.getPosition().x - offset.x + x * cellSize,
-                    camera.getPosition().y - offset.y,
-                    camera.getPosition().x - offset.x + x * cellSize,
-                    camera.getPosition().y - offset.y + height * cellSize);
+        for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
+        {
+            for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
+            {
+                if(board.isCellAliveInThisGeneration(cellPos))
+                {
+                    gc.fillRect(
+                            camPos.x + cellPos.x * cellSize,
+                            camPos.y + cellPos.y * cellSize,
+                            cellSize - 0.5,
+                            cellSize - 0.5);
+                }
+            }
+        }
     }
 }

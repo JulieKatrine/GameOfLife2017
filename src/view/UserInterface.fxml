@@ -35,7 +35,7 @@
                             <Menu text="Cell size">
                                 <CustomMenuItem>
                                     <content>
-                                        <Slider fx:id="cellSizeSlider" min="1" max="100" value="20" blockIncrement="2" />
+                                        <Slider fx:id="cellSizeSlider" min="1" max="100" value="20" blockIncrement="1" />
                                     </content>
                                 </CustomMenuItem>
                             </Menu>

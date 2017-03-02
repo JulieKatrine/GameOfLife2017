@@ -1,5 +1,6 @@
 package view;
 
+import model.GameBoard;
 import model.Point;
 
 public class Camera
@@ -7,7 +8,7 @@ public class Camera
     private Point position;
     private double zoom;
 
-    public Camera ()
+    public Camera()
     {
         this.position = new Point(0, 0);
         this.zoom = 20;
@@ -20,7 +21,15 @@ public class Camera
 
     public double getZoom()
     {
-        return  zoom;
+        return zoom;
+    }
+
+    public Point getCenterOffsetRenderingPosition(GameBoard board)
+    {
+        Point offsetPos = new Point();
+        offsetPos.x = (int)(position.x - (board.getWidth() * zoom) / 2);
+        offsetPos.y = (int)(position.y - (board.getHeight()* zoom) / 2);
+        return offsetPos;
     }
 
     public void setZoom(double newZoomValue)
