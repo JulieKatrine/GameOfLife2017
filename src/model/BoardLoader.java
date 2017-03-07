@@ -1,5 +1,7 @@
 package model;
 
+import java.io.*;
+import java.net.URL;
 import java.util.Random;
 
 public class BoardLoader
@@ -28,4 +30,47 @@ public class BoardLoader
     {
         return new GameBoardImpl(width, height);
     }
+
+    public GameBoard loadFromDisk(File file) throws IOException, FileNotSupportedException
+    {
+        return loadGameBoard(new FileReader(file), extractFileType(file.getName()));
+    }
+
+    public GameBoard loadFromURL(String url) throws IOException, FileNotSupportedException
+    {
+        URL destination = new URL(url);
+        return loadGameBoard(new InputStreamReader(destination.openConnection().getInputStream()), extractFileType(url));
+    }
+
+    private String extractFileType(String fileName)
+    {
+        int lastPosition = fileName.lastIndexOf('.');
+        if (lastPosition > 0)
+            return fileName.substring(lastPosition);
+        else
+            return "";
+    }
+
+    private GameBoard loadGameBoard(Reader reader, String fileType) throws IOException, FileNotSupportedException
+    {
+        switch (fileType)
+        {
+            case ".rle":
+                return (new RLEParser()).parse(reader);
+
+            default:
+                throw new FileNotSupportedException(fileType + " it not supported.");
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+

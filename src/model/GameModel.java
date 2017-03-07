@@ -4,6 +4,9 @@ import model.simulation.DefaultRuleSet;
 import model.simulation.Simulator;
 import model.simulation.SimulatorImpl;
 
+import java.io.File;
+import java.io.IOException;
+
 public class GameModel
 {
     private BoardLoader boardLoader;
@@ -33,5 +36,15 @@ public class GameModel
     public void loadNewRandomBoard(int width, int height)
     {
         gameBoard = boardLoader.newRandomBoard(width, height);
+    }
+
+    public void loadGameBoardFromDisk(File file) throws IOException, FileNotSupportedException
+    {
+        gameBoard = boardLoader.loadFromDisk(file);
+    }
+
+    public void loadGameBoardFromURL(String url) throws IOException, FileNotSupportedException
+    {
+        gameBoard = boardLoader.loadFromURL(url);
     }
 }

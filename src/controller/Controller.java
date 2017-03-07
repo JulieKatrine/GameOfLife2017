@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -11,6 +13,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import model.FileNotSupportedException;
 import model.GameModel;
 import model.Point;
 import view.BoardRenderer;
@@ -64,7 +67,17 @@ public class Controller implements Initializable, UpdatableObject
 
     @FXML private void loadNewGameBoard()
     {
-        gameModel.loadNewRandomBoard(50,50);
+
+        File file = new File("Patterns/test01.rle");
+        try {
+            gameModel.loadGameBoardFromDisk(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (FileNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+      /*  gameModel.loadNewRandomBoard(50,50); */
         drawBoard();
     }
 
