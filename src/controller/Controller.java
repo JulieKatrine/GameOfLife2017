@@ -16,6 +16,11 @@ import model.Point;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
+/**
+ * This class controls the first screen.
+ * Description.... ex.
+ */
+
 public class Controller implements Initializable, UpdatableObject
 {
     private GameModel gameModel;
