@@ -1,4 +1,4 @@
-package model;
+package model.BoardIO;
 
 public class FileNotSupportedException extends Exception
 {

@@ -27,4 +27,5 @@ public class GameOfLife extends Application
     {
         launch(args);
     }
+
 }

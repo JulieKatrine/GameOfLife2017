@@ -1,4 +1,8 @@
-package model;
+package model.BoardIO;
+
+import model.GameBoard;
+import model.GameBoardImpl;
+import model.Point;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,7 +18,7 @@ public class RLEParser
     private ArrayList<String> comments;
     private int width = INVALID;
     private int height = INVALID;
-    private char[][] boardData;
+    private boolean[][] boardData;
     private String rule = "";
 
     public RLEParser()
@@ -22,7 +26,7 @@ public class RLEParser
         comments = new ArrayList<String>();
     }
 
-    public GameBoard parse(Reader reader) throws IOException
+    public Pattern parse(Reader reader) throws IOException
     {
         int character;
 
@@ -32,8 +36,6 @@ public class RLEParser
                 readComment(reader);
             else if (character == 'x')
                 readBoardDefinition(reader);
-            // TODO: Throw exeption.
-            // else System.err.println("Cannot read line.");
 
             if (boardData != null)
                 readCellData(reader);
@@ -41,10 +43,10 @@ public class RLEParser
 
         if (boardData != null) {
             System.out.println("Test: " + width + " " + height + " " + rule);
-            return createGameBoard();
+            return createPattern();
         }
         else
-            //TODO: Throw exeption.
+            //TODO: Throw exception.
             return null;
     }
 
@@ -57,7 +59,8 @@ public class RLEParser
         while ((character = reader.read()) != INVALID && character != '\n')
             comment.append((char) character);
 
-        comments.add(comment.toString());
+        if(comment.toString().length() > 0)
+            comments.add(comment.toString());
     }
 
     private void readBoardDefinition(Reader reader) throws IOException
@@ -87,7 +90,7 @@ public class RLEParser
             }
         }
         if (width != INVALID && height != INVALID)
-            boardData = new char[height][width];
+            boardData = new boolean[height][width];
     }
 
     private void readCellData(Reader reader) throws IOException
@@ -104,11 +107,10 @@ public class RLEParser
 
             else if (character == DEAD_CELL || character == LIVING_CELL)
             {
-                if (number == 0)
-                    number = 1;
+                number = Math.max(1, number);
 
-                for (int x = index; x<(index+number); x++)
-                    boardData[y][x] = (char)character;
+                for (int x = index; x < (index+number); x++)
+                    boardData[y][x] = (character == LIVING_CELL);
 
                 index += number;
                 number = 0;
@@ -122,22 +124,13 @@ public class RLEParser
         }
     }
 
-    private GameBoard createGameBoard()
+    private Pattern createPattern()
     {
-        Point cellPos = new Point();
-        GameBoard gameBoard = new GameBoardImpl(width, height);
-
-        for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
-        {
-            for (cellPos.x = 0; cellPos.x < width; cellPos.x++)
-            {
-                boolean stateOfThisCell = (boardData[cellPos.y][cellPos.x] == LIVING_CELL);
-                gameBoard.setStateInNextGeneration(stateOfThisCell, cellPos);
-            }
-        }
-
-        gameBoard.makeNextGenerationCurrent();
-        return gameBoard;
+        Pattern p = new Pattern();
+        p.setComments(comments);
+        p.setCellData(boardData);
+        return p;
     }
+
 
 }

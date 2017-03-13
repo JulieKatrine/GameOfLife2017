@@ -13,7 +13,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Slider;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import model.FileNotSupportedException;
+import model.BoardIO.FileNotSupportedException;
+import model.BoardIO.Pattern;
+import model.BoardIO.PatternLoader;
 import model.GameModel;
 import model.Point;
 import view.BoardRenderer;
@@ -45,7 +47,8 @@ public class Controller implements Initializable, UpdatableObject
         lastMousePos = new Point();
 
         addEventListeners();
-        loadNewGameBoard();
+     //   loadNewGameBoard();
+        drawBoard();
     }
 
     @Override
@@ -67,17 +70,27 @@ public class Controller implements Initializable, UpdatableObject
 
     @FXML private void loadNewGameBoard()
     {
-
         File file = new File("Patterns/test01.rle");
-        try {
-            gameModel.loadGameBoardFromDisk(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (FileNotSupportedException e) {
+
+        try
+        {
+            PatternLoader loader = new PatternLoader();
+            Pattern pattern = loader.loadFromDisk(file);
+            gameModel.setGameBoard(pattern.getGameBoard());
+
+            PatternLoaderForm p = new PatternLoaderForm();
+            p.showAndWait();
+
+            System.out.println("Done");
+
+        }
+        catch (IOException | FileNotSupportedException e)
+        {
             e.printStackTrace();
         }
 
-      /*  gameModel.loadNewRandomBoard(50,50); */
+
+
         drawBoard();
     }
 
