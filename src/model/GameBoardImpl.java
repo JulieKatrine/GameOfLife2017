@@ -48,9 +48,15 @@ public class GameBoardImpl extends GameBoard
     }
 
     @Override
+    public void editThisGeneration(boolean state, Point p)
+    {
+        thisGeneration[p.y][p.x] = state;
+    }
+
+    @Override
     public void makeNextGenerationCurrent()
     {
-        //Changing nextGeneration to thisGeneration and temporarily fill nextGeneration with the old thisGeneration array.
+        // Flips the generation buffers so the nextGeneration becomes thisGeneration
         boolean[][] temp = thisGeneration;
         thisGeneration = nextGeneration;
         nextGeneration = temp;

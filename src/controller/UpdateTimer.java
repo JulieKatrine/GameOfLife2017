@@ -43,5 +43,4 @@ public class UpdateTimer extends AnimationTimer
         else
             stop();
     }
-
 }

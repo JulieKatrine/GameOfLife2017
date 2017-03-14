@@ -48,17 +48,9 @@ public class Pattern
         GameBoard gameBoard = new GameBoardImpl(width, height);
 
         for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
-        {
             for (cellPos.x = 0; cellPos.x < width; cellPos.x++)
-            {
-                boolean stateOfThisCell = (cellData[cellPos.y][cellPos.x]);
-                gameBoard.setStateInNextGeneration(stateOfThisCell, cellPos);
-            }
-        }
+                gameBoard.editThisGeneration(cellData[cellPos.y][cellPos.x], cellPos);
 
-        gameBoard.makeNextGenerationCurrent();
         return gameBoard;
     }
-
-
 }

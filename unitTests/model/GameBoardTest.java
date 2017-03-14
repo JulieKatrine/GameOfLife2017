@@ -13,7 +13,8 @@ class GameBoardTest
         Point testPosition = new Point(1, 1);
         assertEquals(0, board.getAmountOfLivingNeighbors(testPosition), "Test empty board");
 
-        byte[][] b = {
+        byte[][] b =
+        {
                 {1, 0, 1},
                 {0, 1, 0},
                 {1, 1, 1}
@@ -33,14 +34,13 @@ class GameBoardTest
     @Test
     void isCellAliveInThisGeneration()
     {
-        GameBoard board = new GameBoardImpl(3, 3);
-
-        byte[][] b = {
+        byte[][] b =
+        {
                 {1, 0, 1},
                 {0, 1, 0},
                 {1, 1, 1}
         };
-        board = arrayToGameBoard(b);
+        GameBoard board = arrayToGameBoard(b);
 
         Point testPosition = new Point(1, 1);
         assertEquals(true, board.isCellAliveInThisGeneration(testPosition),"Tests with value = 1");
@@ -57,6 +57,12 @@ class GameBoardTest
 
     @Test
     void makeNextGenerationCurrent()
+    {
+
+    }
+
+    @Test
+    void editThisGeneration()
     {
 
     }

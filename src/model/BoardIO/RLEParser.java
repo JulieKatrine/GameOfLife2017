@@ -1,14 +1,10 @@
 package model.BoardIO;
 
-import model.GameBoard;
-import model.GameBoardImpl;
-import model.Point;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-public class RLEParser
+public class RLEParser implements Parser
 {
     private final int INVALID = -1;
     private final char DEAD_CELL = 'b';
@@ -26,7 +22,7 @@ public class RLEParser
         comments = new ArrayList<String>();
     }
 
-    public Pattern parse(Reader reader) throws IOException
+    public Pattern parse(Reader reader) throws IOException, PatternFormatException
     {
         int character;
 
@@ -41,15 +37,11 @@ public class RLEParser
                 readCellData(reader);
         }
 
-        if (boardData != null) {
-            System.out.println("Test: " + width + " " + height + " " + rule);
+        if (boardData != null)
             return createPattern();
-        }
         else
-            //TODO: Throw exception.
-            return null;
+            throw new PatternFormatException("Failed to load board");
     }
-
 
     public void readComment(Reader reader) throws IOException
     {
@@ -93,7 +85,7 @@ public class RLEParser
             boardData = new boolean[height][width];
     }
 
-    private void readCellData(Reader reader) throws IOException
+    private void readCellData(Reader reader) throws IOException, PatternFormatException
     {
         int character;
         int number = 0;
@@ -118,9 +110,8 @@ public class RLEParser
             else if (character == END_OF_LINE)
             {
                 y++;
-                index = 0;
+                index = number = 0;
             }
-            //else //TODO: Throw exception
         }
     }
 
@@ -131,6 +122,4 @@ public class RLEParser
         p.setCellData(boardData);
         return p;
     }
-
-
 }

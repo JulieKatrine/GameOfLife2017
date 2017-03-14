@@ -19,5 +19,12 @@ public abstract class BoardRenderer
         return camera;
     }
 
+    public void scaleViewToFitBoard(GameBoard board)
+    {
+        double maxCellWidth = canvas.getWidth() / (board.getWidth() + 2);
+        double maxCellHeight = canvas.getHeight() / (board.getHeight() + 2);
+        camera.setZoom(Math.min(maxCellWidth, maxCellHeight));
+    }
+
     public abstract void render(GameBoard board);
 }

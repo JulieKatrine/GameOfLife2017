@@ -1,7 +1,6 @@
 package controller;
 
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -14,9 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import model.BoardIO.FileNotSupportedException;
+import model.BoardEditor;
+import model.BoardIO.PatternFormatException;
 import model.BoardIO.Pattern;
 import model.BoardIO.PatternLoader;
 import model.GameModel;
@@ -35,6 +37,7 @@ public class Controller implements Initializable, UpdatableObject
     private BoardRenderer boardRender;
     private UpdateTimer updateTimer;
     private Point lastMousePos;
+    private BoardEditor boardEditor;
 
     @FXML private AnchorPane anchorPane;
     @FXML private Canvas canvas;
@@ -47,20 +50,92 @@ public class Controller implements Initializable, UpdatableObject
     public void initialize(URL location, ResourceBundle resources)
     {
         boardRender  = new BoardRendererImpl(canvas);
+        boardEditor  = new BoardEditor(boardRender.getCamera());
         updateTimer  = new UpdateTimer(this);
         gameModel    = new GameModel();
         lastMousePos = new Point();
 
+        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+        updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
+
         addEventListeners();
-     //   loadNewGameBoard();
         drawBoard();
     }
 
-    @Override
-    public void triggerControllerUpdate()
+    private void addEventListeners()
     {
-        gameModel.simulateNextGeneration();
-        drawBoard(); //kaller på boardRender i hjelpemetode under
+        // Moves the cellSizeSlider when the scroll-wheel is used
+        canvas.setOnScroll((ScrollEvent event) ->
+        {
+            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
+            drawBoard();
+        });
+
+        // Changes the camera-zoom when the cellSizeSlider is changed
+        cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
+        {
+            boardRender.getCamera().setZoom(new_val.intValue());
+            drawBoard();
+        });
+
+        /* Updates the timer delay when the speedSlider is changed.
+        Higher slider value = smaller delay between updates */
+        speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
+                updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
+
+        canvas.setOnMousePressed(event ->
+        {
+            /* Resets the last mouse position to the current mouse position.
+            This is necessary to avoid "jumps" when moving the camera around */
+            lastMousePos.x = (int)event.getX();
+            lastMousePos.y = (int)event.getY();
+
+            // Setts a cell alive when the mouse i pressed
+            if(event.getButton() == MouseButton.PRIMARY)
+            {
+                boardEditor.edit(gameModel.getGameBoard(),
+                        new Point((int)event.getX(), (int)event.getY()),
+                        true);
+                drawBoard();
+            }
+        });
+
+        canvas.setOnMouseDragged(event ->
+        {
+            // Updates the camera position when the user drags the mouse and
+            if(event.getButton() == MouseButton.SECONDARY)
+            {
+                double deltaX = (int)event.getX() - lastMousePos.x;
+                double deltaY = (int)event.getY() - lastMousePos.y;
+                boardRender.getCamera().move(deltaX, deltaY);
+                lastMousePos.x = (int)event.getX();
+                lastMousePos.y = (int)event.getY();
+            }
+
+            // Setts a cell alive when the mouse i dragged over it
+            else if(event.getButton() == MouseButton.PRIMARY)
+            {
+                boardEditor.edit(gameModel.getGameBoard(),
+                        new Point((int)event.getX(), (int)event.getY()),
+                        true);
+            }
+
+            drawBoard();
+        });
+
+        // Updates the canvas width when the window is resized
+        anchorPane.prefWidthProperty().addListener((o, oldValue, newValue) ->
+        {
+            canvas.setWidth(newValue.doubleValue());
+            drawBoard();
+        });
+
+        // Updates the canvas height when the window is resized
+        anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
+        {
+            canvas.setHeight(newValue.doubleValue() - 25);
+            drawBoard();
+        });
     }
 
     private void drawBoard()
@@ -68,29 +143,44 @@ public class Controller implements Initializable, UpdatableObject
         boardRender.render(gameModel.getGameBoard());
     }
 
+    public void handleKeyEvent(Scene scene)
+    {
+        scene.setOnKeyPressed(event ->
+        {
+            if(event.getCode() == KeyCode.SPACE)
+                updateTimer.setRunning(!updateTimer.isRunning());
+            else if(event.getCode() == KeyCode.N)
+                simulateNextGeneration();
+        });
+    }
+
+    @Override
+    public void triggerControllerUpdate()
+    {
+        gameModel.simulateNextGeneration();
+        drawBoard();
+    }
+
     @FXML private void simulateNextGeneration()
     {
         triggerControllerUpdate();
-
     }
 
     @FXML private void loadNewGameBoard()
     {
-        File file = new File("Patterns/test01.rle");
-
         try
         {
             PatternLoader loader = new PatternLoader();
-            Pattern pattern = loader.loadFromDisk(file);
+            Pattern pattern = loader.loadFromDisk(new File("Patterns/test01.rle"));
             gameModel.setGameBoard(pattern.getGameBoard());
-
-            PatternLoaderForm p = new PatternLoaderForm();
-            p.showAndWait();
-
+            boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+            updateTimer.setRunning(false);
+            //TODO: create custom rule from the pattern's ruleString and add it to the simulator
         }
-        catch (IOException | FileNotSupportedException e)
+        catch (IOException | PatternFormatException e)
         {
             e.printStackTrace();
+            //TODO: show error dialogue to user
         }
 
         drawBoard();
@@ -112,72 +202,4 @@ public class Controller implements Initializable, UpdatableObject
     {
         Platform.exit();
     }
-
-    public void handleKeyEvent(Scene scene)
-    {
-        scene.setOnKeyPressed(event ->
-                updateTimer.setRunning(!updateTimer.isRunning()));
-    }
-
-    private void addEventListeners()
-    {
-        // Moves the cellSizeSlider when the scroll-wheel is used
-        canvas.setOnScroll((ScrollEvent event) ->
-        {
-            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
-            drawBoard();
-        });
-
-
-        // Changes the camera-zoom when the cellSizeSlider is changed
-        cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
-        {
-            boardRender.getCamera().setZoom(new_val.intValue());
-            drawBoard();
-        });
-
-
-        // Updates the timer delay when the speedSlider is changed
-        // Higher slider value = smaller delay between updates
-        speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
-                updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
-
-
-        // Resets the last mouse position to the current mouse position
-        // This is necessary to avoid "jumps" when moving the camera around
-        canvas.setOnMousePressed(event ->
-        {
-            lastMousePos.x = (int)event.getX();
-            lastMousePos.y = (int)event.getY();
-        });
-
-
-        // Updates the camera position when the user drags the mouse
-        canvas.setOnMouseDragged(event ->
-        {
-            double deltaX = (int)event.getX() - lastMousePos.x;
-            double deltaY = (int)event.getY() - lastMousePos.y;
-            boardRender.getCamera().move(deltaX, deltaY);
-            lastMousePos.x = (int)event.getX();
-            lastMousePos.y = (int)event.getY();
-            drawBoard();
-        });
-
-
-        // Updates the canvas width when the window is resized
-        anchorPane.prefWidthProperty().addListener((o, oldValue, newValue) ->
-        {
-            canvas.setWidth(newValue.doubleValue());
-            drawBoard();
-        });
-
-
-        // Updates the canvas height when the window is resized
-        anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
-        {
-            canvas.setHeight(newValue.doubleValue());
-            drawBoard();
-        });
-    }
 }
-

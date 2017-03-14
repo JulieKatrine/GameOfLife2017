@@ -14,12 +14,11 @@ public class GameOfLife extends Application
     {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("../view/UserInterface.fxml"));
+
         AnchorPane root = loader.load();
-        Controller controller = loader.getController();
-
-
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
+        Controller controller = loader.getController();
         controller.handleKeyEvent(scene);
 
         root.prefWidthProperty().bind(scene.widthProperty());
@@ -28,13 +27,10 @@ public class GameOfLife extends Application
         primaryStage.setTitle("Game of Life");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
 
     public static void main(String[] args)
     {
         launch(args);
     }
-
 }

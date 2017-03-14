@@ -26,6 +26,7 @@ public class PatternLoaderForm extends Stage
         super.setTitle("Game of Life");
         super.setScene(scene);
 
+        //TODO: Consider a board-chooser prompt
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(this);
 
