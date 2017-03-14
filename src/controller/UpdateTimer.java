@@ -7,6 +7,7 @@ public class UpdateTimer extends AnimationTimer
     private UpdatableObject updatableObj;
     private int delayInMilliseconds = 500;
     private long lastTime;
+    private boolean running = false;
 
     public UpdateTimer(UpdatableObject obj)
     {
@@ -28,4 +29,19 @@ public class UpdateTimer extends AnimationTimer
     {
         delayInMilliseconds = delayInMS;
     }
+
+    public boolean isRunning()
+    {
+        return running;
+    }
+
+    public void setRunning(boolean state)
+    {
+        running = state;
+        if(running)
+            start();
+        else
+            stop();
+    }
+
 }

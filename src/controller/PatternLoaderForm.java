@@ -26,11 +26,8 @@ public class PatternLoaderForm extends Stage
         super.setTitle("Game of Life");
         super.setScene(scene);
 
-      //  FileChooser fileChooser = new FileChooser();
-       // File file = fileChooser.showOpenDialog(this);
-
-       // if(file != null)
-        //    System.out.println("God stemning!!!");
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(this);
 
     }
 

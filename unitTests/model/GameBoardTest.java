@@ -2,7 +2,7 @@ package model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GameBoardTest
 {
@@ -13,18 +13,18 @@ class GameBoardTest
         Point testPosition = new Point(1, 1);
         assertEquals(0, board.getAmountOfLivingNeighbors(testPosition), "Test empty board");
 
-        board = arrayToGameBoard(new byte[][]
-        {
-                {1,0,1},
-                {0,1,0},
-                {1,1,1}
-        });
-
-        testPosition = new Point(1, 1);
-        assertEquals(5, board.getAmountOfLivingNeighbors(testPosition),"Test cell with 5 neighbours");
+        byte[][] b = {
+                {1, 0, 1},
+                {0, 1, 0},
+                {1, 1, 1}
+        };
+        board = arrayToGameBoard(b);
 
         testPosition = new Point(0, 0);
         assertEquals(1, board.getAmountOfLivingNeighbors(testPosition),"Test cell with 1 neighbour");
+
+        testPosition = new Point(1, 1);
+        assertEquals(5, board.getAmountOfLivingNeighbors(testPosition),"Test cell with 5 neighbours");
 
         testPosition = new Point(2, 2);
         assertEquals(2, board.getAmountOfLivingNeighbors(testPosition),"Test cell with 2 neighbours");
@@ -33,7 +33,20 @@ class GameBoardTest
     @Test
     void isCellAliveInThisGeneration()
     {
+        GameBoard board = new GameBoardImpl(3, 3);
 
+        byte[][] b = {
+                {1, 0, 1},
+                {0, 1, 0},
+                {1, 1, 1}
+        };
+        board = arrayToGameBoard(b);
+
+        Point testPosition = new Point(1, 1);
+        assertEquals(true, board.isCellAliveInThisGeneration(testPosition),"Tests with value = 1");
+
+        testPosition = new Point(2, 1);
+        assertEquals(false, board.isCellAliveInThisGeneration(testPosition),"Tests with value = 0");
     }
 
     @Test

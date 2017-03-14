@@ -12,8 +12,15 @@ public class GameOfLife extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        AnchorPane root = FXMLLoader.load(getClass().getResource("../view/UserInterface.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("../view/UserInterface.fxml"));
+        AnchorPane root = loader.load();
+        Controller controller = loader.getController();
+
+
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+
+        controller.handleKeyEvent(scene);
 
         root.prefWidthProperty().bind(scene.widthProperty());
         root.prefHeightProperty().bind(scene.heightProperty());
@@ -21,6 +28,8 @@ public class GameOfLife extends Application
         primaryStage.setTitle("Game of Life");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
     }
 
     public static void main(String[] args)

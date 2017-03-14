@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -9,7 +10,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,6 +40,8 @@ public class Controller implements Initializable, UpdatableObject
     @FXML private Canvas canvas;
     @FXML private Slider cellSizeSlider;
     @FXML private Slider speedSlider;
+    @FXML private MenuItem startStopMenuItem;
+    @FXML private MenuItem nextMenuItem;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -66,6 +71,7 @@ public class Controller implements Initializable, UpdatableObject
     @FXML private void simulateNextGeneration()
     {
         triggerControllerUpdate();
+
     }
 
     @FXML private void loadNewGameBoard()
@@ -81,15 +87,11 @@ public class Controller implements Initializable, UpdatableObject
             PatternLoaderForm p = new PatternLoaderForm();
             p.showAndWait();
 
-            System.out.println("Done");
-
         }
         catch (IOException | FileNotSupportedException e)
         {
             e.printStackTrace();
         }
-
-
 
         drawBoard();
     }
@@ -99,19 +101,22 @@ public class Controller implements Initializable, UpdatableObject
         //Future feature
     }
 
-    @FXML private void startSimulation()
+    @FXML private void startStopSimulation()
     {
-        updateTimer.start();
-    }
-
-    @FXML private void stopSimulation()
-    {
-        updateTimer.stop();
+        updateTimer.setRunning(!updateTimer.isRunning());
+        startStopMenuItem.setText(updateTimer.isRunning() ? "Stop" : "Start");
+        nextMenuItem.setDisable(updateTimer.isRunning());
     }
 
     @FXML private void closeApplication()
     {
         Platform.exit();
+    }
+
+    public void handleKeyEvent(Scene scene)
+    {
+        scene.setOnKeyPressed(event ->
+                updateTimer.setRunning(!updateTimer.isRunning()));
     }
 
     private void addEventListeners()

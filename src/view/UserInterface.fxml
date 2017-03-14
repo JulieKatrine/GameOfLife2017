@@ -18,9 +18,8 @@
                     </Menu>
                     <Menu text="Action">
                         <items>
-                            <MenuItem text="Start" onAction="#startSimulation"/>
-                            <MenuItem text="Stop" onAction="#stopSimulation"/>
-                            <MenuItem text="Next" onAction="#simulateNextGeneration"/>
+                            <MenuItem text="Start" fx:id="startStopMenuItem" onAction="#startStopSimulation"/>
+                            <MenuItem text="Next" fx:id="nextMenuItem" onAction="#simulateNextGeneration"/>
                             <Menu text="Speed">
                                 <CustomMenuItem>
                                     <content>
