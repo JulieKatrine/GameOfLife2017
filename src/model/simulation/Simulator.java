@@ -2,8 +2,14 @@ package model.simulation;
 
 import model.GameBoard;
 
-public interface Simulator
+public abstract class Simulator
 {
-    void addSimulationRules(SimRule ... rules);
-    void executeOn(GameBoard board);
+    protected SimRule simulationRule;
+
+    public Simulator(SimRule rule)
+    {
+        this.simulationRule = rule;
+    }
+
+    public abstract void executeOn(GameBoard board);
 }

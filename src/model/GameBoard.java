@@ -21,7 +21,7 @@ public abstract class GameBoard
         return height;
     }
 
-    public abstract int getAmountOfLivingNeighbors(Point p);
+    public abstract int getAmountOfLivingNeighbours(Point p);
     public abstract boolean isCellAliveInThisGeneration(Point p);
     public abstract void setStateInNextGeneration(boolean state, Point p);
     public abstract void editThisGeneration(boolean state, Point p);

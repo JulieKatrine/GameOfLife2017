@@ -89,7 +89,7 @@ public class RLEParser implements Parser
     {
         int character;
         int number = 0;
-        int y = 0;
+        int row = 0;
         int index = 0;
 
         while ((character = reader.read()) != INVALID && character != '!')
@@ -102,14 +102,14 @@ public class RLEParser implements Parser
                 number = Math.max(1, number);
 
                 for (int x = index; x < (index+number); x++)
-                    boardData[y][x] = (character == LIVING_CELL);
+                    boardData[row][x] = (character == LIVING_CELL);
 
                 index += number;
                 number = 0;
             }
             else if (character == END_OF_LINE)
             {
-                y++;
+                row += number > 0 ? number : 1;
                 index = number = 0;
             }
         }

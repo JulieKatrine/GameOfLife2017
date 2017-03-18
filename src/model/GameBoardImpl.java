@@ -13,7 +13,7 @@ public class GameBoardImpl extends GameBoard
     }
 
     @Override
-    public int getAmountOfLivingNeighbors(Point p)
+    public int getAmountOfLivingNeighbours(Point p)
     {
         Point startPoint = new Point(Math.max(p.x-1, 0), Math.max(p.y-1, 0));
         Point stopPoint = new Point(Math.min(p.x+2, super.getWidth()), Math.min(p.y+2, super.getHeight()));

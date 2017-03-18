@@ -12,10 +12,7 @@ public class GameModel
     public GameModel()
     {
         gameBoard = new GameBoardImpl(50, 50);
-        simulator = new SimulatorImpl();
-
-        //Implements DefaultRuleSet with possibilities to change or add new rules later in the project.
-        simulator.addSimulationRules(new DefaultRuleSet());
+        simulator = new SimulatorImpl(new DefaultRuleSet());
     }
 
     public void simulateNextGeneration()
@@ -30,6 +27,11 @@ public class GameModel
 
     public void setGameBoard(GameBoard board)
     {
-        gameBoard = board;
+        this.gameBoard = board;
+    }
+
+    public void setSimulator(Simulator simulator)
+    {
+        this.simulator = simulator;
     }
 }
