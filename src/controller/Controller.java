@@ -27,10 +27,15 @@ import view.BoardRenderer;
 import view.BoardRendererImpl;
 
 /**
- * This class controls the first screen.
- * Description.... ex.
+ * Controls the screen in co-operation with UserInterface.fxml.
+ *
+ * Implements Initializable and UpdatableObject.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ * @see controller.UpdatableObject
+ * @see Initializable
  */
-
 public class Controller implements Initializable, UpdatableObject
 {
     private GameModel gameModel;
@@ -46,6 +51,13 @@ public class Controller implements Initializable, UpdatableObject
     @FXML private MenuItem startStopMenuItem;
     @FXML private MenuItem nextMenuItem;
 
+    /**
+     * Called to initialize the controller after it's root element has been completely processed.
+     *
+     * @param location
+     * @param resources
+     * TODO: Finish me!
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -143,6 +155,16 @@ public class Controller implements Initializable, UpdatableObject
         boardRender.render(gameModel.getGameBoard());
     }
 
+    /**
+     * Handles the events of a user using the key-board.
+     *
+     * If the user presses "space", the program will call updateTimer.setRunning(),
+     * and start/stop running depending on it's state.
+     *
+     * If the user presses "N", the method will call simulateNextGeneration().
+     *
+     * @param scene Takes in the programs current scene.
+     */
     public void handleKeyEvent(Scene scene)
     {
         scene.setOnKeyPressed(event ->
@@ -154,6 +176,12 @@ public class Controller implements Initializable, UpdatableObject
         });
     }
 
+    /**
+     * Triggers the Controller to update, and the program to simulate and draw a new board.
+     *
+     * Uses the gameModel object and calls the simulateNextGeneration() method.
+     * After the next generation is simulated, it calls the drawBoard() method.
+     */
     @Override
     public void triggerControllerUpdate()
     {

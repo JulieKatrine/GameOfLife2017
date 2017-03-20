@@ -3,7 +3,12 @@ package model.BoardIO;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-
+/**
+ * Parses a RLE file.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class RLEParser implements Parser
 {
     private final int INVALID = -1;

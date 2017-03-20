@@ -3,6 +3,12 @@ package model.simulation;
 import model.GameBoard;
 import model.Point;
 
+/**
+ * Simulates the pattern according to the rules.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class SimulatorImpl extends Simulator
 {
     public SimulatorImpl(SimRule rule)
@@ -10,6 +16,14 @@ public class SimulatorImpl extends Simulator
         super(rule);
     }
 
+    /**
+     * Executes the simulation on a defined board.
+     *
+     * Iterates through the whole board, gets the amount of living neighbours,
+     * and checks and sets the results for the next generation, and makes next generation current.
+     *
+     * @param board
+     */
     public void executeOn(GameBoard board)
     {
         Point cellPos = new Point();

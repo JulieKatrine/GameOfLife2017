@@ -2,11 +2,18 @@ package controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * The programs main class.
+ *
+ * Extends Application as fxml is used.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class GameOfLife extends Application
 {
     @Override

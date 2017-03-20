@@ -6,18 +6,33 @@ import javafx.scene.paint.Color;
 import model.GameBoard;
 import model.Point;
 
+/**
+ * Renders the board with Canvas.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class BoardRendererImpl extends BoardRenderer
 {
     private Color deadCellColor = Color.PINK;
     private Color aliveCellColor = Color.BLACK;
     private Color gridColor = Color.BLACK;
 
+    /**
+     * Focuses the camera to the middle of the board.
+     *
+     * @param canvas
+     */
     public BoardRendererImpl(Canvas canvas)
     {
         super(canvas);
         camera.move(canvas.getWidth() / 2, canvas.getHeight() / 2);
     }
 
+    /**
+     * Clears the board, and then renders respectively the dead cells, the grid and the living cells.
+     * @param board
+     */
     @Override
     public void render(GameBoard board)
     {

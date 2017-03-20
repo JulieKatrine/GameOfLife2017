@@ -2,6 +2,14 @@ package controller;
 
 import javafx.animation.AnimationTimer;
 
+/**
+ * Calculates and decides when to update of the board.
+ *
+ * The class extends AnimationTimer.
+ *
+ * @author Niklas Johansen
+ * @auther Julie Katrine Høvik
+ */
 public class UpdateTimer extends AnimationTimer
 {
     private UpdatableObject updatableObj;
@@ -9,11 +17,24 @@ public class UpdateTimer extends AnimationTimer
     private long lastTime;
     private boolean running = false;
 
+    /**
+     * The constructor that takes in an UpdatableObject.
+     *
+     * @param obj
+     */
     public UpdateTimer(UpdatableObject obj)
     {
         updatableObj = obj;
     }
 
+    /**
+     * Updates the board after a defined amount of milliseconds.
+     *
+     * If enough time (delayinMilliseconds) has pasted since the last update, or the start -
+     * this method calls updatableObj.triggerControllerUpdate(); and updates the time.
+     *
+     * @param nowInNanoSeconds
+     */
     @Override
     public void handle(long nowInNanoSeconds)
     {
@@ -25,6 +46,11 @@ public class UpdateTimer extends AnimationTimer
         }
     }
 
+    /**
+     * A setter for changing how often the board should be updated.
+     *
+     * @param delayInMS
+     */
     public void setDelayBetweenUpdates(int delayInMS)
     {
         delayInMilliseconds = delayInMS;

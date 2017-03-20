@@ -6,12 +6,26 @@ import model.Point;
 
 import java.util.ArrayList;
 
+/**
+ * Creates an object from a pattern.
+ *
+ * @author Niklas Johansen
+ * @auther Julie Katrine Høvik
+ * @see PatternLoader
+ */
 public class Pattern
 {
     private String name;
     private String[] comments;
     private boolean[][] cellData;
 
+    /**
+     * Lists comments that may appear in the file/URL.
+     *
+     * If the comment starts with an N, it is set to be the name of the pattern.
+     *
+     * @param commentList
+     */
     public void setComments(ArrayList<String> commentList)
     {
         comments = new String[commentList.size()];
