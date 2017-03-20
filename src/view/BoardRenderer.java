@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 import model.GameBoard;
 
 /**
- * Reders the board with Canvas.
+ * Renders the board with Canvas.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik

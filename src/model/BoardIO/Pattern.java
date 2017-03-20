@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Creates an object from a pattern.
  *
  * @author Niklas Johansen
- * @auther Julie Katrine Høvik
+ * @author Julie Katrine Høvik
  * @see PatternLoader
  */
 public class Pattern
@@ -24,7 +24,7 @@ public class Pattern
      *
      * If the comment starts with an N, it is set to be the name of the pattern.
      *
-     * @param commentList
+     * @param commentList Takes in a list of lines starting with # -meaning it's a comment.
      */
     public void setComments(ArrayList<String> commentList)
     {

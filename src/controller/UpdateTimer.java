@@ -8,7 +8,7 @@ import javafx.animation.AnimationTimer;
  * The class extends AnimationTimer.
  *
  * @author Niklas Johansen
- * @auther Julie Katrine Høvik
+ * @author Julie Katrine Høvik
  */
 public class UpdateTimer extends AnimationTimer
 {
@@ -20,7 +20,8 @@ public class UpdateTimer extends AnimationTimer
     /**
      * The constructor that takes in an UpdatableObject.
      *
-     * @param obj
+     * TODO: Fill me in
+     * @param obj fill me in
      */
     public UpdateTimer(UpdatableObject obj)
     {
@@ -33,7 +34,7 @@ public class UpdateTimer extends AnimationTimer
      * If enough time (delayinMilliseconds) has pasted since the last update, or the start -
      * this method calls updatableObj.triggerControllerUpdate(); and updates the time.
      *
-     * @param nowInNanoSeconds
+     * @param nowInNanoSeconds This exact time in nanoseconds.
      */
     @Override
     public void handle(long nowInNanoSeconds)
@@ -49,7 +50,7 @@ public class UpdateTimer extends AnimationTimer
     /**
      * A setter for changing how often the board should be updated.
      *
-     * @param delayInMS
+     * @param delayInMS The defined delay in milliseconds.
      */
     public void setDelayBetweenUpdates(int delayInMS)
     {

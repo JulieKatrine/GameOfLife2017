@@ -22,7 +22,7 @@ public class SimulatorImpl extends Simulator
      * Iterates through the whole board, gets the amount of living neighbours,
      * and checks and sets the results for the next generation, and makes next generation current.
      *
-     * @param board
+     * @param board The current board.
      */
     public void executeOn(GameBoard board)
     {

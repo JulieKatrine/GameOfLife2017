@@ -21,7 +21,8 @@ public class BoardRendererImpl extends BoardRenderer
     /**
      * Focuses the camera to the middle of the board.
      *
-     * @param canvas
+     * TODO: fill me in
+     * @param canvas fill me in
      */
     public BoardRendererImpl(Canvas canvas)
     {
@@ -31,7 +32,7 @@ public class BoardRendererImpl extends BoardRenderer
 
     /**
      * Clears the board, and then renders respectively the dead cells, the grid and the living cells.
-     * @param board
+     * @param board The current board.
      */
     @Override
     public void render(GameBoard board)

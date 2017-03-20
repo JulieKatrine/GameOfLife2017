@@ -54,8 +54,8 @@ public class Controller implements Initializable, UpdatableObject
     /**
      * Called to initialize the controller after it's root element has been completely processed.
      *
-     * @param location
-     * @param resources
+     * @param location fill me in
+     * @param resources fill me in
      * TODO: Finish me!
      */
     @Override

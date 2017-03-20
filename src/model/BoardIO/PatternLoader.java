@@ -14,10 +14,10 @@ public class PatternLoader
     /**
      * Loads a file with a pattern from the disk.
      *
-     * @param file
+     * @param file Takes in a file
      * @return a Pattern
-     * @throws IOException
-     * @throws PatternFormatException
+     * @throws IOException An input/output exception
+     * @throws PatternFormatException An exception for the case of a wrong format in an imported file.
      */
     public Pattern loadFromDisk(File file) throws IOException, PatternFormatException
     {
@@ -27,10 +27,10 @@ public class PatternLoader
     /**
      * Loads a URL with a pattern.
      *
-     * @param url
-     * @return a Pattern
-     * @throws IOException
-     * @throws PatternFormatException
+     * @param url Takes in a URL
+     * @return Pattern
+     * @throws IOException An input/output exception
+     * @throws PatternFormatException An exception for the case of a wrong format in an imported file.
      */
     public Pattern loadFromURL(String url) throws IOException, PatternFormatException
     {

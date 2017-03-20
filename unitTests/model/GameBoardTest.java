@@ -15,6 +15,10 @@ public class GameBoardTest
 
     /**
      * This method specifies the board implementation to be used in every test.
+     *
+     * @param height The height of the board
+     * @param width The width of the board
+     * @return GameBoard
      */
     public static GameBoard getGameBoardImplementation(int width, int height)
     {

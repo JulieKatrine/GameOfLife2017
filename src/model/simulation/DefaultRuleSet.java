@@ -10,7 +10,7 @@ public class DefaultRuleSet implements SimRule
     /**
      * Decides the state of a cell in the next generation, by following the default rule set.
      *
-     * @param numberOfLivingNeighbors
+     * @param numberOfLivingNeighbors The amount of living neighbours of a cell.
      * @return one out of three results; Birth, death or unchanged.
      */
     public Result execute(int numberOfLivingNeighbors)
