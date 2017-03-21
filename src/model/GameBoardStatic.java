@@ -1,11 +1,11 @@
 package model;
 
-public class GameBoardImpl extends GameBoard
+public class GameBoardStatic extends GameBoard
 {
     private boolean[][] thisGeneration;
     private boolean[][] nextGeneration;
 
-    public GameBoardImpl(int width, int height)
+    public GameBoardStatic(int width, int height)
     {
         super(width, height);
         thisGeneration = new boolean[height][width];

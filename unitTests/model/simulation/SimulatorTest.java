@@ -25,6 +25,7 @@ class SimulatorTest
 
         byte[][] gliderAfterFourGenerations =
         {
+                //TODO: Legg til nullere!!
             {0, 0, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 1},

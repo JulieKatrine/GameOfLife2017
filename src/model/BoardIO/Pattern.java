@@ -1,7 +1,8 @@
 package model.BoardIO;
 
 import model.GameBoard;
-import model.GameBoardImpl;
+import model.GameBoardDynamic;
+import model.GameBoardStatic;
 import model.Point;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class Pattern
         int height = cellData.length;
 
         Point cellPos = new Point();
-        GameBoard gameBoard = new GameBoardImpl(width, height);
+        GameBoard gameBoard = new GameBoardDynamic(width, height);
 
         for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
             for (cellPos.x = 0; cellPos.x < width; cellPos.x++)

@@ -170,7 +170,7 @@ public class Controller implements Initializable, UpdatableObject
         scene.setOnKeyPressed(event ->
         {
             if(event.getCode() == KeyCode.SPACE)
-                updateTimer.setRunning(!updateTimer.isRunning());
+                startStopSimulation();
             else if(event.getCode() == KeyCode.N)
                 simulateNextGeneration();
         });

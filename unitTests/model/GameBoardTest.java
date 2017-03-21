@@ -22,7 +22,7 @@ public class GameBoardTest
      */
     public static GameBoard getGameBoardImplementation(int width, int height)
     {
-        return new GameBoardImpl(width, height);
+        return new GameBoardDynamic(width, height);
     }
 
     @Test

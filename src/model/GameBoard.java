@@ -2,8 +2,8 @@ package model;
 
 public abstract class GameBoard
 {
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
 
     public GameBoard(int width, int height)
     {

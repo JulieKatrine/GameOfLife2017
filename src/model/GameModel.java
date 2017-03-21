@@ -11,7 +11,7 @@ public class GameModel
 
     public GameModel()
     {
-        gameBoard = new GameBoardImpl(50, 50);
+        gameBoard = new GameBoardDynamic(50, 50);
         simulator = new SimulatorImpl(new DefaultRuleSet());
     }
 
