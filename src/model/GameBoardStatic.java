@@ -60,5 +60,5 @@ public class GameBoardStatic extends GameBoard
         boolean[][] temp = thisGeneration;
         thisGeneration = nextGeneration;
         nextGeneration = temp;
-    }
-}
+        }
+        }

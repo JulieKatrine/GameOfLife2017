@@ -9,6 +9,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.BoardIO.Pattern;
+import model.BoardIO.PatternFormatException;
+import model.BoardIO.PatternLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +31,10 @@ public class PatternLoaderForm extends Stage
      *
      * @throws IOException as it takes input from the FileChooser.
      */
-    public PatternLoaderForm() throws IOException
-    {
+
+    private Pattern loadedPattern;
+
+    public PatternLoaderForm() throws IOException, PatternFormatException {
         FXMLLoader loader = new FXMLLoader();
         loader.setController(this);
 
@@ -43,6 +48,12 @@ public class PatternLoaderForm extends Stage
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(this);
 
+        if(file != null)
+        {
+            PatternLoader patternLoader = new PatternLoader();
+            loadedPattern = patternLoader.loadFromDisk(file);
+        }
+
     }
 
     @FXML
@@ -51,8 +62,8 @@ public class PatternLoaderForm extends Stage
         super.close();
     }
 
-
-
-
-
+    public Pattern getPattern()
+    {
+        return loadedPattern;
+    }
 }

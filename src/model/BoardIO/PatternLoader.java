@@ -53,14 +53,8 @@ public class PatternLoader
      */
     public enum FileType
     {
-        rle { Parser getParser()
-                { return new RLEParser();
-                }
-            },
-        fil { Parser getParser()
-                { return new RLEParser();
-                }
-            };
+        rle { Parser getParser() { return new RLEParser();}},
+        lif { Parser getParser() { return new RLEParser();}};
         abstract Parser getParser();
     }
 

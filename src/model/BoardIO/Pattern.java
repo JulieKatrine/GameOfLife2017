@@ -56,15 +56,15 @@ public class Pattern
 
     public GameBoard getGameBoard()
     {
-        int width = cellData[0].length;
-        int height = cellData.length;
+        int width = cellData[0].length + 2;
+        int height = cellData.length + 2;
 
         Point cellPos = new Point();
         GameBoard gameBoard = new GameBoardDynamic(width, height);
 
-        for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
-            for (cellPos.x = 0; cellPos.x < width; cellPos.x++)
-                gameBoard.editThisGeneration(cellData[cellPos.y][cellPos.x], cellPos);
+        for (cellPos.y = 1; cellPos.y < height-1; cellPos.y++)
+            for (cellPos.x = 1; cellPos.x < width-1; cellPos.x++)
+                gameBoard.editThisGeneration(cellData[cellPos.y-1][cellPos.x-1], cellPos);
 
         return gameBoard;
     }

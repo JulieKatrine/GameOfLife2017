@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.scene.Scene;
@@ -17,12 +18,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import model.BoardEditor;
+import model.*;
 import model.BoardIO.PatternFormatException;
 import model.BoardIO.Pattern;
 import model.BoardIO.PatternLoader;
-import model.GameModel;
-import model.Point;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
@@ -86,7 +85,9 @@ public class Controller implements Initializable, UpdatableObject
         // Changes the camera-zoom when the cellSizeSlider is changed
         cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
         {
-            boardRender.getCamera().setZoom(new_val.intValue());
+            double val = (new_val.doubleValue() / cellSizeSlider.getMax());
+            val = Math.exp(val) / (val + 0.05);
+            boardRender.getCamera().setZoom(val);
             drawBoard();
         });
 
@@ -198,9 +199,11 @@ public class Controller implements Initializable, UpdatableObject
     {
         try
         {
-            PatternLoader loader = new PatternLoader();
-            Pattern pattern = loader.loadFromDisk(new File("Patterns/test01.rle"));
+            PatternLoaderForm loader = new PatternLoaderForm();
+            loader.showAndWait();
+            Pattern pattern = loader.getPattern();
             gameModel.setGameBoard(pattern.getGameBoard());
+
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             updateTimer.setRunning(false);
             //TODO: create custom rule from the pattern's ruleString and add it to the simulator

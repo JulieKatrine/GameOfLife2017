@@ -17,7 +17,7 @@ public abstract class BoardRenderer
     public BoardRenderer(Canvas canvas)
     {
         this.canvas = canvas;
-        this.camera = new Camera();
+        this.camera = new Camera(canvas);
     }
 
     public Camera getCamera()

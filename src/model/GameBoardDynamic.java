@@ -134,6 +134,7 @@ public class GameBoardDynamic extends GameBoard{
         thisGeneration = newThisGeneration;
         nextGeneration = newNextGeneration;
         boardStart = newBoardStart;
+        sizeExtension += sizeExtension;
     }
 
 }

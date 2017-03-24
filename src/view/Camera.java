@@ -1,22 +1,24 @@
 package view;
 
+import javafx.scene.canvas.Canvas;
 import model.GameBoard;
 import model.Point;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Camera
 {
-    private Point position;
     private double zoom;
+    private Canvas canvas;
 
-    public Camera()
+    private double posX = 0;
+    private double posY = 0;
+
+    public Camera(Canvas canvas)
     {
-        this.position = new Point(0, 0);
         this.zoom = 20;
-    }
-
-    public Point getPosition()
-    {
-        return position;
+        this.canvas = canvas;
     }
 
     public double getZoom()
@@ -27,19 +29,31 @@ public class Camera
     public Point getCenterOffsetRenderingPosition(GameBoard board)
     {
         Point offsetPos = new Point();
-        offsetPos.x = (int)(position.x - (board.getWidth() * zoom) / 2);
-        offsetPos.y = (int)(position.y - (board.getHeight()* zoom) / 2);
+
+        double boardWidth = board.getWidth() * zoom;
+        double boardHeight = board.getHeight() * zoom;
+
+        double windowCenterX = canvas.getWidth() / 2;
+        double windowCenterY = canvas.getHeight() / 2;
+
+        offsetPos.x = (int)(windowCenterX - boardWidth * (posX + 0.5));
+        offsetPos.y = (int)(windowCenterY - boardHeight * (posY + 0.5));
+
         return offsetPos;
     }
 
     public void setZoom(double newZoomValue)
     {
+
         zoom = Math.max(newZoomValue, 1);
     }
 
     public void move(double x, double y)
     {
-        position.x += x;
-        position.y += y;
+        posX -= x / canvas.getWidth();
+        posY -= y / canvas.getHeight();                                                            ;
+
+        posX = Math.min(1, Math.max(-1, posX));
+        posY = Math.min(1, Math.max(-1, posY));
     }
 }
