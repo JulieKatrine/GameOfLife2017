@@ -17,14 +17,13 @@ public class GameBoardDynamic extends GameBoard
     public GameBoardDynamic(int width, int height)
     {
         super(width, height);
-        arrayWidth = width+(sizeExtension *2);
-        arrayHeight = height+(sizeExtension *2);
+        arrayWidth = width+(sizeExtension * 2);
+        arrayHeight = height+(sizeExtension * 2);
 
         thisGeneration = new byte [arrayHeight][arrayWidth];
         nextGeneration = new byte [arrayHeight][arrayWidth];
         boardStart = new Point(((arrayWidth-width)/2),((arrayHeight-height)/2));
     }
-
 
     @Override
     public int getAmountOfLivingNeighbours(Point p)
@@ -55,22 +54,24 @@ public class GameBoardDynamic extends GameBoard
         if(state)
         {
             generation[y][x] += 10;
-
-            generation[y-1][x-1] ++;
-            generation[y-1][x] ++;
-            generation[y-1][x+1] ++;
-            generation[y][x-1] ++;
-            generation[y][x+1] ++;
-            generation[y+1][x-1] ++;
-            generation[y+1][x] ++;
-            generation[y+1][x+1] ++;
-        }else{
+            generation[y-1][x-1]++;
+            generation[y-1][x]++;
+            generation[y-1][x+1]++;
+            generation[y][x-1]++;
+            generation[y][x+1]++;
+            generation[y+1][x-1]++;
+            generation[y+1][x]++;
+            generation[y+1][x+1]++;
+        }
+        else
+        {
             generation[y][x] %= 10;
         }
     }
 
     @Override
-    public void makeNextGenerationCurrent() {
+    public void makeNextGenerationCurrent()
+    {
         byte[][] temp = thisGeneration;
         thisGeneration = nextGeneration;
         nextGeneration = temp;
@@ -96,23 +97,21 @@ public class GameBoardDynamic extends GameBoard
         int width = boardStart.x + super.width;
         int height = boardStart.y + super.height;
 
-            for(int y = boardStart.y; y<height; y++)
-            {
-                if(thisGeneration[y][boardStart.x] >= 1 || thisGeneration[y][width] >= 1)
-                    return true;
-            }
-            for(int x = boardStart.x; x < width; x++)
-            {
-                if(thisGeneration[boardStart.y][x] >= 1 || thisGeneration[height][x] >= 1)
-                    return true;
-            }
-            return false;
+        for(int y = boardStart.y; y<height; y++)
+            if(thisGeneration[y][boardStart.x] >= 1 || thisGeneration[y][width] >= 1)
+                return true;
+
+        for(int x = boardStart.x; x < width; x++)
+            if(thisGeneration[boardStart.y][x] >= 1 || thisGeneration[height][x] >= 1)
+                return true;
+
+        return false;
     }
 
     private void extendBoardSize()
     {
         super.width += 2;
-        super.height+= 2;
+        super.height += 2;
         boardStart = new Point(((arrayWidth-width)/2),((arrayHeight-height)/2));
 
         if(boardStart.x <= 0 && boardStart.y <= 0)
@@ -137,5 +136,4 @@ public class GameBoardDynamic extends GameBoard
         boardStart = newBoardStart;
         sizeExtension += sizeExtension;
     }
-
 }

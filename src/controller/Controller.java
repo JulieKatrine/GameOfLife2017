@@ -79,7 +79,7 @@ public class Controller implements Initializable, UpdatableObject
         // Moves the cellSizeSlider when the scroll-wheel is used
         canvas.setOnScroll((ScrollEvent event) ->
         {
-            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
+            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * -Math.signum(event.getDeltaY()));
             drawBoard();
         });
 
@@ -202,9 +202,14 @@ public class Controller implements Initializable, UpdatableObject
         {
             PatternChooserForm loader = new PatternChooserForm();
             loader.showAndWait();
+            Pattern pattern = loader.getPattern();
+            if(pattern != null)
+            {
+                gameModel.setGameBoard(pattern.getGameBoard());
+                boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+                updateTimer.setRunning(false);
+            }
 
-            boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
-            updateTimer.setRunning(false);
             //TODO: create custom rule from the pattern's ruleString and add it to the simulator
         }
         catch (IOException e)

@@ -32,10 +32,12 @@ public class Pattern
         comments = new String[commentList.size()];
         for(int i = 0; i < commentList.size(); i++)
         {
-            comments[i] = commentList.get(i);
-
-            if(comments[i].charAt(0) == 'N')
-                name = comments[i].substring(1);
+            if(commentList.get(i).length() > 0)
+            {
+                comments[i] = commentList.get(i).substring(1); // Start from index 1 to get rid of C, O or N
+                if(commentList.get(i).charAt(0) == 'N')
+                    name = comments[i];
+            }
         }
     }
 
@@ -47,6 +49,17 @@ public class Pattern
     public String getName()
     {
         return name;
+    }
+
+    public String getComments()
+    {
+        StringBuilder sb = new StringBuilder();
+        for(String c : comments)
+        {
+            sb.append(c);
+            sb.append('\n');
+        }
+        return sb.toString();
     }
 
     public boolean[][] getCellData()

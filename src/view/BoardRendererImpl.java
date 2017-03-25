@@ -27,7 +27,6 @@ public class BoardRendererImpl extends BoardRenderer
     public BoardRendererImpl(Canvas canvas)
     {
         super(canvas);
-  //      camera.move(canvas.getWidth() / 2, canvas.getHeight() / 2);
     }
 
     /**

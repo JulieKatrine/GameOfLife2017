@@ -56,6 +56,14 @@ public class PatternLoader
         rle { Parser getParser() { return new RLEParser();}},
         lif { Parser getParser() { return new RLEParser();}};
         abstract Parser getParser();
+
+        public static String[] getFileTypes()
+        {
+            String[] types = new String[FileType.values().length];
+            for(int i=0; i < types.length; i++)
+                types[i] = "*." + FileType.values()[i].name();
+            return types;
+        }
     }
 
     private Pattern loadPattern(Reader reader, String fileType) throws IOException, PatternFormatException
