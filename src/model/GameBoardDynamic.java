@@ -5,7 +5,8 @@ package model;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-public class GameBoardDynamic extends GameBoard{
+public class GameBoardDynamic extends GameBoard
+{
     private byte[][] thisGeneration;
     private byte[][] nextGeneration;
     private int arrayWidth;

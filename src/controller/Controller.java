@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
@@ -199,16 +200,14 @@ public class Controller implements Initializable, UpdatableObject
     {
         try
         {
-            PatternLoaderForm loader = new PatternLoaderForm();
+            PatternChooserForm loader = new PatternChooserForm();
             loader.showAndWait();
-            Pattern pattern = loader.getPattern();
-            gameModel.setGameBoard(pattern.getGameBoard());
 
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             updateTimer.setRunning(false);
             //TODO: create custom rule from the pattern's ruleString and add it to the simulator
         }
-        catch (IOException | PatternFormatException e)
+        catch (IOException e)
         {
             e.printStackTrace();
             //TODO: show error dialogue to user
