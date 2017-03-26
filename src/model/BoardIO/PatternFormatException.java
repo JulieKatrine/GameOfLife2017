@@ -1,17 +1,16 @@
 package model.BoardIO;
 
 /**
- * Holds the exceptions of the program.
+ * The exception thrown when a file parsers fails to load a pattern.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see Parser
  */
 public class PatternFormatException extends Exception
 {
     /**
-     * The exception thrown when a file or URL is imported.
-     * TODO: Fill me in
-     * @param message fill me in
+     * @param message The error message supplied when the exception is thrown.
      */
     public PatternFormatException(String message)
     {

@@ -2,43 +2,55 @@ package model.BoardIO;
 
 import model.GameBoard;
 import model.GameBoardDynamic;
-import model.GameBoardStatic;
 import model.Point;
 
 import java.util.ArrayList;
 
 /**
- * Creates an object from a pattern.
+ * This class wraps relevant information of a loaded pattern into a convenient Pattern object.
+ * It supplies getters and setters for this information, as well as a method for generating a GameBoard
+ * from the cell data.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see Parser
  * @see PatternLoader
  */
 public class Pattern
 {
     private String name;
-    private String[] comments;
+    private String author;
+    private String comments;
     private boolean[][] cellData;
 
     /**
-     * Lists comments that may appear in the file/URL.
+     * Adds the loaded metadata to the Pattern object.
+     * The first character in a line determines what kind of metadata it holds.
+     * N - Patterns name
+     * O - The author of the pattern
+     * C - Other information
      *
-     * If the comment starts with an N, it is set to be the name of the pattern.
-     *
-     * @param commentList Takes in a list of lines starting with # -meaning it's a comment.
+     * @param metadataList A list of metadata lines.
      */
-    public void setComments(ArrayList<String> commentList)
+    public void setMetadata(ArrayList<String> metadataList)
     {
-        comments = new String[commentList.size()];
-        for(int i = 0; i < commentList.size(); i++)
+        StringBuilder commentBuilder = new StringBuilder();
+        for(String string : metadataList)
         {
-            if(commentList.get(i).length() > 0)
+            if(string.length() > 0)
             {
-                comments[i] = commentList.get(i).substring(1); // Start from index 1 to get rid of C, O or N
-                if(commentList.get(i).charAt(0) == 'N')
-                    name = comments[i];
+                char prefix = string.charAt(0);
+                String line = string.substring(1);
+
+                switch (prefix)
+                {
+                    case 'N': name = line;   break;
+                    case 'O': author = line; break;
+                    case 'C': commentBuilder.append(line + '\n'); break;
+                }
             }
         }
+        comments = commentBuilder.toString();
     }
 
     public void setCellData(boolean[][] cellData)
@@ -51,22 +63,24 @@ public class Pattern
         return name;
     }
 
-    public String getComments()
-    {
-        StringBuilder sb = new StringBuilder();
-        for(String c : comments)
-        {
-            sb.append(c);
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
-
     public boolean[][] getCellData()
     {
         return cellData;
     }
 
+    /**
+     * @return A String containing the pattern name, author and additional information
+     */
+    public String getAllMetadata()
+    {
+        return (name != null ? name : "") + '\n' + (author != null ? author : "") + '\n' + comments;
+    }
+
+    /**
+     * Generates a GameBoard object from the patterns cell data.
+     * The method adds a border of dead cells around the pattern.
+     * @return a GameBoard of the type GameBoardDynamic
+     */
     public GameBoard getGameBoard()
     {
         int width = cellData[0].length + 2;

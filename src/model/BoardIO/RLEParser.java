@@ -3,8 +3,10 @@ package model.BoardIO;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+
 /**
- * Parses a RLE file.
+ * This class is a parser implementation for .rle files.
+ * Its parse() method reads data from a Reader and returns a Pattern object.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -16,7 +18,7 @@ public class RLEParser implements Parser
     private final char LIVING_CELL = 'o';
     private final char END_OF_LINE = '$';
 
-    private ArrayList<String> comments;
+    private ArrayList<String> metadata;
     private int width = INVALID;
     private int height = INVALID;
     private boolean[][] boardData;
@@ -24,9 +26,18 @@ public class RLEParser implements Parser
 
     public RLEParser()
     {
-        comments = new ArrayList<String>();
+        metadata = new ArrayList<>();
     }
 
+    /**
+     * Reads a Reader object character by character and returns the parsed data in a Pattern object.
+     *
+     * @param reader A Reader object of type FileReader, InputStreamReader, etc.
+     * @return A Pattern object.
+     * @throws IOException If a problem occurs while reading the file content.
+     * @throws PatternFormatException If the format of the file don't match the RLE standard.
+     * @see Pattern
+     */
     public Pattern parse(Reader reader) throws IOException, PatternFormatException
     {
         int character;
@@ -34,7 +45,7 @@ public class RLEParser implements Parser
         while ((character = reader.read()) != INVALID)
         {
             if (character == '#')
-                readComment(reader);
+                readMetadata(reader);
             else if (character == 'x')
                 readBoardDefinition(reader);
 
@@ -45,19 +56,19 @@ public class RLEParser implements Parser
         if (boardData != null)
             return createPattern();
         else
-            throw new PatternFormatException("Failed to load board");
+            throw new PatternFormatException("Failed to load pattern");
     }
 
-    public void readComment(Reader reader) throws IOException
+    private void readMetadata(Reader reader) throws IOException
     {
         int character;
-        StringBuilder comment = new StringBuilder();
+        StringBuilder dataBuilder = new StringBuilder();
 
         while ((character = reader.read()) != INVALID && character != '\n')
-            comment.append((char) character);
+            dataBuilder.append((char) character);
 
-        if(comment.toString().length() > 0)
-            comments.add(comment.toString());
+        if(dataBuilder.toString().length() > 0)
+            metadata.add(dataBuilder.toString());
     }
 
     private void readBoardDefinition(Reader reader) throws IOException
@@ -81,10 +92,7 @@ public class RLEParser implements Parser
                 }
             }
             else if (character == 'B' || rule.length() > 0)
-            {
                 rule += (char)character;
-                //TODO: Create rule decoder.
-            }
         }
         if (width != INVALID && height != INVALID)
             boardData = new boolean[height][width];
@@ -123,7 +131,7 @@ public class RLEParser implements Parser
     private Pattern createPattern()
     {
         Pattern p = new Pattern();
-        p.setComments(comments);
+        p.setMetadata(metadata);
         p.setCellData(boardData);
         return p;
     }

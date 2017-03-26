@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.Reader;
 
  /**
-  * Parses a file or URL.
-  * 
+  * This class parsers data from a Reader and returns a Pattern object.
+  * @see Pattern
+  *
   * @author Niklas Johansen
   * @author Julie Katrine Høvik
   */

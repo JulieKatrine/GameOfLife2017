@@ -4,10 +4,14 @@ import model.GameBoard;
 import model.Point;
 
 /**
- * Simulates the pattern according to the rules.
+ * This simulator implementation executes a simulation on every cell in a given GameBoard.
+ * It uses the GameBoards methods to access and update each cell according to a specific rule.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see SimRule
+ * @see GameBoard
+ * @see Result
  */
 public class SimulatorImpl extends Simulator
 {

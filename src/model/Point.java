@@ -1,5 +1,14 @@
 package model;
 
+/**
+ * This class wraps a X and Y coordinate into one basic object.
+ * Its main purpose is to get down the parameter count in method calls
+ * and further increase readability.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
+
 public class Point
 {
     public int x;
@@ -11,10 +20,5 @@ public class Point
     {
         this.x = x;
         this.y = y;
-    }
-
-    public boolean equals(Point p)
-    {
-        return this.x == p.x && this.y == p.y;
     }
 }

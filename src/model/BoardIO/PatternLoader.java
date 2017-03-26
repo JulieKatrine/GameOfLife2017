@@ -3,8 +3,10 @@ package model.BoardIO;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+
 /**
- * Loads a pattern from disk or URL.
+ * This class consists of methods for loading patterns from files.
+ * A file can be obtained through a web address or machine local path.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -12,12 +14,13 @@ import java.net.URLConnection;
 public class PatternLoader
 {
     /**
-     * Loads a file with a pattern from the disk.
+     * Loads a file form the local machine and returns a Pattern object.
      *
-     * @param file Takes in a file
-     * @return a Pattern
-     * @throws IOException An input/output exception
-     * @throws PatternFormatException An exception for the case of a wrong format in an imported file.
+     * @param file The file object to be loaded.
+     * @return A Pattern object parsed from the specified file.
+     * @throws IOException If a problem occurs while reading the file content.
+     * @throws PatternFormatException If a problem occurs while parsing the file.
+     * @see Pattern
      */
     public Pattern loadFromDisk(File file) throws IOException, PatternFormatException
     {
@@ -25,12 +28,13 @@ public class PatternLoader
     }
 
     /**
-     * Loads a URL with a pattern.
+     * Loads a file form the local machine and returns a Pattern object.
      *
-     * @param url Takes in a URL
-     * @return Pattern
-     * @throws IOException An input/output exception
-     * @throws PatternFormatException An exception for the case of a wrong format in an imported file.
+     * @param url The web address to the file.
+     * @return A Pattern object parsed from the specified file.
+     * @throws IOException If a problem occurs while reading the file content.
+     * @throws PatternFormatException If a problem occurs while parsing the file.
+     * @see Pattern
      */
     public Pattern loadFromURL(String url) throws IOException, PatternFormatException
     {
@@ -46,24 +50,6 @@ public class PatternLoader
             return fileName.substring(dotPosition);
         else
             return "";
-    }
-
-    /**
-     * TODO: Fill in here.
-     */
-    public enum FileType
-    {
-        rle { Parser getParser() { return new RLEParser();}},
-        lif { Parser getParser() { return new RLEParser();}};
-        abstract Parser getParser();
-
-        public static String[] getFileTypes()
-        {
-            String[] types = new String[FileType.values().length];
-            for(int i=0; i < types.length; i++)
-                types[i] = "*." + FileType.values()[i].name();
-            return types;
-        }
     }
 
     private Pattern loadPattern(Reader reader, String fileType) throws IOException, PatternFormatException

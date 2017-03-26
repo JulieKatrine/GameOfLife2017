@@ -4,8 +4,14 @@ import javafx.scene.canvas.Canvas;
 import model.GameBoard;
 import model.Point;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * This class holds positional information about where a GameBoard should be rendered.
+ * It supplies methods for calculating the rendering position of a given GameBoard, as
+ * well as methods for changing the view.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 
 public class Camera
 {
@@ -44,7 +50,6 @@ public class Camera
 
     public void setZoom(double newZoomValue)
     {
-
         zoom = Math.max(newZoomValue, 1);
     }
 

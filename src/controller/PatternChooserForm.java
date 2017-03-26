@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,21 +7,17 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import model.BoardIO.FileType;
 import model.BoardIO.Pattern;
 import model.BoardIO.PatternFormatException;
 import model.BoardIO.PatternLoader;
@@ -32,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 public class PatternChooserForm extends Stage implements Initializable
@@ -109,7 +102,7 @@ public class PatternChooserForm extends Stage implements Initializable
     {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GOL Patterns",
-                PatternLoader.FileType.getFileTypes()));
+                FileType.getFileTypes()));
 
         if(lastDirectoryOpened != null)
             fileChooser.setInitialDirectory(lastDirectoryOpened);
@@ -144,7 +137,7 @@ public class PatternChooserForm extends Stage implements Initializable
         img.setOnMouseClicked(event ->
         {
             selectedPattern = pattern;
-            textArea.setText(pattern.getComments());
+            textArea.setText(pattern.getAllMetadata());
 
             // Clear the "selected" effect on all tiles
             for(Node n : tilePane.getChildren())
