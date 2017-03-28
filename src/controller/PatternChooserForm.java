@@ -48,7 +48,7 @@ public class PatternChooserForm extends Stage implements Initializable
         Scene scene = new Scene(root);
         super.setTitle("Choose your pattern");
         super.setScene(scene);
-        super.setOnCloseRequest(we ->
+        super.setOnCloseRequest(Event ->
         {
             selectedPattern = null;
             super.close();
@@ -93,6 +93,7 @@ public class PatternChooserForm extends Stage implements Initializable
             {
                 e.printStackTrace();
                 urlTextField.setText("");
+                //TODO: Add GUI to the exception-message.
             }
         }
     }
@@ -133,7 +134,6 @@ public class PatternChooserForm extends Stage implements Initializable
     private void addPattern(Pattern pattern)
     {
         ImageView img = createTileImageFromPattern(pattern);
-        img.setFocusTraversable(true);
         img.setOnMouseClicked(event ->
         {
             selectedPattern = pattern;
@@ -162,7 +162,6 @@ public class PatternChooserForm extends Stage implements Initializable
                 pw.setColor(x, y, cellData[y][x] ? Color.BLACK : Color.rgb(244, 244, 244));
 
         ImageView imageView = new ImageView(wimg);
-        imageView.setSmooth(false);
         imageView.setPreserveRatio(true);
         imageView.setFitHeight(TILE_SIZE);
         imageView.setFitWidth(TILE_SIZE);

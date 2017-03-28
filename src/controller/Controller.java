@@ -23,6 +23,7 @@ import model.*;
 import model.BoardIO.PatternFormatException;
 import model.BoardIO.Pattern;
 import model.BoardIO.PatternLoader;
+import model.simulation.SimulatorImpl;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
@@ -206,8 +207,10 @@ public class Controller implements Initializable, UpdatableObject
             if(pattern != null)
             {
                 gameModel.setGameBoard(pattern.getGameBoard());
+                gameModel.setSimulator(new SimulatorImpl(pattern.getRule()));
                 boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
                 updateTimer.setRunning(false);
+                pattern.getRule();
             }
 
             //TODO: create custom rule from the pattern's ruleString and add it to the simulator
@@ -236,5 +239,11 @@ public class Controller implements Initializable, UpdatableObject
     @FXML private void closeApplication()
     {
         Platform.exit();
+    }
+
+    @FXML private void createEmptyBoard()
+    {
+        gameModel.setGameBoard(new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT));
+        drawBoard();
     }
 }

@@ -26,7 +26,7 @@ public class GameModel
      */
     public GameModel()
     {
-        gameBoard = new GameBoardDynamic(50, 50);
+        gameBoard = new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT);
         simulator = new SimulatorImpl(new DefaultRuleSet());
     }
 

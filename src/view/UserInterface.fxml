@@ -12,7 +12,8 @@
                     <Menu text="File">
                         <items>
                             <MenuItem text="Open File..." onAction="#loadNewGameBoard"/>
-                            <MenuItem text="Save As..." onAction="#saveGameBoard"/>
+                            <MenuItem text="Clear Board" onAction="#createEmptyBoard"/>
+                            <MenuItem text="Save As..."/>
                             <MenuItem text="Exit" onAction="#closeApplication"/>
                         </items>
                     </Menu>

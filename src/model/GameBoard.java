@@ -11,6 +11,8 @@ package model;
 
 public abstract class GameBoard
 {
+    public static final int DEFAULT_BOARD_WIDTH = 50;
+    public static final int DEFAULT_BOARD_HEIGHT = 50;
     protected int width;
     protected int height;
 

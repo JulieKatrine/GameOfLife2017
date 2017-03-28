@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="610.0" style="-fx-background-color: #707070;" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #707070;" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="170.0" style="-fx-background-color: #373833;">
+      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="224.0" style="-fx-background-color: #373833;">
          <children>
             <Button mnemonicParsing="false" onAction="#openFileChooser" prefHeight="34.0" prefWidth="157.0" style="-fx-background-color: #656563;" text="Open..." textFill="WHITE">
                <VBox.margin>
@@ -47,7 +47,7 @@
             </Button>
          </children>
       </VBox>
-      <ScrollPane fitToWidth="true" focusTraversable="false" maxHeight="2000.0" maxWidth="2000.0" prefHeight="400.0" prefWidth="503.0">
+      <ScrollPane fitToWidth="true" focusTraversable="false" maxHeight="2000.0" maxWidth="5000.0" prefHeight="400.0" prefWidth="600.0">
          <content>
             <TilePane fx:id="tilePane">
                <padding>

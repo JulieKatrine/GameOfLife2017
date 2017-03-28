@@ -91,11 +91,25 @@ public class RLEParser implements Parser
                     number = 0;
                 }
             }
-            else if (character == 'B' || rule.length() > 0)
+            else if (character == 'B' || character == 'b' || Character.isDigit((char) character) || rule.length() > 0)
                 rule += (char)character;
         }
         if (width != INVALID && height != INVALID)
             boardData = new boolean[height][width];
+    }
+
+    private String getRuleInStandardFormat(String rule)
+    {
+        rule = rule.trim().replaceAll(" ", "").toUpperCase();
+
+        if (!rule.startsWith("B"))
+            rule = "B" + rule;
+
+        if (!rule.contains("/S")) {
+            rule = rule.replaceAll("/", "/S");
+            System.out.println(rule);
+        }
+        return rule;
     }
 
     private void readCellData(Reader reader) throws IOException, PatternFormatException
@@ -133,6 +147,7 @@ public class RLEParser implements Parser
         Pattern p = new Pattern();
         p.setMetadata(metadata);
         p.setCellData(boardData);
+        p.setRule(getRuleInStandardFormat(rule));
         return p;
     }
 }

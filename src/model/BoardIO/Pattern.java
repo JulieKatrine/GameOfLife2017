@@ -3,6 +3,9 @@ package model.BoardIO;
 import model.GameBoard;
 import model.GameBoardDynamic;
 import model.Point;
+import model.simulation.CustomRule;
+import model.simulation.DefaultRuleSet;
+import model.simulation.SimRule;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,7 @@ public class Pattern
     private String author;
     private String comments;
     private boolean[][] cellData;
+    private String rule;
 
     /**
      * Adds the loaded metadata to the Pattern object.
@@ -58,6 +62,10 @@ public class Pattern
         this.cellData = cellData;
     }
 
+    public void setRule(String rule){
+        this.rule = rule;
+    }
+
     public String getName()
     {
         return name;
@@ -68,12 +76,24 @@ public class Pattern
         return cellData;
     }
 
+    public SimRule getRule()
+    {
+        if(rule != null)
+            return new CustomRule(rule);
+        else
+            return new DefaultRuleSet();
+    }
+
     /**
      * @return A String containing the pattern name, author and additional information
      */
     public String getAllMetadata()
     {
-        return (name != null ? name : "") + '\n' + (author != null ? author : "") + '\n' + comments;
+        return (name != null ? ("Name: " + name + '\n') : "")  +
+                (author != null ? ("Author: " + author + '\n') : "") +
+                (rule != null ? ("Rule: " + rule + '\n') : "Default ruleset: B3/S23 \n") +
+                (comments != null ? ("\nComments: \n" + comments) : "");
+
     }
 
     /**
