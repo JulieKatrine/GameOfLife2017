@@ -91,7 +91,10 @@ public class RLEParser implements Parser
                     number = 0;
                 }
             }
-            else if (character == 'B' || character == 'b' || Character.isDigit((char) character) || rule.length() > 0)
+            else if (rule.length() > 0 ||
+                    Character.toUpperCase(character) == 'B' ||
+                    Character.toUpperCase(character) == 'S' ||
+                    Character.isDigit((char) character))
                 rule += (char)character;
         }
         if (width != INVALID && height != INVALID)
@@ -101,15 +104,24 @@ public class RLEParser implements Parser
     private String getRuleInStandardFormat(String rule)
     {
         rule = rule.trim().replaceAll(" ", "").toUpperCase();
+        int indexOfB = rule.indexOf("B");
+        int indexOfS = rule.indexOf("S");
 
-        if (!rule.startsWith("B"))
-            rule = "B" + rule;
+        String birthNumbers = "";
+        String survivalNumbers = "";
 
-        if (!rule.contains("/S")) {
-            rule = rule.replaceAll("/", "/S");
-            System.out.println(rule);
-        }
-        return rule;
+        if(indexOfB == -1 && indexOfS == -1)
+            return "B" + rule.replaceAll("/", "/S");
+
+        if(indexOfB != -1)
+            for(indexOfB +=1; (indexOfB < rule.length() && Character.isDigit(rule.charAt(indexOfB))); indexOfB++)
+                birthNumbers += rule.charAt(indexOfB);
+
+        if(indexOfS != -1)
+            for(indexOfS +=1; (indexOfS < rule.length() && Character.isDigit(rule.charAt(indexOfS))); indexOfS++)
+                survivalNumbers += rule.charAt(indexOfS);
+
+        return "B" + birthNumbers + "/S" + survivalNumbers;
     }
 
     private void readCellData(Reader reader) throws IOException, PatternFormatException

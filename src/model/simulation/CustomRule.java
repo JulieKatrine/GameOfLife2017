@@ -39,13 +39,15 @@ public class CustomRule implements SimRule
     @Override
     public Result execute(int numberOfLivingNeighbors)
     {
-        for(int i : birthValues)
-            if(numberOfLivingNeighbors == i)
-                return Result.BIRTH;
+        if(birthValues != null)
+            for(int i : birthValues)
+                if(numberOfLivingNeighbors == i)
+                    return Result.BIRTH;
 
-        for (int i : survivalValues)
-            if(numberOfLivingNeighbors == i)
-                return Result.UNCHANGED;
+        if(survivalValues != null)
+            for (int i : survivalValues)
+                if(numberOfLivingNeighbors == i)
+                    return Result.UNCHANGED;
 
         return Result.DEATH;
     }

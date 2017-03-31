@@ -88,8 +88,8 @@ public class Controller implements Initializable, UpdatableObject
         cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
         {
             double val = (new_val.doubleValue() / cellSizeSlider.getMax());
-            val = Math.exp(val) / (val + 0.05);
-            boardRender.getCamera().setZoom(val);
+        //    val = Math.exp(val) / (val + 0.05);
+            boardRender.getCamera().setZoom(val * 50);
             drawBoard();
         });
 

@@ -68,6 +68,31 @@ public class PatternChooserForm extends Stage implements Initializable
         selected = new DropShadow();
         selected.setRadius(15);
         selected.setColor(Color.rgb(100,143,1));
+
+        addDefaultPatterns();
+    }
+
+    private void addDefaultPatterns()
+    {
+        String[] defaultPatterns =
+        {
+            "patterns/test01.rle"
+        };
+
+        for(String s : defaultPatterns)
+        {
+            try
+            {
+                PatternLoader loader = new PatternLoader();
+                Pattern pattern = loader.loadFromDisk(new File(s));
+                addPattern(pattern);
+            }
+            catch (IOException | PatternFormatException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @FXML

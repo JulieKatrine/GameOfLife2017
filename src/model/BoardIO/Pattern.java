@@ -78,7 +78,7 @@ public class Pattern
 
     public SimRule getRule()
     {
-        if(rule != null)
+        if(rule != null && !rule.equals("B3/S23"))
             return new CustomRule(rule);
         else
             return new DefaultRuleSet();

@@ -63,6 +63,10 @@ public class BoardRendererImpl extends BoardRenderer
     private void renderGrid(GameBoard board)
     {
         double cellSize = camera.getZoom();
+
+        if(cellSize < 2)
+            return;
+
         Point camPos = camera.getCenterOffsetRenderingPosition(board);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
