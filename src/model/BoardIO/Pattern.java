@@ -21,11 +21,12 @@ import java.util.ArrayList;
  */
 public class Pattern
 {
+    private String rule;
     private String name;
     private String author;
     private String comments;
+    private String origin;
     private boolean[][] cellData;
-    private String rule;
 
     /**
      * Adds the loaded metadata to the Pattern object.
@@ -44,7 +45,7 @@ public class Pattern
             if(string.length() > 0)
             {
                 char prefix = string.charAt(0);
-                String line = string.substring(1);
+                String line = string.substring(1).trim();
 
                 switch (prefix)
                 {
@@ -66,9 +67,19 @@ public class Pattern
         this.rule = rule;
     }
 
+    public void setOrigin(String origin)
+    {
+        this.origin = origin;
+    }
+
     public String getName()
     {
         return name;
+    }
+
+    public String getOrigin()
+    {
+        return origin;
     }
 
     public boolean[][] getCellData()
@@ -93,7 +104,6 @@ public class Pattern
                 (author != null ? ("Author: " + author + '\n') : "") +
                 (rule != null ? ("Rule: " + rule + '\n') : "Default ruleset: B3/S23 \n") +
                 (comments != null ? ("\nComments: \n" + comments) : "");
-
     }
 
     /**

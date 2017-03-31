@@ -15,15 +15,16 @@ import model.Point;
 
 public class Camera
 {
-    private double zoom;
-    private Canvas canvas;
+    private final double DEFAULT_ZOOM_VALUE = 20;
 
     private double posX = 0;
     private double posY = 0;
+    private double zoom;
+    private Canvas canvas;
 
     public Camera(Canvas canvas)
     {
-        this.zoom = 20;
+        this.zoom = DEFAULT_ZOOM_VALUE;
         this.canvas = canvas;
     }
 
@@ -53,12 +54,19 @@ public class Camera
         zoom = Math.max(newZoomValue, 1);
     }
 
-    public void move(double x, double y)
+    public void move(GameBoard board, double x, double y)
     {
-        posX -= x / canvas.getWidth();
-        posY -= y / canvas.getHeight();                                                            ;
+        posX -= x / (board.getWidth() * zoom);
+        posY -= y / (board.getHeight() * zoom);                                                            ;
 
-        posX = Math.min(1, Math.max(-1, posX));
-        posY = Math.min(1, Math.max(-1, posY));
+        posX = Math.min(0.5, Math.max(-0.5, posX));
+        posY = Math.min(0.5, Math.max(-0.5, posY));
     }
+
+    public void reeset()
+    {
+        zoom = DEFAULT_ZOOM_VALUE;
+        posX = posY = 0;
+    }
+
 }

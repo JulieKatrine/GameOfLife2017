@@ -16,7 +16,8 @@ public class RLEParser implements Parser
     private final int INVALID = -1;
     private final char DEAD_CELL = 'b';
     private final char LIVING_CELL = 'o';
-    private final char END_OF_LINE = '$';
+    private final char END_OF_ROW = '$';
+    private final char END_OF_DATA = '!';
 
     private ArrayList<String> metadata;
     private int width = INVALID;
@@ -47,7 +48,7 @@ public class RLEParser implements Parser
             if (character == '#')
                 readMetadata(reader);
             else if (character == 'x')
-                readBoardDefinition(reader);
+                readBoardDefinitionAndInstantiateBoardDataArray(reader);
 
             if (boardData != null)
                 readCellData(reader);
@@ -71,7 +72,7 @@ public class RLEParser implements Parser
             metadata.add(dataBuilder.toString());
     }
 
-    private void readBoardDefinition(Reader reader) throws IOException
+    private void readBoardDefinitionAndInstantiateBoardDataArray(Reader reader) throws IOException
     {
         int character;
         int number = 0;
@@ -101,6 +102,45 @@ public class RLEParser implements Parser
             boardData = new boolean[height][width];
     }
 
+    private void readCellData(Reader reader) throws IOException, PatternFormatException
+    {
+        int character;
+        int number = 0;
+        int row = 0;
+        int index = 0;
+
+        while ((character = reader.read()) != INVALID && character != END_OF_DATA)
+        {
+            if (Character.isDigit((char) character))
+                number = number * 10 + (character - '0');
+
+            else if (character == DEAD_CELL || character == LIVING_CELL)
+            {
+                number = Math.max(1, number);
+
+                for (int x = index; x < (index+number); x++)
+                    boardData[row][x] = (character == LIVING_CELL);
+
+                index += number;
+                number = 0;
+            }
+            else if (character == END_OF_ROW)
+            {
+                row += Math.max(1, number);
+                index = number = 0;
+            }
+        }
+    }
+
+    private Pattern createPattern()
+    {
+        Pattern p = new Pattern();
+        p.setMetadata(metadata);
+        p.setCellData(boardData);
+        p.setRule(getRuleInStandardFormat(rule));
+        return p;
+    }
+
     private String getRuleInStandardFormat(String rule)
     {
         rule = rule.trim().replaceAll(" ", "").toUpperCase();
@@ -122,44 +162,5 @@ public class RLEParser implements Parser
                 survivalNumbers += rule.charAt(indexOfS);
 
         return "B" + birthNumbers + "/S" + survivalNumbers;
-    }
-
-    private void readCellData(Reader reader) throws IOException, PatternFormatException
-    {
-        int character;
-        int number = 0;
-        int row = 0;
-        int index = 0;
-
-        while ((character = reader.read()) != INVALID && character != '!')
-        {
-            if (Character.isDigit((char) character))
-                number = number * 10 + (character - '0');
-
-            else if (character == DEAD_CELL || character == LIVING_CELL)
-            {
-                number = Math.max(1, number);
-
-                for (int x = index; x < (index+number); x++)
-                    boardData[row][x] = (character == LIVING_CELL);
-
-                index += number;
-                number = 0;
-            }
-            else if (character == END_OF_LINE)
-            {
-                row += number > 0 ? number : 1;
-                index = number = 0;
-            }
-        }
-    }
-
-    private Pattern createPattern()
-    {
-        Pattern p = new Pattern();
-        p.setMetadata(metadata);
-        p.setCellData(boardData);
-        p.setRule(getRuleInStandardFormat(rule));
-        return p;
     }
 }

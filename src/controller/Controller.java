@@ -4,25 +4,19 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import model.*;
-import model.BoardIO.PatternFormatException;
 import model.BoardIO.Pattern;
-import model.BoardIO.PatternLoader;
 import model.simulation.SimulatorImpl;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
@@ -68,8 +62,8 @@ public class Controller implements Initializable, UpdatableObject
         gameModel    = new GameModel();
         lastMousePos = new Point();
 
-        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
         updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
+        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
 
         addEventListeners();
         drawBoard();
@@ -80,16 +74,14 @@ public class Controller implements Initializable, UpdatableObject
         // Moves the cellSizeSlider when the scroll-wheel is used
         canvas.setOnScroll((ScrollEvent event) ->
         {
-            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * -Math.signum(event.getDeltaY()));
+            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
             drawBoard();
         });
 
         // Changes the camera-zoom when the cellSizeSlider is changed
         cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
         {
-            double val = (new_val.doubleValue() / cellSizeSlider.getMax());
-        //    val = Math.exp(val) / (val + 0.05);
-            boardRender.getCamera().setZoom(val * 50);
+            boardRender.getCamera().setZoom(new_val.doubleValue());
             drawBoard();
         });
 
@@ -122,7 +114,7 @@ public class Controller implements Initializable, UpdatableObject
             {
                 double deltaX = (int)event.getX() - lastMousePos.x;
                 double deltaY = (int)event.getY() - lastMousePos.y;
-                boardRender.getCamera().move(deltaX, deltaY);
+                boardRender.getCamera().move(gameModel.getGameBoard(), deltaX, deltaY);
                 lastMousePos.x = (int)event.getX();
                 lastMousePos.y = (int)event.getY();
             }
@@ -199,29 +191,19 @@ public class Controller implements Initializable, UpdatableObject
 
     @FXML private void loadNewGameBoard()
     {
-        try
+        PatternChooserForm loader = new PatternChooserForm();
+        loader.showAndWait();
+        Pattern pattern = loader.getPattern();
+        if(pattern != null)
         {
-            PatternChooserForm loader = new PatternChooserForm();
-            loader.showAndWait();
-            Pattern pattern = loader.getPattern();
-            if(pattern != null)
-            {
-                gameModel.setGameBoard(pattern.getGameBoard());
-                gameModel.setSimulator(new SimulatorImpl(pattern.getRule()));
-                boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
-                updateTimer.setRunning(false);
-                pattern.getRule();
-            }
-
-            //TODO: create custom rule from the pattern's ruleString and add it to the simulator
+            gameModel.setGameBoard(pattern.getGameBoard());
+            gameModel.setSimulator(new SimulatorImpl(pattern.getRule()));
+            boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+            cellSizeSlider.setValue(boardRender.getCamera().getZoom());
+            updateTimer.setRunning(false);
+            pattern.getRule();
+            drawBoard();
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            //TODO: show error dialogue to user
-        }
-
-        drawBoard();
     }
 
     @FXML private void saveGameBoard()
@@ -244,6 +226,8 @@ public class Controller implements Initializable, UpdatableObject
     @FXML private void createEmptyBoard()
     {
         gameModel.setGameBoard(new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT));
+        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+        cellSizeSlider.setValue(boardRender.getCamera().getZoom());
         drawBoard();
     }
 }

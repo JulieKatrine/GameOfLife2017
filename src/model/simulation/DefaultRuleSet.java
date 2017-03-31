@@ -20,6 +20,6 @@ public class DefaultRuleSet implements SimRule
         else if(numberOfLivingNeighbors != 2)
             return Result.DEATH;
         else
-            return Result.UNCHANGED;
+            return Result.SURVIVE;
     }
 }

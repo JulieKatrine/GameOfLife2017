@@ -41,15 +41,15 @@ public class SimulatorImpl extends Simulator
 
                 switch(result)
                 {
-                    case BIRTH:
-                        board.setStateInNextGeneration(true, cellPos);
-                        break;
-
                     case DEATH:
                         board.setStateInNextGeneration(false, cellPos);
                         break;
 
-                    case UNCHANGED:
+                    case BIRTH:
+                        board.setStateInNextGeneration(true, cellPos);
+                        break;
+
+                    case SURVIVE:
                         board.setStateInNextGeneration(board.isCellAliveInThisGeneration(cellPos), cellPos);
                         break;
                 }

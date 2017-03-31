@@ -29,6 +29,7 @@ public abstract class BoardRenderer
     {
         double maxCellWidth = canvas.getWidth() / (board.getWidth() + 2);
         double maxCellHeight = canvas.getHeight() / (board.getHeight() + 2);
+        camera.reeset();
         camera.setZoom(Math.min(maxCellWidth, maxCellHeight));
     }
 

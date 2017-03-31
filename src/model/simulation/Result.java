@@ -13,5 +13,5 @@ public enum Result
 {
     BIRTH,
     DEATH,
-    UNCHANGED
+    SURVIVE
 }
