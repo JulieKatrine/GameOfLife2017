@@ -17,7 +17,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import model.*;
 import model.BoardIO.Pattern;
-import model.simulation.SimulatorImpl;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
@@ -31,11 +30,10 @@ import view.BoardRendererImpl;
  * @see controller.UpdatableObject
  * @see Initializable
  */
-public class Controller implements Initializable, UpdatableObject
+public class Controller implements Initializable
 {
     private GameModel gameModel;
     private BoardRenderer boardRender;
-    private UpdateTimer updateTimer;
     private Point lastMousePos;
     private BoardEditor boardEditor;
 
@@ -58,11 +56,11 @@ public class Controller implements Initializable, UpdatableObject
     {
         boardRender  = new BoardRendererImpl(canvas);
         boardEditor  = new BoardEditor(boardRender.getCamera());
-        updateTimer  = new UpdateTimer(this);
-        gameModel    = new GameModel();
         lastMousePos = new Point();
+        gameModel    = new GameModel();
 
-        updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
+        gameModel.setOnSimulationDone(this::drawBoard);
+        gameModel.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
 
         addEventListeners();
@@ -88,7 +86,7 @@ public class Controller implements Initializable, UpdatableObject
         /* Updates the timer delay when the speedSlider is changed.
         Higher slider value = smaller delay between updates */
         speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
-                updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
+                gameModel.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
 
         canvas.setOnMousePressed(event ->
         {
@@ -171,22 +169,9 @@ public class Controller implements Initializable, UpdatableObject
         });
     }
 
-    /**
-     * Triggers the Controller to update, and the program to simulate and draw a new board.
-     *
-     * Uses the gameModel object and calls the simulateNextGeneration() method.
-     * After the next generation is simulated, it calls the drawBoard() method.
-     */
-    @Override
-    public void triggerControllerUpdate()
-    {
-        gameModel.simulateNextGeneration();
-        drawBoard();
-    }
-
     @FXML private void simulateNextGeneration()
     {
-        triggerControllerUpdate();
+        gameModel.simulateNextGeneration();
     }
 
     @FXML private void loadNewGameBoard()
@@ -197,10 +182,10 @@ public class Controller implements Initializable, UpdatableObject
         if(pattern != null)
         {
             gameModel.setGameBoard(pattern.getGameBoard());
-            gameModel.setSimulator(new SimulatorImpl(pattern.getRule()));
+            gameModel.setRule(pattern.getRule());
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             cellSizeSlider.setValue(boardRender.getCamera().getZoom());
-            updateTimer.setRunning(false);
+            gameModel.setRunning(false);
             pattern.getRule();
             drawBoard();
         }
@@ -213,9 +198,9 @@ public class Controller implements Initializable, UpdatableObject
 
     @FXML private void startStopSimulation()
     {
-        updateTimer.setRunning(!updateTimer.isRunning());
-        startStopMenuItem.setText(updateTimer.isRunning() ? "Stop" : "Start");
-        nextMenuItem.setDisable(updateTimer.isRunning());
+        gameModel.setRunning(!gameModel.isRunning());
+        startStopMenuItem.setText(gameModel.isRunning() ? "Stop" : "Start");
+        nextMenuItem.setDisable(gameModel.isRunning());
     }
 
     @FXML private void closeApplication()

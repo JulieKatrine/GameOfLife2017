@@ -30,6 +30,7 @@ public class SimulatorImpl extends Simulator
      */
     public void executeOn(GameBoard board)
     {
+        startTimer();
         Point cellPos = new Point();
         for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
         {
@@ -56,5 +57,6 @@ public class SimulatorImpl extends Simulator
             }
         }
         board.makeNextGenerationCurrent();
+        stopTimer();
     }
 }
