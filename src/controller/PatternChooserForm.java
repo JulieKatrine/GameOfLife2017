@@ -71,9 +71,9 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * The method setts up the TilePane and creates new dropshadow effects.
-     * @param location
-     * @param resources
+     * The method sets up the TilePane and creates new dropshadow effects.
+     * @param location Some location.
+     * @param resources Some resources.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -121,13 +121,10 @@ public class PatternChooserForm extends Stage implements Initializable
      */
     private void addDefaultPatterns()
     {
-        String[] defaultPatterns =
-        {
-            "patterns/test01.rle"
-        };
+        String[] defaultPatterns = { "test01.rle", "blockstacker.rle"};
 
         for(String s : defaultPatterns)
-            addTileToForm(loadPattern("FILE:" + s));
+            addTileToForm(loadPattern("FILE:patterns/" + s));
     }
 
     /**

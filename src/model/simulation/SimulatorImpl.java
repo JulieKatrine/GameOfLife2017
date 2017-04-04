@@ -9,8 +9,9 @@ import model.Point;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see SimRule
+ * @see Simulator
  * @see GameBoard
+ * @see SimRule
  * @see Result
  */
 public class SimulatorImpl extends Simulator

@@ -1,73 +1,120 @@
 package controller;
 
-import javafx.animation.AnimationTimer;
-
 /**
- * Calculates and decides when to update of the board.
- *
- * The class extends AnimationTimer.
+ * This class is used for creating timed updates.
+ * A separate thread runs independently from the JavaFX thread and calls
+ * the Action interface at given intervals. The class enables faster updates
+ * than JavaFxs AnimationTimer, which is limited to 60 frames per second.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-public class UpdateTimer extends AnimationTimer
+public class UpdateTimer
 {
-    private UpdatableObject updatableObj;
+    private Object runLock;
+    private Action action;
     private int delayInMilliseconds = 500;
     private long lastTime;
-    private boolean running = false;
+    private boolean running;
 
-    /**
-     * The constructor that takes in an UpdatableObject.
-     *
-     * TODO: Fill me in
-     * @param obj fill me in
-     */
-    public UpdateTimer(UpdatableObject obj)
+    public UpdateTimer()
     {
-        updatableObj = obj;
+        this.runLock = new Object();
+        createUpdateThread();
     }
 
     /**
-     * Updates the board after a defined amount of milliseconds.
-     *
-     * If enough time (delayinMilliseconds) has pasted since the last update, or the start -
-     * this method calls updatableObj.triggerControllerUpdate(); and updates the time.
-     *
-     * @param nowInNanoSeconds This exact time in nanoseconds.
+     * Creates and starts a new thread.
+     * This thread will call the actions call() method at given intervals while
+     * the "running" flag is true. While being false, it makes the thread wait
+     * for the runLock object to be notified by either setRunning() or triggerUpdate().
      */
-    @Override
-    public void handle(long nowInNanoSeconds)
+    private void createUpdateThread()
     {
-        long nowInMilliseconds = (nowInNanoSeconds / 1000000);
-        if (nowInMilliseconds > (lastTime + delayInMilliseconds))
+        new Thread(() ->
         {
-            updatableObj.triggerControllerUpdate();
-            lastTime = nowInMilliseconds;
+            while(true)
+            {
+                if(!running)
+                    waitToStart();
+
+                if(System.currentTimeMillis() > lastTime + delayInMilliseconds)
+                {
+                    action.call();
+                    lastTime = System.currentTimeMillis();
+                }
+            }
+
+        }).start();
+    }
+
+    /**
+     * This method will block until the runLock object gets notified.
+     */
+    private void waitToStart()
+    {
+        synchronized(runLock)
+        {
+            try
+            {
+                runLock.wait();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
-     * A setter for changing how often the board should be updated.
-     *
-     * @param delayInMS The defined delay in milliseconds.
+     * @param action The action to be performed at every update.
+     */
+    public void setOnUpdateAction(Action action)
+    {
+        this.action = action;
+    }
+
+    /**
+     * @return True if the timer is running.
+     */
+    public boolean isRunning()
+    {
+        return running;
+    }
+
+    /**
+     * Sets the delay between updates.
+     * @param delayInMS Delay in milliseconds.
      */
     public void setDelayBetweenUpdates(int delayInMS)
     {
         delayInMilliseconds = delayInMS;
     }
 
-    public boolean isRunning()
-    {
-        return running;
-    }
-
+    /**
+     * Enables starting and stopping of the timer.
+     * @param state The state of the timer.
+     */
     public void setRunning(boolean state)
     {
         running = state;
         if(running)
-            start();
-        else
-            stop();
+        {
+            synchronized(runLock)
+            {
+                runLock.notify();
+            }
+        }
+    }
+
+    /**
+     * Triggers a single update.
+     */
+    public void triggerUpdate()
+    {
+        synchronized(runLock)
+        {
+            runLock.notify();
+        }
     }
 }

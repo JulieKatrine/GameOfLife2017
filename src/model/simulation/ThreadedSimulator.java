@@ -8,46 +8,91 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by julie on 04-Apr-17.
+ * <p>This implementation uses multithreading to carry out a simulation on a given GameBoard.
+ * It uses the GameBoards methods to access and update each cell according to a specific rule.
+ * The implementation creates a fixed pool of threads to be used for simulating different regions of
+ * a GameBoard simultaneously. The amount of threads to be used is determined by the boards size
+ * and the amount of available cores.
+ *
+ * <p>Every thread is given a horizontal region of the GameBoard to be processed. The amount of rows for each
+ * thread is determined by the calculated thread count. Since the underlying data structure are stored
+ * horizontally in memory, we heavily reduce the amount of cache misses by making each thread work on a set
+ * of rows, instead of a set of columns.
+ *
+ * <p>The executeOn() method uses a CountDownLatches to make sure all threads are done processing before
+ * the generation is finalized with GameBoards makeNextGenerationCurrent(). Another latch is used to make
+ * sure no threads are accessing the same data at the same time. Synchronization problems will only occur if a
+ * slow running thread is accessing data at its to first rows, and a faster thread updates its last rows in
+ * the adjacent region. This is solved by blocking all further processing until all threads are past their
+ * second row and not allowing any threads to have fewer rows than 4. Boards with a smaller height than 8
+ * will only utilize one thread.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ * @see Simulator
+ * @see GameBoard
+ * @see SimRule
+ * @see Result
  */
+
 public class ThreadedSimulator extends Simulator
 {
     private ExecutorService executorService;
-    private int availableProcessors;
     private CountDownLatch simulationExecutedLatch;
     private CountDownLatch pastSafetyRowForSynchronization;
+    private int availableProcessors;
 
-    public ThreadedSimulator(SimRule simRule)
+    /**
+     * The constructor takes in a SimRule and sets up the simulator.
+     * It retrieves the amount of available cores (doubled if CPU is hyperthreaded)
+     * and creates a fixed thread pool with this amount. It also adds a shutdown hook
+     * for the ExecutorService to be shut down gracefully on application exit.
+     *
+     * @param rule The rule to be used under simulation.
+     */
+    public ThreadedSimulator(SimRule rule)
     {
-        super(simRule);
-        availableProcessors = Runtime.getRuntime().availableProcessors();
-        executorService = Executors.newFixedThreadPool(availableProcessors);
+        super(rule);
+        this.availableProcessors = Runtime.getRuntime().availableProcessors();
+        this.executorService = Executors.newFixedThreadPool(availableProcessors);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> executorService.shutdown()));
     }
 
+    /**
+     * This method simulates a single generation on the given board.
+     * It creates the appropriate amount of Workers, submits them to the
+     * ExecutorService and waits for all threads to finish processing.
+     * @param board The board to be used for simulation.
+     */
     @Override
     public void executeOn(GameBoard board)
     {
         startTimer();
-        int numberOfThreads = Math.max(1, Math.min(availableProcessors, (board.getHeight()/4)));
-        int rowsPerThread = board.getHeight()/numberOfThreads;
+
+        int numberOfThreads = Math.max(1, Math.min(availableProcessors, (board.getHeight() / 4)));
+        int rowsPerThread = board.getHeight() / numberOfThreads;
+
         simulationExecutedLatch = new CountDownLatch(numberOfThreads);
         pastSafetyRowForSynchronization = new CountDownLatch(numberOfThreads);
 
         for (int i = 0; i < numberOfThreads; i++)
         {
             int additionalRows = 0;
-            if(i == numberOfThreads -1)
+            if(i == numberOfThreads - 1)
                 additionalRows = board.getHeight() % numberOfThreads;
 
-            Worker worker = new Worker(board, i*rowsPerThread, rowsPerThread+additionalRows);
+            Worker worker = new Worker(board,i * rowsPerThread, rowsPerThread + additionalRows);
             executorService.execute(worker);
         }
 
-        try {
+        try
+        {
+            // Wait until all threads are finished before proceeding.
             simulationExecutedLatch.await();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
 
@@ -55,14 +100,20 @@ public class ThreadedSimulator extends Simulator
         stopTimer();
     }
 
-    /*----------NEW CLASS ---------------*/
-
+    /**
+     * This private class is used for simulating a region of a GameBoard.
+     */
     public class Worker implements Runnable
     {
         private GameBoard board;
-        private int rowIndexStart;
         private int numberOfRows;
+        private int rowIndexStart;
 
+        /**
+         * @param board The board to be used for simulation.
+         * @param rowIndexStart The starting row index.
+         * @param numberOfRows The amount of rows to be processed from the given index.
+         */
         public Worker(GameBoard board, int rowIndexStart, int numberOfRows)
         {
             this.board = board;
@@ -70,6 +121,9 @@ public class ThreadedSimulator extends Simulator
             this.rowIndexStart = rowIndexStart;
         }
 
+        /**
+         * Runs the simulation and counts the latch down.
+         */
         @Override
         public void run()
         {
@@ -77,6 +131,13 @@ public class ThreadedSimulator extends Simulator
             simulationExecutedLatch.countDown();
         }
 
+        /**
+         * This method iterates over and updates all the cells in its region.
+         * It waits until all threads are done simulating their first two rows
+         * before proceeding. This is done to prevent synchronization issues, and
+         * works as a way faster alternative to either using synchronized method calls or
+         * atomic data wrappers.
+         */
         private void simulate()
         {
             Point cellPos = new Point();
@@ -103,11 +164,17 @@ public class ThreadedSimulator extends Simulator
                             break;
                     }
                 }
-                if(cellPos.y == rowIndexStart+2) {
-                    try {
+
+                // Done with the second row, wait for the other threads.
+                if(cellPos.y == rowIndexStart + 1)
+                {
+                    try
+                    {
                         pastSafetyRowForSynchronization.countDown();
                         pastSafetyRowForSynchronization.await();
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e)
+                    {
                         e.printStackTrace();
                     }
                 }

@@ -23,11 +23,10 @@ import view.BoardRendererImpl;
 /**
  * Controls the screen in co-operation with UserInterface.fxml.
  *
- * Implements Initializable and UpdatableObject.
+ * Implements Initializable.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see controller.UpdatableObject
  * @see Initializable
  */
 public class Controller implements Initializable
@@ -36,6 +35,8 @@ public class Controller implements Initializable
     private BoardRenderer boardRender;
     private Point lastMousePos;
     private BoardEditor boardEditor;
+    private UpdateTimer updateTimer;
+    private long drawTimer;
 
     @FXML private AnchorPane anchorPane;
     @FXML private Canvas canvas;
@@ -58,10 +59,10 @@ public class Controller implements Initializable
         boardEditor  = new BoardEditor(boardRender.getCamera());
         lastMousePos = new Point();
         gameModel    = new GameModel();
+        updateTimer  = new UpdateTimer();
 
-        gameModel.setOnSimulationDone(this::drawBoard);
-        gameModel.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+        updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
 
         addEventListeners();
         drawBoard();
@@ -69,6 +70,18 @@ public class Controller implements Initializable
 
     private void addEventListeners()
     {
+        // Sets the action to be performed when the updateTimer fires.
+        // Limits the draw rate to 60 fps
+        updateTimer.setOnUpdateAction(() ->
+        {
+            gameModel.simulateNextGeneration();
+            if(System.currentTimeMillis() > drawTimer + 16)
+            {
+                Platform.runLater(this::drawBoard);
+                drawTimer = System.currentTimeMillis();
+            }
+        });
+
         // Moves the cellSizeSlider when the scroll-wheel is used
         canvas.setOnScroll((ScrollEvent event) ->
         {
@@ -86,7 +99,7 @@ public class Controller implements Initializable
         /* Updates the timer delay when the speedSlider is changed.
         Higher slider value = smaller delay between updates */
         speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
-                gameModel.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
+                updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
 
         canvas.setOnMousePressed(event ->
         {
@@ -171,7 +184,7 @@ public class Controller implements Initializable
 
     @FXML private void simulateNextGeneration()
     {
-        gameModel.simulateNextGeneration();
+        updateTimer.triggerUpdate();
     }
 
     @FXML private void loadNewGameBoard()
@@ -185,7 +198,7 @@ public class Controller implements Initializable
             gameModel.setRule(pattern.getRule());
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             cellSizeSlider.setValue(boardRender.getCamera().getZoom());
-            gameModel.setRunning(false);
+            updateTimer.setRunning(false);
             pattern.getRule();
             drawBoard();
         }
@@ -198,9 +211,9 @@ public class Controller implements Initializable
 
     @FXML private void startStopSimulation()
     {
-        gameModel.setRunning(!gameModel.isRunning());
-        startStopMenuItem.setText(gameModel.isRunning() ? "Stop" : "Start");
-        nextMenuItem.setDisable(gameModel.isRunning());
+        updateTimer.setRunning(!updateTimer.isRunning());
+        startStopMenuItem.setText(updateTimer.isRunning() ? "Stop" : "Start");
+        nextMenuItem.setDisable(updateTimer.isRunning());
     }
 
     @FXML private void closeApplication()

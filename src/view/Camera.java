@@ -57,7 +57,7 @@ public class Camera
     public void move(GameBoard board, double x, double y)
     {
         posX -= x / (board.getWidth() * zoom);
-        posY -= y / (board.getHeight() * zoom);                                                            ;
+        posY -= y / (board.getHeight() * zoom);
 
         posX = Math.min(0.5, Math.max(-0.5, posX));
         posY = Math.min(0.5, Math.max(-0.5, posY));
