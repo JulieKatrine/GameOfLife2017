@@ -1,0 +1,22 @@
+
+.GreyButton
+{
+    -fx-background-color: #656563;
+}
+
+.GreyButton:hover
+{
+    -fx-background-color: #757572;
+}
+
+.SelectButton
+{
+    -fx-background-color: #648F01;
+|
+}
+
+.SelectButton:hover
+{
+    -fx-background-color: #70a000;
+
+}

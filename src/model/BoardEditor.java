@@ -41,7 +41,7 @@ public class BoardEditor
                 positionOnBoard.x < board.getWidth() &&
                 positionOnBoard.y >= 0 &&
                 positionOnBoard.y < board.getHeight() &&
-                !board.isCellAliveInThisGeneration(positionOnBoard))
+                board.isCellAliveInThisGeneration(positionOnBoard) != drawLivingCells)
         {
             board.editThisGeneration(drawLivingCells, positionOnBoard);
         }

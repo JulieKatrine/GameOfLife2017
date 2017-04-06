@@ -98,8 +98,10 @@ public class RLEParser implements Parser
                     Character.isDigit((char) character))
                 rule += (char)character;
         }
-        if (width != INVALID && height != INVALID)
+        if (width != INVALID && height != INVALID){
             boardData = new boolean[height][width];
+        }
+
     }
 
     private void readCellData(Reader reader) throws IOException, PatternFormatException

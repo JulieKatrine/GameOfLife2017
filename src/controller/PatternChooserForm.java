@@ -6,9 +6,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -56,6 +58,7 @@ public class PatternChooserForm extends Stage implements Initializable
             Parent root = loader.load();
             Scene scene = new Scene(root);
             super.setTitle("Choose your pattern");
+            super.getIcons().add(new Image("file:resources/Logo.png"));
             super.setScene(scene);
             super.setOnCloseRequest(Event ->
             {
@@ -150,20 +153,39 @@ public class PatternChooserForm extends Stage implements Initializable
         catch (IOException e)
         {
             e.printStackTrace();
-            //TODO: add a dialog to inform the user about what went wrong
+            //TODO: remove me before handing in.
+            showAlertDialog(Alert.AlertType.ERROR,
+                    "Error message",
+                    "Something went wrong while loading this pattern!");
         }
         catch (PatternFormatException e)
         {
+            showAlertDialog(Alert.AlertType.ERROR,
+                    "Error message",
+                    "The pattern you are trying to load is in the wrong format." +
+                    "\nMake sure this is an rle file.");
             e.printStackTrace();
-            //TODO: add a dialog to inform the user about what went wrong
         }
         catch (OutOfMemoryError e)
         {
+            showAlertDialog(Alert.AlertType.WARNING,
+                    "Warning message",
+                    "The pattern you are trying to load is too large!");
             e.printStackTrace();
-            //TODO add a dialog to tell the user that the pattern required more memory than JVM had access to
         }
 
         return null;
+    }
+
+    private void showAlertDialog(Alert.AlertType alertType, String title, String content)
+    {
+        Alert alert = new Alert(alertType);
+        alert.getDialogPane().setPrefWidth(450);
+        alert.setTitle(title);
+        ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(new Image("file:resources/Logo.png"));
+
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     /**

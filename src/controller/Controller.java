@@ -37,6 +37,7 @@ public class Controller implements Initializable
     private BoardEditor boardEditor;
     private UpdateTimer updateTimer;
     private long drawTimer;
+    private boolean controlPressed;
 
     @FXML private AnchorPane anchorPane;
     @FXML private Canvas canvas;
@@ -85,8 +86,18 @@ public class Controller implements Initializable
         // Moves the cellSizeSlider when the scroll-wheel is used
         canvas.setOnScroll((ScrollEvent event) ->
         {
-            cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
-            drawBoard();
+            if(controlPressed)
+            {
+                cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
+                drawBoard();
+            }
+            else
+            {
+                System.out.println(event.getDeltaX());
+                boardRender.getCamera().move(gameModel.getGameBoard(), event.getDeltaX(), event.getDeltaY());
+                drawBoard();
+            }
+
         });
 
         // Changes the camera-zoom when the cellSizeSlider is changed
@@ -116,6 +127,13 @@ public class Controller implements Initializable
                         true);
                 drawBoard();
             }
+            else if (event.getButton() == MouseButton.SECONDARY)
+            {
+                boardEditor.edit(gameModel.getGameBoard(),
+                        new Point((int)event.getX(), (int)event.getY()),
+                        false);
+                drawBoard();
+            }
         });
 
         canvas.setOnMouseDragged(event ->
@@ -123,11 +141,9 @@ public class Controller implements Initializable
             // Updates the camera position when the user drags the mouse and
             if(event.getButton() == MouseButton.SECONDARY)
             {
-                double deltaX = (int)event.getX() - lastMousePos.x;
-                double deltaY = (int)event.getY() - lastMousePos.y;
-                boardRender.getCamera().move(gameModel.getGameBoard(), deltaX, deltaY);
-                lastMousePos.x = (int)event.getX();
-                lastMousePos.y = (int)event.getY();
+                boardEditor.edit(gameModel.getGameBoard(),
+                        new Point((int)event.getX(), (int)event.getY()),
+                        false);
             }
 
             // Setts a cell alive when the mouse i dragged over it
@@ -136,6 +152,14 @@ public class Controller implements Initializable
                 boardEditor.edit(gameModel.getGameBoard(),
                         new Point((int)event.getX(), (int)event.getY()),
                         true);
+            }
+
+            else if(event.getButton() == MouseButton.MIDDLE){
+                double deltaX = (int)event.getX() - lastMousePos.x;
+                double deltaY = (int)event.getY() - lastMousePos.y;
+                boardRender.getCamera().move(gameModel.getGameBoard(), deltaX, deltaY);
+                lastMousePos.x = (int)event.getX();
+                lastMousePos.y = (int)event.getY();
             }
 
             drawBoard();
@@ -179,7 +203,20 @@ public class Controller implements Initializable
                 startStopSimulation();
             else if(event.getCode() == KeyCode.N)
                 simulateNextGeneration();
+            else if(event.getCode() == KeyCode.CONTROL)
+            {
+                controlPressed = true;
+            }
         });
+
+        scene.setOnKeyReleased(event ->
+        {
+            if(event.getCode() == KeyCode.CONTROL)
+            {
+                controlPressed = false;
+            }
+        });
+
     }
 
     @FXML private void simulateNextGeneration()

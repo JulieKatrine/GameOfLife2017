@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -33,6 +34,7 @@ public class GameOfLife extends Application
         root.prefHeightProperty().bind(scene.heightProperty());
 
         primaryStage.setTitle("Game of Life");
+        primaryStage.getIcons().add(new Image("file:resources/Logo.png"));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {
