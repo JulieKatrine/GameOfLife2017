@@ -83,21 +83,16 @@ public class Controller implements Initializable
             }
         });
 
-        // Moves the cellSizeSlider when the scroll-wheel is used
+        // Moves the camera with horizontal and vertical scroll,
+        // If CTRL is pressed vertical scroll changes the camera zoom
         canvas.setOnScroll((ScrollEvent event) ->
         {
             if(controlPressed)
-            {
-                cellSizeSlider.adjustValue(cellSizeSlider.getValue() +  cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
-                drawBoard();
-            }
+                cellSizeSlider.adjustValue(cellSizeSlider.getValue() + cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
             else
-            {
-                System.out.println(event.getDeltaX());
                 boardRender.getCamera().move(gameModel.getGameBoard(), event.getDeltaX(), event.getDeltaY());
-                drawBoard();
-            }
 
+            drawBoard();
         });
 
         // Changes the camera-zoom when the cellSizeSlider is changed
@@ -204,19 +199,14 @@ public class Controller implements Initializable
             else if(event.getCode() == KeyCode.N)
                 simulateNextGeneration();
             else if(event.getCode() == KeyCode.CONTROL)
-            {
                 controlPressed = true;
-            }
         });
 
         scene.setOnKeyReleased(event ->
         {
             if(event.getCode() == KeyCode.CONTROL)
-            {
                 controlPressed = false;
-            }
         });
-
     }
 
     @FXML private void simulateNextGeneration()
@@ -236,6 +226,8 @@ public class Controller implements Initializable
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             cellSizeSlider.setValue(boardRender.getCamera().getZoom());
             updateTimer.setRunning(false);
+            startStopMenuItem.setText("Start");
+            nextMenuItem.setDisable(false);
             pattern.getRule();
             drawBoard();
         }
@@ -256,6 +248,7 @@ public class Controller implements Initializable
     @FXML private void closeApplication()
     {
         Platform.exit();
+        System.exit(0);
     }
 
     @FXML private void createEmptyBoard()

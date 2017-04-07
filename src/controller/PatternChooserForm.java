@@ -1,9 +1,11 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -29,6 +31,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PatternChooserForm extends Stage implements Initializable
 {
@@ -37,6 +41,7 @@ public class PatternChooserForm extends Stage implements Initializable
     private static File lastDirectoryOpened;
     private static ArrayList<Tile> loadedTiles;
     private static Pattern selectedPattern;
+    private ExecutorService executorService;
 
     private DropShadow dropShadow;
     private DropShadow selected;
@@ -45,12 +50,13 @@ public class PatternChooserForm extends Stage implements Initializable
     @FXML private TextArea textArea;
     @FXML private TextField urlTextField;
 
-
     /**
      * The constructor loads the FXML document and sets up the new scene and stage,
      */
     public PatternChooserForm()
     {
+        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         try
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/PatternChooserForm.fxml"));
@@ -58,7 +64,7 @@ public class PatternChooserForm extends Stage implements Initializable
             Parent root = loader.load();
             Scene scene = new Scene(root);
             super.setTitle("Choose your pattern");
-            super.getIcons().add(new Image("file:resources/Logo.png"));
+            super.getIcons().add(GameOfLife.APPLICATION_ICON);
             super.setScene(scene);
             super.setOnCloseRequest(Event ->
             {
@@ -71,6 +77,19 @@ public class PatternChooserForm extends Stage implements Initializable
             System.err.println("Failed to load FXML");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This method sets all loaded patterns to null, except selectPattern, and closes the stage.
+     */
+    private void closeWindow()
+    {
+        for(Tile t : loadedTiles)
+            t.releasePattern();
+
+        executorService.shutdown();
+        System.gc();
+        super.close();
     }
 
     /**
@@ -127,7 +146,46 @@ public class PatternChooserForm extends Stage implements Initializable
         String[] defaultPatterns = { "test01.rle", "blockstacker.rle"};
 
         for(String s : defaultPatterns)
-            addTileToForm(loadPattern("FILE:patterns/" + s));
+            loadAndAddPatternToForm("FILE:patterns/" + s);
+    }
+
+    /**
+     * Loads the pattern from the path if it is not already loaded.
+     * The method passes the task to a ExecutorService to not block
+     * the JavaFX thread while loading large patterns.
+     * @param path The path prefixed with either FILE: or URL:
+     */
+    private void loadAndAddPatternToForm(String path)
+    {
+        // Returns if the pattern already is loaded.
+        for(Tile t : loadedTiles)
+            if(t.getOrigin().equals(path))
+                return;
+
+        // Adds the temporary hourglass image while the pattern is loading
+        Tile hourGlass = new Tile(new Image("file:resources/hourglass.png"), null);
+        hourGlass.setEffect(dropShadow);
+        tilePane.getChildren().add(hourGlass);
+
+        executorService.execute(() ->
+        {
+            Pattern p = loadPattern(path);
+            Tile tile = createTileFromPattern(p);
+
+            // Interaction with JavaFX elements cannot be done from a separate thread,
+            // and is therefor passed on to the Platform.
+            Platform.runLater(() ->
+            {
+                if(tile != null)
+                {
+
+                    addTileEventListener(tile);
+                    tilePane.getChildren().add(tile);
+                    loadedTiles.add(tile);
+                }
+                tilePane.getChildren().remove(hourGlass);
+            });
+        });
     }
 
     /**
@@ -136,7 +194,7 @@ public class PatternChooserForm extends Stage implements Initializable
      * "FILE:" - the path to a local file.
      * "URL:" - the web address to the file.
      * The method handles all exceptions and will inform the user if errors occur while loading.
-     * @param path
+     * @param path The path prefixed with either FILE: or URL:
      * @return A pattern object.
      */
     private Pattern loadPattern(String path)
@@ -147,66 +205,55 @@ public class PatternChooserForm extends Stage implements Initializable
 
             if(path.startsWith("FILE:"))
                 return loader.load(new File(path.substring(5)));
+
             else if (path.startsWith("URL:"))
                 return loader.load(path.substring(4));
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            //TODO: remove me before handing in.
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
                     "Something went wrong while loading this pattern!");
         }
         catch (PatternFormatException e)
         {
+            e.printStackTrace();
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
                     "The pattern you are trying to load is in the wrong format." +
                     "\nMake sure this is an rle file.");
-            e.printStackTrace();
         }
         catch (OutOfMemoryError e)
         {
+            System.out.println("This runs");
+            e.printStackTrace();
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
                     "The pattern you are trying to load is too large!");
-            e.printStackTrace();
         }
 
         return null;
     }
 
+    /**
+     * Opens and shows a alert dialog with the given text.
+     * @param alertType The type of alert dialog.
+     * @param title The title of the dialog.
+     * @param content The alert content text.
+     */
     private void showAlertDialog(Alert.AlertType alertType, String title, String content)
     {
-        Alert alert = new Alert(alertType);
-        alert.getDialogPane().setPrefWidth(450);
-        alert.setTitle(title);
-        ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(new Image("file:resources/Logo.png"));
+        Platform.runLater(() ->
+        {
+            Alert alert = new Alert(alertType);
+            alert.getDialogPane().setPrefWidth(450);
+            alert.setTitle(title);
+            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
 
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    /**
-     * This method takes in a pattern, creates a Tile object and adds it to the form.
-     * @param pattern
-     */
-    private void addTileToForm(Pattern pattern)
-    {
-        if(pattern == null)
-            return;
-
-        // Returns if the pattern already is loaded.
-        for(Tile t : loadedTiles)
-            if(t.getOrigin().equals(pattern.getOrigin()))
-                return;
-
-        Tile tile = createTileFromPattern(pattern);
-        addTileEventListener(tile);
-
-        tilePane.getChildren().add(tile);
-        loadedTiles.add(tile);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 
     /**
@@ -217,6 +264,9 @@ public class PatternChooserForm extends Stage implements Initializable
      */
     private Tile createTileFromPattern(Pattern pattern)
     {
+        if(pattern == null)
+            return null;
+
         boolean[][] cellData = pattern.getCellData();
 
         WritableImage writableImage = new WritableImage(TILE_SIZE, TILE_SIZE);
@@ -242,6 +292,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
         Tile tile = new Tile(writableImage, pattern);
         tile.setEffect(dropShadow);
+        tile.setCursor(Cursor.HAND);
         return tile;
     }
 
@@ -277,18 +328,6 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * This method sets all loaded patterns to null, except selectPattern, and closes the stage.
-     */
-    private void closeWindow()
-    {
-        for(Tile t : loadedTiles)
-            t.releasePattern();
-
-        System.gc();
-        super.close();
-    }
-
-    /**
      * This method is called when the "Select pattern" button i pressed.
      * The window is only closed if a pattern is selected.
      */
@@ -309,7 +348,7 @@ public class PatternChooserForm extends Stage implements Initializable
         String url = urlTextField.getText();
 
         if(url != null && url.length() > 0)
-            addTileToForm(loadPattern("URL:" + url));
+            loadAndAddPatternToForm("URL:" + url);
 
         urlTextField.setText("");
     }
@@ -335,7 +374,7 @@ public class PatternChooserForm extends Stage implements Initializable
             lastDirectoryOpened = files.get(0).getParentFile();
 
             for(File file : files)
-                addTileToForm(loadPattern("FILE:" + file));
+                loadAndAddPatternToForm("FILE:" + file);
         }
     }
 
@@ -359,11 +398,11 @@ public class PatternChooserForm extends Stage implements Initializable
         private String origin;
         private Pattern pattern;
 
-        public Tile(WritableImage img, Pattern pattern)
+        public Tile(Image img, Pattern pattern)
         {
             super(img);
             this.pattern = pattern;
-            this.origin = pattern.getOrigin();
+            this.origin = (pattern != null) ? pattern.getOrigin() : "";
         }
 
         public String getOrigin()

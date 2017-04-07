@@ -18,6 +18,8 @@ import javafx.stage.Stage;
  */
 public class GameOfLife extends Application
 {
+    public static Image APPLICATION_ICON;
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
@@ -34,7 +36,7 @@ public class GameOfLife extends Application
         root.prefHeightProperty().bind(scene.heightProperty());
 
         primaryStage.setTitle("Game of Life");
-        primaryStage.getIcons().add(new Image("file:resources/Logo.png"));
+        primaryStage.getIcons().add((APPLICATION_ICON = new Image("file:resources/Logo.png")));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {
