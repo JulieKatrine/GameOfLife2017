@@ -1,49 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.canvas.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CustomMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" prefWidth="800" prefHeight="600" fx:controller="controller.Controller" xmlns:fx="http://javafx.com/fxml">
-    <VBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <HBox>
-            <MenuBar HBox.hgrow="ALWAYS">
-                <menus>
-                    <Menu text="File">
-                        <items>
-                            <MenuItem text="Open File..." onAction="#loadNewGameBoard"/>
-                            <MenuItem text="Clear Board" onAction="#createEmptyBoard"/>
-                            <MenuItem text="Save As..."/>
-                            <MenuItem text="Exit" onAction="#closeApplication"/>
-                        </items>
-                    </Menu>
-                    <Menu text="Action">
-                        <items>
-                            <MenuItem text="Start" fx:id="startStopMenuItem" onAction="#startStopSimulation"/>
-                            <MenuItem text="Next" fx:id="nextMenuItem" onAction="#simulateNextGeneration"/>
-                            <Menu text="Speed">
-                                <CustomMenuItem>
-                                    <content>
-                                        <Slider fx:id="speedSlider" min="1" max="100" value="50" blockIncrement="1" />
-                                    </content>
-                                </CustomMenuItem>
-                            </Menu>
-                        </items>
-                    </Menu>
-                    <Menu text="View">
-                        <items>
-                            <Menu text="Cell size">
-                                <CustomMenuItem>
-                                    <content>
-                                        <Slider fx:id="cellSizeSlider" min="1" max="50" value="20" blockIncrement="0.6" />
-                                    </content>
-                                </CustomMenuItem>
-                            </Menu>
-                        </items>
-                    </Menu>
-                </menus>
-            </MenuBar>
-        </HBox>
-        <Canvas fx:id="canvas" width="800" height="575"/>
-    </VBox>
+<AnchorPane fx:id="anchorPane" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+   <children>
+       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+              <HBox>
+                 <children>
+                     <MenuBar HBox.hgrow="ALWAYS">
+                         <menus>
+                             <Menu text="File">
+                                 <items>
+                                     <MenuItem onAction="#loadNewGameBoard" text="Open File..." />
+                                     <MenuItem onAction="#createEmptyBoard" text="Clear Board" />
+                                     <MenuItem text="Save As..." />
+                                     <MenuItem onAction="#closeApplication" text="Exit" />
+                                 </items>
+                             </Menu>
+                             <Menu text="Action">
+                                 <items>
+                                     <MenuItem fx:id="startStopMenuItem" onAction="#startStopSimulation" text="Start" />
+                                     <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" text="Next" />
+                                     <Menu text="Speed">
+                                        <items>
+                                            <CustomMenuItem>
+                                                <content>
+                                                    <Slider blockIncrement="1" max="100" min="1" value="50" />
+                                                </content>
+                                            </CustomMenuItem>
+                                        </items>
+                                     </Menu>
+                                 </items>
+                             </Menu>
+                             <Menu text="View">
+                                 <items>
+                                     <Menu text="Cell size">
+                                        <items>
+                                            <CustomMenuItem>
+                                                <content>
+                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.6" max="50" min="1" value="20" />
+                                                </content>
+                                            </CustomMenuItem>
+                                        </items>
+                                     </Menu>
+                                 </items>
+                             </Menu>
+                        <Menu mnemonicParsing="false" onAction="#shortCuts" text="Help">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="About" />
+                          </items>
+                        </Menu>
+                         </menus>
+                     </MenuBar>
+                 </children>
+              </HBox>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+               <items>
+                  <Label text="Speed" />
+                  <Slider fx:id="speedSlider" />
+                  <Button mnemonicParsing="false" onAction="#changeBackgroundColor" text="Background color" />
+                  <Button mnemonicParsing="false" onAction="#changeCellColor" text="Cell color" />
+               </items>
+            </ToolBar>
+              <Canvas fx:id="canvas" height="575" width="800" />
+          </children>
+       </VBox>
+   </children>
 </AnchorPane>

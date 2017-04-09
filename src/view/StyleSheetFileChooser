@@ -11,11 +11,12 @@
 
 .SelectButton
 {
-    -fx-background-color: #648F01;
+    -fx-background-color: #3D8F13;
 }
 
 .SelectButton:hover
 {
-    -fx-background-color: #70a000;
+    -fx-background-color: #48ad14;
 
 }
+

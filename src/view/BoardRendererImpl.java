@@ -14,11 +14,10 @@ import model.Point;
  */
 public class BoardRendererImpl extends BoardRenderer
 {
-    private Color deadCellColor = Color.PINK;
-    private Color aliveCellColor = Color.BLACK;
-    private Color gridColor = Color.BLACK;
+    private Color deadCellColor = Color.BLACK;
+    private Color aliveCellColor = Color.color(0.0275, 0.9882, 0);
+    private Color gridColor = Color.GRAY;
     private double gridRenderThreshold = 4;
-
     /**
      * Focuses the camera to the middle of the board.
      *
@@ -141,5 +140,20 @@ public class BoardRendererImpl extends BoardRenderer
         stopPos.x = Math.min(board.getWidth(),  startPos.x + (int)(canvas.getWidth()  / camera.getZoom()) + 1);
         stopPos.y = Math.min(board.getHeight(), startPos.y + (int)(canvas.getHeight() / camera.getZoom()) + 1);
         return stopPos;
+    }
+
+    public void setDeadCellColor(Color deadCellColor)
+    {
+        this.deadCellColor = deadCellColor;
+    }
+
+    public void setAliveCellColor(Color aliveCellColor)
+    {
+        this.aliveCellColor = aliveCellColor;
+    }
+
+    public void setGridColor(Color gridColor)
+    {
+        this.gridColor = gridColor;
     }
 }

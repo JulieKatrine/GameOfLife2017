@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
@@ -36,6 +37,7 @@ public class Controller implements Initializable
     private Point lastMousePos;
     private BoardEditor boardEditor;
     private UpdateTimer updateTimer;
+    private UserColorPicker userColorPicker;
     private long drawTimer;
     private boolean controlPressed;
 
@@ -214,7 +216,7 @@ public class Controller implements Initializable
         updateTimer.triggerUpdate();
     }
 
-    @FXML private void loadNewGameBoard()
+    @FXML protected void loadNewGameBoard()
     {
         PatternChooserForm loader = new PatternChooserForm();
         loader.showAndWait();
@@ -258,4 +260,32 @@ public class Controller implements Initializable
         cellSizeSlider.setValue(boardRender.getCamera().getZoom());
         drawBoard();
     }
+
+    @FXML private void shortCuts()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("How to create your own pattern");
+        alert.setContentText("Use the left mouse button to draw, the right mouse button to erase.\n\n" +
+                "If you are using a mouse:\n" +
+                "Click the wheel to move around and scroll to zoom.\n\n" +
+                "If you are using a touch pad:\n" +
+                "Scroll to move around, and ctrl+scroll to zoom.");
+
+        alert.showAndWait();
+    }
+
+
+    @FXML private void changeBackgroundColor()
+    {
+        userColorPicker = new UserColorPicker(canvas);
+        userColorPicker.changeBackgroundColor();
+    }
+
+    @FXML private void changeCellColor()
+    {
+        userColorPicker = new UserColorPicker(canvas);
+        userColorPicker.changeCellColor();
+    }
+
 }

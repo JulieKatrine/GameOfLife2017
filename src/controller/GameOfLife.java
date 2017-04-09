@@ -4,9 +4,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 /**
  * The programs main class.
@@ -19,6 +23,7 @@ import javafx.stage.Stage;
 public class GameOfLife extends Application
 {
     public static Image APPLICATION_ICON;
+    private PatternChooserForm patternChooserForm;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -28,6 +33,7 @@ public class GameOfLife extends Application
 
         AnchorPane root = loader.load();
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+        root.setStyle("-fx-background-color: #878787");
 
         Controller controller = loader.getController();
         controller.handleKeyEvent(scene);
@@ -40,8 +46,27 @@ public class GameOfLife extends Application
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {
-            Platform.exit();
-            System.exit(0);
+            event.consume();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Exit");
+            alert.setHeaderText("Are you sure you want to exit?");
+            ButtonType Ok = new ButtonType("OK");
+            ButtonType Cancel = new ButtonType("Cancel");
+            ButtonType fileChooser = new ButtonType("Open file chooser");
+
+            alert.getButtonTypes().setAll(Ok, fileChooser, Cancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if(result.get() == Ok)
+            {
+                Platform.exit();
+                System.exit(0);
+            }
+            else if (result.get() == fileChooser)
+            {
+                controller.loadNewGameBoard();
+            }
+
         });
         primaryStage.show();
     }
