@@ -3,6 +3,7 @@ package model.simulation;
 import model.GameBoard;
 import model.GameBoardTest;
 import model.Point;
+import model.TestUtilities;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,40 +13,20 @@ class SimulatorTest
     @Test
     void executeOn()
     {
-        GameBoard board = GameBoardTest.getGameBoardImplementation(5, 5);
+        GameBoard board = TestUtilities.getGameBoardImplementation(5, 5);
         Simulator simulator = new SimulatorImpl(new DefaultRuleSet());
-
-        byte[][] glider =
-        {
-            {0, 1, 0, 0},
-            {0, 0, 1, 0},
-            {1, 1, 1, 0},
-            {0, 0, 0, 0}
-        };
-
-        byte[][] gliderAfterFourGenerations =
-        {
-                //TODO: Legg til nullere!!
-            {0, 0, 0, 0},
-            {0, 0, 1, 0},
-            {0, 0, 0, 1},
-            {0, 1, 1, 1}
-        };
+        String glider = "010001111";
 
         // Add the glider pattern to the board
-        for(int y = 0; y < glider.length; y++)
-            for(int x = 0; x < glider[0].length; x++)
-                board.editThisGeneration(glider[y][x] == 1, new Point(x, y));
+        for(int y = 0; y < 3; y++)
+            for(int x = 0; x < 3; x++)
+                board.editThisGeneration(glider.charAt(y * 3 + x) == '1', new Point(x, y));
 
         // Simulate four generations
         for(int i = 0; i < 4; i++)
             simulator.executeOn(board);
 
-        // Test every cell in board to find simulation errors
-        for(int y = 0; y < glider.length; y++)
-            for(int x = 0; x < glider[0].length; x++)
-                assertEquals(gliderAfterFourGenerations[y][x] == 1,
-                        board.isCellAliveInThisGeneration(new Point(x, y)));
-
+        // The glider oscillates and should stay the same after 4 generations.
+        assertEquals(glider, TestUtilities.gameBoardToString(board));
     }
 }

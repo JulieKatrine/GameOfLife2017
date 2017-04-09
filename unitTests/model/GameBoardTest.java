@@ -13,22 +13,10 @@ public class GameBoardTest
         new Point(2,2)
     };
 
-    /**
-     * This method specifies the board implementation to be used in every test.
-     *
-     * @param height The height of the board
-     * @param width The width of the board
-     * @return GameBoard
-     */
-    public static GameBoard getGameBoardImplementation(int width, int height)
-    {
-        return new GameBoardDynamic(width, height);
-    }
-
     @Test
     void editAndReadThisGeneration()
     {
-        GameBoard board = getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
 
         for(int i = 0; i < testPositions.length; i++)
         {
@@ -40,7 +28,7 @@ public class GameBoardTest
     @Test
     void setStateInNextGenerationAndMakeCurrent()
     {
-        GameBoard board = getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
 
         for(int i = 0; i < testPositions.length; i++)
             board.setStateInNextGeneration(true, testPositions[i]);
@@ -54,7 +42,7 @@ public class GameBoardTest
     @Test
     void getAmountOfLivingNeighbours()
     {
-        GameBoard board = getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
 
         assertEquals(0, board.getAmountOfLivingNeighbours(new Point(1, 1)), "Test empty board");
 

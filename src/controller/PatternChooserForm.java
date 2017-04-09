@@ -209,13 +209,6 @@ public class PatternChooserForm extends Stage implements Initializable
             else if (path.startsWith("URL:"))
                 return loader.load(path.substring(4));
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            showAlertDialog(Alert.AlertType.ERROR,
-                    "Error message",
-                    "Something went wrong while loading this pattern!");
-        }
         catch (PatternFormatException e)
         {
             e.printStackTrace();
@@ -231,6 +224,13 @@ public class PatternChooserForm extends Stage implements Initializable
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
                     "The pattern you are trying to load is too large!");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            showAlertDialog(Alert.AlertType.ERROR,
+                    "Error message",
+                    "Something went wrong while loading this pattern!");
         }
 
         return null;

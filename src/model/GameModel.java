@@ -1,9 +1,6 @@
 package model;
 
-import model.simulation.DefaultRuleSet;
-import model.simulation.SimRule;
-import model.simulation.Simulator;
-import model.simulation.ThreadedSimulator;
+import model.simulation.*;
 
 /**
  * This class packs the applications main game logic and data into one neat object.
