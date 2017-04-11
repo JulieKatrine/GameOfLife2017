@@ -1,0 +1,4 @@
+#N TestPattern
+#C Used for testing .rle file parsing.
+x = 5, y = 5, rule = B3/S23
+2o2bo$b2obo$5o2$o4b!

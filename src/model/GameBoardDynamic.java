@@ -19,6 +19,7 @@ package model;
  */
 public class GameBoardDynamic extends GameBoard
 {
+    private int maxCellCount = 15000 * 15000;
     private byte[][] thisGeneration;
     private byte[][] nextGeneration;
     private int arrayWidth;
@@ -151,6 +152,9 @@ public class GameBoardDynamic extends GameBoard
      */
     private void increaseBoardSizeIfNecessary()
     {
+        if(arrayWidth * arrayHeight >= maxCellCount)
+            return;
+
         boolean extendX = false;
         boolean extendY = false;
         int rightEdge = boardStart.x + width;
@@ -179,30 +183,39 @@ public class GameBoardDynamic extends GameBoard
             boardStart = new Point((arrayWidth - width) / 2,(arrayHeight - height) / 2);
 
         // Increases the underlying array size if the start position is close to the edge.
-        if(boardStart.x <= 0 || boardStart.y <= 0)
-            increaseArraySize();
+        if(boardStart.x <= 4 || boardStart.y <= 4)
+            increaseArraySize(boardStart.x <= 4, boardStart.y <= 4);
     }
 
     /**
      * Allocates new larger arrays and copies the data over.
      */
-    private void increaseArraySize()
+    private void increaseArraySize(boolean xDir, boolean yDir)
     {
-        arrayWidth += sizeExtension * 2;
-        arrayHeight += sizeExtension * 2;
+        try
+        {
+            arrayWidth  += (xDir) ? sizeExtension * 2 : 0;
+            arrayHeight += (yDir) ? sizeExtension * 2 : 0;
 
-        Point newBoardStart = new Point((arrayWidth - width) / 2,(arrayHeight - height) / 2);
-        byte[][] newThisGeneration = new byte[arrayHeight][arrayWidth];
-        byte[][] newNextGeneration = new byte[arrayHeight][arrayWidth];
+            Point newBoardStart = new Point((arrayWidth - width) / 2,(arrayHeight - height) / 2);
+            byte[][] newThisGeneration = new byte[arrayHeight][arrayWidth];
+            byte[][] newNextGeneration = new byte[arrayHeight][arrayWidth];
 
-        for(int y = 0; y < height; y++)
-            for (int x = 0; x < width; x++)
-                newThisGeneration[newBoardStart.y + y][newBoardStart.x + x] =
-                        thisGeneration[boardStart.y + y][boardStart.x + x];
+            for(int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    newThisGeneration[newBoardStart.y + y][newBoardStart.x + x] =
+                            thisGeneration[boardStart.y + y][boardStart.x + x];
 
-        thisGeneration = newThisGeneration;
-        nextGeneration = newNextGeneration;
-        boardStart = newBoardStart;
-        sizeExtension += sizeExtension;
+            thisGeneration = newThisGeneration;
+            nextGeneration = newNextGeneration;
+            boardStart = newBoardStart;
+            sizeExtension += sizeExtension;
+        }
+        catch (OutOfMemoryError e)
+        {
+            // Set the new limit
+            maxCellCount = arrayWidth * arrayHeight;
+            e.printStackTrace();
+        }
     }
 }

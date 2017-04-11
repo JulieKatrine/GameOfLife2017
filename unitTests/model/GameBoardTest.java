@@ -16,7 +16,7 @@ public class GameBoardTest
     @Test
     void editAndReadThisGeneration()
     {
-        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtils.getGameBoardImplementation(3, 3);
 
         for(int i = 0; i < testPositions.length; i++)
         {
@@ -28,21 +28,20 @@ public class GameBoardTest
     @Test
     void setStateInNextGenerationAndMakeCurrent()
     {
-        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtils.getGameBoardImplementation(3, 3);
 
         for(int i = 0; i < testPositions.length; i++)
             board.setStateInNextGeneration(true, testPositions[i]);
 
         board.makeNextGenerationCurrent();
 
-        for(int i = 0; i < testPositions.length; i++)
-            assertEquals(true, board.isCellAliveInThisGeneration(testPositions[i]));
+        assertEquals("100010001", TestUtils.gameBoardToString(board));
     }
 
     @Test
     void getAmountOfLivingNeighbours()
     {
-        GameBoard board = TestUtilities.getGameBoardImplementation(3, 3);
+        GameBoard board = TestUtils.getGameBoardImplementation(3, 3);
 
         assertEquals(0, board.getAmountOfLivingNeighbours(new Point(1, 1)), "Test empty board");
 
