@@ -1,10 +1,9 @@
 package model;
 
-public class TestUtilities
+public class TestUtils
 {
     /**
      * This method specifies the board implementation to be used in every test.
-     *
      * @param height The height of the board
      * @param width The width of the board
      * @return GameBoard
@@ -14,6 +13,11 @@ public class TestUtilities
         return new GameBoardDynamic(width, height);
     }
 
+    /**
+     * Extracts the relevant cell data from a GameBoard to a string
+     * @param board The GameBoard
+     * @return A string containing the cell data
+     */
     public static String gameBoardToString(GameBoard board)
     {
         StringBuilder sBuilder = new StringBuilder();
@@ -27,6 +31,11 @@ public class TestUtilities
         return sBuilder.toString();
     }
 
+    /**
+     * Finds the top, bottom, left and right border of where the cell data.
+     * @param board The GameBoard
+     * @return A Point array. First element = start, last element = stop.
+     */
     private static Point[] getGameBoardBoundingBox(GameBoard board)
     {
         Point start = new Point(board.getWidth(), board.getHeight());

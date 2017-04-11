@@ -1,9 +1,8 @@
 package model.simulation;
 
 import model.GameBoard;
-import model.GameBoardTest;
 import model.Point;
-import model.TestUtilities;
+import model.TestUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +12,7 @@ class SimulatorTest
     @Test
     void executeOn()
     {
-        GameBoard board = TestUtilities.getGameBoardImplementation(5, 5);
+        GameBoard board = TestUtils.getGameBoardImplementation(5, 5);
         Simulator simulator = new SimulatorImpl(new DefaultRuleSet());
         String glider = "010001111";
 
@@ -27,6 +26,6 @@ class SimulatorTest
             simulator.executeOn(board);
 
         // The glider oscillates and should stay the same after 4 generations.
-        assertEquals(glider, TestUtilities.gameBoardToString(board));
+        assertEquals(glider, TestUtils.gameBoardToString(board));
     }
 }
