@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="660.0" stylesheets="@StyleSheetFileChooser" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="660.0" stylesheets="@StyleSheetFileChooser" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="232.0" style="-fx-background-color: #373833;">
          <children>
@@ -47,7 +47,7 @@
             </Button>
          </children>
       </VBox>
-      <ScrollPane id="test" fitToWidth="true" maxHeight="2000.0" maxWidth="5000.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #656563">
+      <ScrollPane id="test" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #656563">
          <content>
             <TilePane fx:id="tilePane">
                <padding>

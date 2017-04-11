@@ -38,8 +38,8 @@ public class PatternChooserForm extends Stage implements Initializable
     private static File lastDirectoryOpened;
     private static ArrayList<Tile> loadedTiles;
     private static Pattern selectedPattern;
-    private ExecutorService executorService;
 
+    private ExecutorService executorService;
     private DropShadow dropShadow;
     private DropShadow selected;
 
@@ -162,7 +162,7 @@ public class PatternChooserForm extends Stage implements Initializable
         // Adds the temporary hourglass image while the pattern is loading
         Tile hourGlass = new Tile(new Image("file:resources/hourglass.png"), null);
         hourGlass.setEffect(dropShadow);
-        tilePane.getChildren().add(hourGlass);
+        tilePane.getChildren().add(0, hourGlass);
 
         executorService.execute(() ->
         {
@@ -175,10 +175,15 @@ public class PatternChooserForm extends Stage implements Initializable
             {
                 if(tile != null)
                 {
-
                     addTileEventListener(tile);
-                    tilePane.getChildren().add(tile);
-                    loadedTiles.add(tile);
+                    tilePane.getChildren().add(0, tile);
+                    loadedTiles.add(0, tile);
+                    selectedPattern = tile.pattern;
+
+                    for(Tile t : loadedTiles)
+                        t.setEffect(dropShadow);
+
+                    tile.setEffect(selected);
                 }
                 tilePane.getChildren().remove(hourGlass);
             });

@@ -271,26 +271,8 @@ public class Controller implements Initializable
      */
     @FXML private void saveGameBoard()
     {
- //       PatternEditorForm editorForm = new PatternEditorForm();
- //       editorForm.showAndWait();
-
-        try
-        {
-            Pattern pattern = PatternChooserForm.getSelectedPattern();
-
-            if(pattern != null)
-            {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showSaveDialog(null);
-                PatternExporter pExporter = new PatternExporter();
-                pExporter.export(pattern, file);
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
+        PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
+        editorForm.showAndWait();
     }
 
     @FXML private void startStopSimulation()

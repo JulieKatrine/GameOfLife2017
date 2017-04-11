@@ -23,27 +23,27 @@
                   <Insets left="30.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <TextField promptText="Pattern name">
+            <TextField fx:id="patternNameTextField" promptText="Pattern name">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="30.0" />
                </VBox.margin>
             </TextField>
-            <TextField promptText="Author">
+            <TextField fx:id="authorTextField" promptText="Author">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="30.0" />
                </VBox.margin>
             </TextField>
-            <TextField promptText="Rule">
+            <TextField fx:id="ruleTextField" promptText="Rule (default: B3/S23)">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="30.0" />
                </VBox.margin>
             </TextField>
-            <TextArea prefHeight="200.0" prefWidth="200.0" promptText="Description">
+            <TextArea fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Description">
                <VBox.margin>
                   <Insets bottom="10.0" left="15.0" right="15.0" top="30.0" />
                </VBox.margin>
             </TextArea>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" style="-fx-background-color: #3D8F13;" text="Save" textFill="WHITE">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" prefHeight="70.0" style="-fx-background-color: #3D8F13;" text="Save" textFill="WHITE">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="30.0" />
                </VBox.margin>
@@ -52,10 +52,10 @@
                </font>
             </Button>
          </children></VBox>
-      <VBox prefHeight="200.0" prefWidth="600.0">
+      <VBox>
          <children>
             <Canvas fx:id="canvas" height="450.0" width="600.0" />
-            <ScrollPane maxWidth="1.7976931348623157E308" prefHeight="150.0" />
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="150.0" />
          </children>
       </VBox>
    </children>

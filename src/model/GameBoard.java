@@ -37,12 +37,35 @@ public abstract class GameBoard
     }
 
     /**
+     * Finds the top-left and bottom-right corners of the living cells in
+     * the current generation.
+     * @return A Point array. First element = start, last element = stop.
+     */
+    public Point[] getBoundingBox()
+    {
+        Point stop = new Point();
+        Point cellPos = new Point();
+        Point start = new Point(width, height);
+
+        for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
+            for (cellPos.x = 0; cellPos.x < width; cellPos.x++)
+                if(isCellAliveInThisGeneration(cellPos))
+                {
+                    start.x = Math.min(cellPos.x, start.x);
+                    start.y = Math.min(cellPos.y, start.y);
+                    stop.x  = Math.max(cellPos.x + 1, stop.x);
+                    stop.y  = Math.max(cellPos.y + 1, stop.y);
+                }
+
+        return new Point[] {start, stop};
+    }
+
+    /**
      * Gets the amount of living neighbours at a given point in the current generation.
      * @param point The position from where to retrieve the neighbour count.
      * @return The amount of surrounding neighbours that are alive (0-8).
      */
     public abstract int getAmountOfLivingNeighbours(Point point);
-
 
     /**
      * Gets the state of cell at a given point in the current generation.
@@ -51,14 +74,12 @@ public abstract class GameBoard
      */
     public abstract boolean isCellAliveInThisGeneration(Point point);
 
-
     /**
      * Sets the state of a cell in the next generation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param point The position of the cell to be set.
      */
     public abstract void setStateInNextGeneration(boolean state, Point point);
-
 
     /**
      * Edits the state of a cell in the current generation.
@@ -68,10 +89,14 @@ public abstract class GameBoard
      */
     public abstract void editThisGeneration(boolean state, Point point);
 
-
     /**
      * Makes the next generation become the current one.
      * This updates the underlying data structure, which is necessary after every simulation step.
      */
     public abstract void makeNextGenerationCurrent();
+
+    /**
+     * @return A deep copy of the GameBoard.
+     */
+    public abstract GameBoard getDeepCopy();
 }

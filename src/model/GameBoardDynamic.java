@@ -20,11 +20,11 @@ package model;
 public class GameBoardDynamic extends GameBoard
 {
     private int maxCellCount = 15000 * 15000;
+    private int sizeExtension = 10;
     private byte[][] thisGeneration;
     private byte[][] nextGeneration;
     private int arrayWidth;
     private int arrayHeight;
-    private int sizeExtension = 10;
     private Point boardStart;
 
     /**
@@ -217,5 +217,18 @@ public class GameBoardDynamic extends GameBoard
             maxCellCount = arrayWidth * arrayHeight;
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public GameBoard getDeepCopy()
+    {
+        GameBoard newBoard = new GameBoardDynamic(width, height);
+        Point pos = new Point(0,0);
+
+        for(pos.y = 0; pos.y < height; pos.y++)
+            for(pos.x = 0; pos.x < width; pos.x++)
+                newBoard.editThisGeneration(isCellAliveInThisGeneration(pos), pos);
+
+        return newBoard;
     }
 }

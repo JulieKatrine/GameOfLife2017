@@ -73,4 +73,17 @@ public class GameBoardStatic extends GameBoard
         thisGeneration = nextGeneration;
         nextGeneration = temp;
     }
+
+    @Override
+    public GameBoard getDeepCopy()
+    {
+        GameBoard newBoard = new GameBoardStatic(width, height);
+        Point pos = new Point(0,0);
+
+        for(pos.y = 0; pos.y < height; pos.y++)
+            for(pos.x = 0; pos.x < width; pos.x++)
+                newBoard.editThisGeneration(isCellAliveInThisGeneration(pos), pos);
+
+        return newBoard;
+    }
 }
