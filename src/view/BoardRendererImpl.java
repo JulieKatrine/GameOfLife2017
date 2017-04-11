@@ -15,10 +15,11 @@ import model.Point;
  */
 public class BoardRendererImpl extends BoardRenderer
 {
-    private Paint deadCellColor = Color.BLACK;
-    private Paint aliveCellColor = Color.color(0.0275, 0.9882, 0);
+    private Paint deadCellColor;
+    private Paint aliveCellColor;
     private Paint gridColor = Color.GRAY;
     private double gridRenderThreshold = 4;
+
     /**
      * Focuses the camera to the middle of the board.
      *
@@ -35,15 +36,11 @@ public class BoardRendererImpl extends BoardRenderer
     {
         this.deadCellColor = deadCellColor;
     }
+
     @Override
     public void setLivingCellColor(Paint aliveCellColor)
     {
         this.aliveCellColor = aliveCellColor;
-    }
-    @Override
-    public void setGridColor(Paint gridColor)
-    {
-        this.gridColor = gridColor;
     }
 
     /**

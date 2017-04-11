@@ -66,6 +66,7 @@
                      </MenuBar>
                  </children>
               </HBox>
+              <Canvas fx:id="canvas" height="535.0" width="800" />
             <ToolBar prefHeight="40.0" prefWidth="200.0">
                <items>
                   <Label text="Speed" />
@@ -76,7 +77,6 @@
                   <ColorPicker fx:id="livingCellColor" />
                </items>
             </ToolBar>
-              <Canvas fx:id="canvas" height="575" width="800" />
           </children>
        </VBox>
    </children>

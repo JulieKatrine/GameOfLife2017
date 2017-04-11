@@ -46,10 +46,10 @@ public class GameOfLife extends Application
         primaryStage.setScene(scene);
 
         primaryStage.setOnCloseRequest(event ->
-                {
-                    event.consume();
-                    controller.closeRequest();
-                });
+        {
+            event.consume();
+            controller.closeRequest();
+        });
 
         primaryStage.show();
     }

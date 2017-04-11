@@ -86,15 +86,21 @@ public class Controller implements Initializable
         * */
         // Allows the user to change the pattern-colors.
         deadCellColor.setValue(Color.BLACK);
-        deadCellColor.setOnAction(event -> {
+        boardRender.setDeadCellColor(Color.BLACK);
+        deadCellColor.setOnMouseExited(event -> canvas.requestFocus());
+        deadCellColor.setOnAction(event ->
+        {
             boardRender.setDeadCellColor(deadCellColor.getValue());
             drawBoard();
         });
 
         livingCellColor.setValue(Color.color(0.0275, 0.9882, 0));
-        livingCellColor.setOnAction(event -> {
-                boardRender.setLivingCellColor(livingCellColor.getValue());
-                drawBoard();
+        boardRender.setLivingCellColor(Color.color(0.0275, 0.9882, 0));
+        livingCellColor.setOnMouseExited(event -> canvas.requestFocus());
+        livingCellColor.setOnAction(event ->
+        {
+            boardRender.setLivingCellColor(livingCellColor.getValue());
+            drawBoard();
         });
 
         // Sets the action to be performed when the updateTimer fires.
@@ -196,7 +202,7 @@ public class Controller implements Initializable
         // Updates the canvas height when the window is resized
         anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
         {
-            canvas.setHeight(newValue.doubleValue() - 25);
+            canvas.setHeight(newValue.doubleValue() - 40 - 20);
             drawBoard();
         });
     }
@@ -265,6 +271,9 @@ public class Controller implements Initializable
      */
     @FXML private void saveGameBoard()
     {
+ //       PatternEditorForm editorForm = new PatternEditorForm();
+ //       editorForm.showAndWait();
+
         try
         {
             Pattern pattern = PatternChooserForm.getSelectedPattern();
@@ -281,6 +290,7 @@ public class Controller implements Initializable
         {
             e.printStackTrace();
         }
+
     }
 
     @FXML private void startStopSimulation()
@@ -313,7 +323,10 @@ public class Controller implements Initializable
         alert.showAndWait();
     }
 
-    public void closeRequest() {
+    public void closeRequest()
+    {
+        closeApplication();
+        /*
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
         alert.setTitle("Exit");
@@ -324,11 +337,11 @@ public class Controller implements Initializable
         alert.getButtonTypes().setAll(ExitButton, fileChooser, Cancel);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ExitButton) {
+        if (result.get() == ExitButton)
             closeApplication();
-        } else if (result.get() == fileChooser) {
+        else if (result.get() == fileChooser)
             loadNewGameBoard();
-        }
+        */
     }
 
     @FXML private void closeApplication()

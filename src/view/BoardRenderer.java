@@ -41,6 +41,4 @@ public abstract class BoardRenderer
     public abstract void setDeadCellColor(Paint value);
 
     public abstract void setLivingCellColor(Paint value);
-
-    public abstract void setGridColor(Paint value);
 }
