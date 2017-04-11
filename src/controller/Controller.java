@@ -1,23 +1,29 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
-
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
+import model.Point;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
 
@@ -37,7 +43,6 @@ public class Controller implements Initializable
     private Point lastMousePos;
     private BoardEditor boardEditor;
     private UpdateTimer updateTimer;
-    private UserColorPicker userColorPicker;
     private long drawTimer;
     private boolean controlPressed;
 
@@ -47,6 +52,8 @@ public class Controller implements Initializable
     @FXML private Slider speedSlider;
     @FXML private MenuItem startStopMenuItem;
     @FXML private MenuItem nextMenuItem;
+    @FXML private ColorPicker deadCellColor;
+    @FXML private ColorPicker livingCellColor;
 
     /**
      * Called to initialize the controller after it's root element has been completely processed.
@@ -73,6 +80,23 @@ public class Controller implements Initializable
 
     private void addEventListeners()
     {
+        /*TODO: deadCellColor is still listed as Color.Black (and green) in BoardRendererImpl. Can that somehow be removed?
+        * TODO: StartStopMenuItem should be selected by default when the color is chosen.
+        * TODO: Put the label in the box, not on the side. I think css is the way to go.
+        * */
+        // Allows the user to change the pattern-colors.
+        deadCellColor.setValue(Color.BLACK);
+        deadCellColor.setOnAction(event -> {
+            boardRender.setDeadCellColor(deadCellColor.getValue());
+            drawBoard();
+        });
+
+        livingCellColor.setValue(Color.color(0.0275, 0.9882, 0));
+        livingCellColor.setOnAction(event -> {
+                boardRender.setLivingCellColor(livingCellColor.getValue());
+                drawBoard();
+        });
+
         // Sets the action to be performed when the updateTimer fires.
         // Limits the draw rate to 60 fps
         updateTimer.setOnUpdateAction(() ->
@@ -247,12 +271,6 @@ public class Controller implements Initializable
         nextMenuItem.setDisable(updateTimer.isRunning());
     }
 
-    @FXML private void closeApplication()
-    {
-        Platform.exit();
-        System.exit(0);
-    }
-
     @FXML private void createEmptyBoard()
     {
         gameModel.setGameBoard(new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT));
@@ -264,6 +282,7 @@ public class Controller implements Initializable
     @FXML private void shortCuts()
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
         alert.setTitle("About");
         alert.setHeaderText("How to create your own pattern");
         alert.setContentText("Use the left mouse button to draw, the right mouse button to erase.\n\n" +
@@ -275,17 +294,27 @@ public class Controller implements Initializable
         alert.showAndWait();
     }
 
+    public void closeRequest() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Are you sure you want to exit?");
+        ButtonType ExitButton = new ButtonType("Exit");
+        ButtonType Cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType fileChooser = new ButtonType("Open file chooser");
+        alert.getButtonTypes().setAll(ExitButton, fileChooser, Cancel);
 
-    @FXML private void changeBackgroundColor()
-    {
-        userColorPicker = new UserColorPicker(canvas);
-        userColorPicker.changeBackgroundColor();
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ExitButton) {
+            closeApplication();
+        } else if (result.get() == fileChooser) {
+            loadNewGameBoard();
+        }
     }
 
-    @FXML private void changeCellColor()
+    @FXML private void closeApplication()
     {
-        userColorPicker = new UserColorPicker(canvas);
-        userColorPicker.changeCellColor();
+        Platform.exit();
+        System.exit(0);
     }
-
 }

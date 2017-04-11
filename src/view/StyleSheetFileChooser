@@ -20,3 +20,12 @@
 
 }
 
+#deadCellColor
+{
+    -fx-color-label-visible: false;
+}
+
+#livingCellColor
+{
+    -fx-color-label-visible: false;
+}

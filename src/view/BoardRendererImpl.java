@@ -3,6 +3,7 @@ package view;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import model.GameBoard;
 import model.Point;
 
@@ -14,9 +15,9 @@ import model.Point;
  */
 public class BoardRendererImpl extends BoardRenderer
 {
-    private Color deadCellColor = Color.BLACK;
-    private Color aliveCellColor = Color.color(0.0275, 0.9882, 0);
-    private Color gridColor = Color.GRAY;
+    private Paint deadCellColor = Color.BLACK;
+    private Paint aliveCellColor = Color.color(0.0275, 0.9882, 0);
+    private Paint gridColor = Color.GRAY;
     private double gridRenderThreshold = 4;
     /**
      * Focuses the camera to the middle of the board.
@@ -27,6 +28,22 @@ public class BoardRendererImpl extends BoardRenderer
     public BoardRendererImpl(Canvas canvas)
     {
         super(canvas);
+    }
+
+    @Override
+    public void setDeadCellColor(Paint deadCellColor)
+    {
+        this.deadCellColor = deadCellColor;
+    }
+    @Override
+    public void setLivingCellColor(Paint aliveCellColor)
+    {
+        this.aliveCellColor = aliveCellColor;
+    }
+    @Override
+    public void setGridColor(Paint gridColor)
+    {
+        this.gridColor = gridColor;
     }
 
     /**
@@ -142,18 +159,4 @@ public class BoardRendererImpl extends BoardRenderer
         return stopPos;
     }
 
-    public void setDeadCellColor(Color deadCellColor)
-    {
-        this.deadCellColor = deadCellColor;
-    }
-
-    public void setAliveCellColor(Color aliveCellColor)
-    {
-        this.aliveCellColor = aliveCellColor;
-    }
-
-    public void setGridColor(Color gridColor)
-    {
-        this.gridColor = gridColor;
-    }
 }

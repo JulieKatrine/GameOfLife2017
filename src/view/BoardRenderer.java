@@ -1,6 +1,9 @@
 package view;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import model.GameBoard;
 
 /**
@@ -34,4 +37,10 @@ public abstract class BoardRenderer
     }
 
     public abstract void render(GameBoard board);
+
+    public abstract void setDeadCellColor(Paint value);
+
+    public abstract void setLivingCellColor(Paint value);
+
+    public abstract void setGridColor(Paint value);
 }

@@ -44,30 +44,13 @@ public class GameOfLife extends Application
         primaryStage.setTitle("Game of Life");
         primaryStage.getIcons().add((APPLICATION_ICON = new Image("file:resources/Logo.png")));
         primaryStage.setScene(scene);
+
         primaryStage.setOnCloseRequest(event ->
-        {
-            event.consume();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Exit");
-            alert.setHeaderText("Are you sure you want to exit?");
-            ButtonType Ok = new ButtonType("OK");
-            ButtonType Cancel = new ButtonType("Cancel");
-            ButtonType fileChooser = new ButtonType("Open file chooser");
+                {
+                    event.consume();
+                    controller.closeRequest();
+                });
 
-            alert.getButtonTypes().setAll(Ok, fileChooser, Cancel);
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if(result.get() == Ok)
-            {
-                Platform.exit();
-                System.exit(0);
-            }
-            else if (result.get() == fileChooser)
-            {
-                controller.loadNewGameBoard();
-            }
-
-        });
         primaryStage.show();
     }
 
