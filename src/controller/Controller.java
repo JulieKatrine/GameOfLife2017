@@ -1,11 +1,11 @@
 package controller;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -15,14 +15,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
+import model.BoardIO.PatternExporter;
 import model.Point;
 import view.BoardRenderer;
 import view.BoardRendererImpl;
@@ -244,7 +244,7 @@ public class Controller implements Initializable
     {
         PatternChooserForm loader = new PatternChooserForm();
         loader.showAndWait();
-        Pattern pattern = loader.getPattern();
+        Pattern pattern = loader.getSelectedPattern();
         if(pattern != null)
         {
             gameModel.setGameBoard(pattern.getGameBoard());
@@ -259,9 +259,28 @@ public class Controller implements Initializable
         }
     }
 
+    /**
+     * Temporary test of pattern saving.
+     * Saves the currently loaded pattern.
+     */
     @FXML private void saveGameBoard()
     {
-        //Future feature
+        try
+        {
+            Pattern pattern = PatternChooserForm.getSelectedPattern();
+
+            if(pattern != null)
+            {
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showSaveDialog(null);
+                PatternExporter pExporter = new PatternExporter();
+                pExporter.export(pattern, file);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML private void startStopSimulation()

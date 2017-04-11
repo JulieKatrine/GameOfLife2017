@@ -24,8 +24,8 @@ public class Pattern
     private String rule;
     private String name;
     private String author;
-    private String comments;
     private String origin;
+    private String comments;
     private boolean[][] cellData;
 
     /**
@@ -82,6 +82,16 @@ public class Pattern
         return origin;
     }
 
+    public String getComments()
+    {
+        return comments;
+    }
+
+    public String getAuthor()
+    {
+        return author;
+    }
+
     public boolean[][] getCellData()
     {
         return cellData;
@@ -93,6 +103,11 @@ public class Pattern
             return new CustomRule(rule);
         else
             return new DefaultRuleSet();
+    }
+
+    public String getRuleString()
+    {
+        return rule;
     }
 
     /**

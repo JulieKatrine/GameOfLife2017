@@ -20,10 +20,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.BoardIO.FileType;
-import model.BoardIO.Pattern;
-import model.BoardIO.PatternFormatException;
-import model.BoardIO.PatternLoader;
+import model.BoardIO.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -382,7 +379,7 @@ public class PatternChooserForm extends Stage implements Initializable
      * This method is used to access the PatternChooserForms selected pattern.
      * @return A Pattern object.
      */
-    public Pattern getPattern()
+    public static Pattern getSelectedPattern()
     {
         return selectedPattern;
     }

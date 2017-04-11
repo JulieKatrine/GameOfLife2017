@@ -2,9 +2,7 @@ package model.BoardIO;
 
 import model.TestUtils;
 import model.simulation.DefaultRuleSet;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.IOException;

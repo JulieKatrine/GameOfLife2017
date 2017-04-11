@@ -2,12 +2,11 @@ package controller;
 
 /**
  * This interface is used for passing actions from one object to another.
- * @see UpdateTimer
- *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see UpdateTimer
  */
-
+@FunctionalInterface
 public interface Action
 {
     /**
