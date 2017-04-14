@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class TestUtils
 {
     /**
@@ -30,4 +32,14 @@ public class TestUtils
 
         return sBuilder.toString();
     }
+
+    public static void addRandomCellDataTo(GameBoard board)
+    {
+        Random r = new Random();
+        Point cellPos = new Point();
+        for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
+            for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
+                board.editThisGeneration(r.nextBoolean(), cellPos);
+    }
+
 }

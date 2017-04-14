@@ -4,11 +4,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
@@ -16,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -25,27 +25,28 @@ import model.BoardIO.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PatternChooserForm extends Stage implements Initializable
 {
-    private final int TILE_SIZE = 128;
-
-    private static File lastDirectoryOpened;
+    private static Stack<Pattern> patternsToLoad;
     private static ArrayList<Tile> loadedTiles;
+    private static File lastDirectoryOpened;
     private static Pattern selectedPattern;
+    private static double scrollBarPos;
+    private static int height;
+    private static int width;
 
-    private ExecutorService executorService;
-    private DropShadow dropShadow;
     private DropShadow selected;
+    private DropShadow dropShadow;
+    private ExecutorService executorService;
 
+    @FXML private TextField urlTextField;
+    @FXML private ScrollPane scrollPane;
     @FXML private TilePane tilePane;
     @FXML private TextArea textArea;
-    @FXML private TextField urlTextField;
 
     /**
      * The constructor loads the FXML document and sets up the new scene and stage,
@@ -56,24 +57,77 @@ public class PatternChooserForm extends Stage implements Initializable
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/PatternChooserForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternChooserForm.fxml"));
             loader.setController(this);
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
+            HBox root = loader.load();
+
+            if(width == 0 || height == 0)
+            {
+                width = (int) root.getPrefWidth();
+                height = (int) root.getPrefHeight();
+            }
+
+            Scene scene = new Scene(root, width, height);
             super.setTitle("Choose your pattern");
             super.getIcons().add(GameOfLife.APPLICATION_ICON);
             super.setScene(scene);
-            super.setOnCloseRequest(Event ->
-            {
-                selectedPattern = null;
-                closeWindow();
-            });
         }
         catch (IOException e)
         {
             System.err.println("Failed to load FXML");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * The method sets up the TilePane and creates new dropshadow effects.
+     * @param location Some location.
+     * @param resources Some resources.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources)
+    {
+        dropShadow = new DropShadow();
+        dropShadow.setRadius(15);
+
+        selected = new DropShadow();
+        selected.setRadius(15);
+        selected.setColor(Color.rgb(100,143,1));
+
+        addEventListener();
+        addLoadedTiles();
+    }
+
+    /**
+     * Adds event listeners stage and JavaFX elements.
+     */
+    private void addEventListener()
+    {
+        // Get the window height when the user resizes it.
+        super.heightProperty().addListener((a, b, newVal) -> height = newVal.intValue());
+
+        // Get the window width when the user resizes it and calculate the new preferred column count.
+        super.widthProperty().addListener((a, b, newVal) -> {
+            tilePane.setPrefColumns((newVal.intValue() - 220) / (Tile.TILE_SIZE + 20));
+            width = newVal.intValue();
+        });
+
+        // Set selected pattern to null and close the window when the user presses the exit button.
+        super.setOnCloseRequest(Event ->
+        {
+            selectedPattern = null;
+            closeWindow();
+        });
+
+        // Get the position of the vertical scroll bar.
+        scrollPane.vvalueProperty().addListener((a, b, newVal) -> scrollBarPos = newVal.doubleValue());
+
+        // Sets the position of the scrollbar
+        Platform.runLater(() ->
+        {
+            scrollPane.layout();
+            scrollPane.setVvalue(scrollBarPos);
+        });
     }
 
     /**
@@ -90,28 +144,6 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * The method sets up the TilePane and creates new dropshadow effects.
-     * @param location Some location.
-     * @param resources Some resources.
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources)
-    {
-        tilePane.setAlignment(Pos.TOP_LEFT);
-        tilePane.setVgap(10);
-        tilePane.setHgap(10);
-
-        dropShadow = new DropShadow();
-        dropShadow.setRadius(15);
-
-        selected = new DropShadow();
-        selected.setRadius(15);
-        selected.setColor(Color.rgb(100,143,1));
-
-        addLoadedTiles();
-    }
-
-    /**
      * This method adds previously loaded tiles to the form.
      * The first time a PatternChooserForm is created the loadedTiles-list is
      * instantiated and the default patterns added to it.
@@ -123,16 +155,18 @@ public class PatternChooserForm extends Stage implements Initializable
             loadedTiles = new ArrayList<>();
             addDefaultPatterns();
         }
-        else
-        {
-            for(Tile t : loadedTiles)
-                addTileEventListener(t);
 
-            tilePane.getChildren().addAll(loadedTiles);
+        // Adds the saved patterns to the chooser.
+        while(patternsToLoad != null && patternsToLoad.size() > 0)
+            loadAndAddPatternToForm(patternsToLoad.pop().getOrigin());
 
-            if(selectedPattern != null)
-                textArea.setText(selectedPattern.getAllMetadata());
-        }
+        for(Tile t : loadedTiles)
+            addTileEventListener(t);
+
+        tilePane.getChildren().addAll(loadedTiles);
+
+        if(selectedPattern != null)
+            textArea.setText(selectedPattern.getAllMetadata());
     }
 
     /**
@@ -160,14 +194,16 @@ public class PatternChooserForm extends Stage implements Initializable
                 return;
 
         // Adds the temporary hourglass image while the pattern is loading
-        Tile hourGlass = new Tile(new Image("file:resources/hourglass.png"), null);
+        //Tile hourGlass = new Tile(new Image(getClass().getResourceAsStream("/resources/hourglass.png")));
+        Tile hourGlass = new Tile(new Image("file:resources/hourglass.png"));
+
         hourGlass.setEffect(dropShadow);
         tilePane.getChildren().add(0, hourGlass);
 
         executorService.execute(() ->
         {
             Pattern p = loadPattern(path);
-            Tile tile = createTileFromPattern(p);
+            Tile tile = new Tile(p);
 
             // Interaction with JavaFX elements cannot be done from a separate thread,
             // and is therefor passed on to the Platform.
@@ -221,7 +257,6 @@ public class PatternChooserForm extends Stage implements Initializable
         }
         catch (OutOfMemoryError e)
         {
-            System.out.println("This runs");
             e.printStackTrace();
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
@@ -249,53 +284,12 @@ public class PatternChooserForm extends Stage implements Initializable
         Platform.runLater(() ->
         {
             Alert alert = new Alert(alertType);
+            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
             alert.getDialogPane().setPrefWidth(450);
             alert.setTitle(title);
-            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
-
             alert.setContentText(content);
             alert.showAndWait();
         });
-    }
-
-    /**
-     * This method creates a Tile object from a given pattern.
-     * It samples the patterns cell data and creates a scaled image to be used as preview.
-     * @param pattern A pattern object
-     * @return A tile object
-     */
-    private Tile createTileFromPattern(Pattern pattern)
-    {
-        if(pattern == null)
-            return null;
-
-        boolean[][] cellData = pattern.getCellData();
-
-        WritableImage writableImage = new WritableImage(TILE_SIZE, TILE_SIZE);
-        PixelWriter pw =  writableImage.getPixelWriter();
-
-        double scale = Math.min((double)TILE_SIZE / cellData[0].length, (double)TILE_SIZE / cellData.length);
-
-        for(int y = 0; y < cellData.length; y++)
-        {
-            for (int x = 0; x < cellData[0].length; x++)
-            {
-                Color color = cellData[y][x] ? Color.BLACK : Color.rgb(244, 244, 244);
-
-                for (double dy = 0; dy < scale; dy++)
-                {
-                    for (double dx = 0; dx < scale; dx++)
-                    {
-                        pw.setColor((int) (x * scale + dx), (int) (y * scale + dy), color);
-                    }
-                }
-            }
-        }
-
-        Tile tile = new Tile(writableImage, pattern);
-        tile.setEffect(dropShadow);
-        tile.setCursor(Cursor.HAND);
-        return tile;
     }
 
     /**
@@ -326,6 +320,9 @@ public class PatternChooserForm extends Stage implements Initializable
                 t.setEffect(dropShadow);
 
             loadedTile.setEffect(selected);
+
+            if(event.getClickCount() == 2)
+                closeWindow();
         });
     }
 
@@ -390,6 +387,19 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
+     * Adds the pattern to a Stack for future loading.
+     * The pattern gets loaded when a new PatternChooser instance is created.
+     * @param pattern The Pattern to be loaded.
+     */
+    public static void addPattern(Pattern pattern)
+    {
+        if(patternsToLoad == null)
+            patternsToLoad = new Stack<>();
+
+        patternsToLoad.add(pattern);
+    }
+
+    /**
      * This private Tile class adds some functionality to JavaFX ImageView.
      * It stores the associated pattern and a path to where this pattern where loaded from.
      * This is done so big pattern objects can be freed from memory when the PatternChooserForm
@@ -397,14 +407,53 @@ public class PatternChooserForm extends Stage implements Initializable
      */
     private class Tile extends ImageView
     {
+        public static final int TILE_SIZE = 128;
+
         private String origin;
         private Pattern pattern;
 
-        public Tile(Image img, Pattern pattern)
+        public Tile(Image img)
         {
             super(img);
+        }
+
+        public Tile(Pattern pattern)
+        {
             this.pattern = pattern;
-            this.origin = (pattern != null) ? pattern.getOrigin() : "";
+            this.origin = pattern.getOrigin();
+            super.setImage(createTileImage());
+            super.setEffect(dropShadow);
+            super.setCursor(Cursor.HAND);
+        }
+
+        /**
+         * This method samples the patterns cell data and creates a scaled image to be used as preview.
+         * @return A image.
+         */
+        private Image createTileImage()
+        {
+            boolean[][] cellData = pattern.getCellData();
+
+            double scale = Math.min((double)TILE_SIZE / cellData[0].length, (double)TILE_SIZE / cellData.length);
+            int width = (int) Math.ceil(cellData[0].length * scale);
+            int height = (int) Math.ceil(cellData.length * scale);
+
+            WritableImage writableImage = new WritableImage(width, height);
+            PixelWriter pw = writableImage.getPixelWriter();
+
+            for(int y = 0; y < cellData.length; y++)
+            {
+                for (int x = 0; x < cellData[0].length; x++)
+                {
+                    Color color = cellData[y][x] ? Color.BLACK : Color.rgb(244, 244, 244);
+
+                    for (int dy = 0; dy < scale; dy++)
+                        for (int dx = 0; dx < scale; dx++)
+                            pw.setColor((int) (x * scale + dx), (int) (y * scale + dy), color);
+                }
+            }
+
+            return writableImage;
         }
 
         public String getOrigin()

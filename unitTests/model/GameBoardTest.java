@@ -2,6 +2,10 @@ package model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameBoardTest
@@ -55,5 +59,24 @@ public class GameBoardTest
         assertEquals(1, board.getAmountOfLivingNeighbours(new Point(0, 0)),"Test cell with 1 neighbour");
         assertEquals(5, board.getAmountOfLivingNeighbours(new Point(1, 1)),"Test cell with 5 neighbours");
         assertEquals(2, board.getAmountOfLivingNeighbours(new Point(2, 2)),"Test cell with 2 neighbours");
+    }
+
+    @Test
+    void testHashCode()
+    {
+        GameBoard controlBoard = TestUtils.getGameBoardImplementation(4, 4);
+        TestUtils.addRandomCellDataTo(controlBoard);
+
+        String controlString = TestUtils.gameBoardToString(controlBoard);
+        int controlCode = controlBoard.hashCode();
+
+        for(int i = 0; i < 1000000; i++)
+        {
+            GameBoard testBoard = TestUtils.getGameBoardImplementation(4, 4);
+            TestUtils.addRandomCellDataTo(testBoard);
+
+            if(controlCode == testBoard.hashCode())
+                assertEquals(controlString, TestUtils.gameBoardToString(testBoard));
+        }
     }
 }
