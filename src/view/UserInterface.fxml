@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.CustomMenuItem?>
 <?import javafx.scene.control.Label?>
@@ -37,7 +39,7 @@
                                         <items>
                                             <CustomMenuItem>
                                                 <content>
-                                                    <Slider blockIncrement="1" max="100" min="1" value="50" />
+                                                    <Slider fx:id="speedSliderMenuItem" blockIncrement="1" max="100" min="1" value="50" />
                                                 </content>
                                             </CustomMenuItem>
                                         </items>
@@ -66,17 +68,19 @@
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="535.0" width="800" />
             <ToolBar prefHeight="40.0" prefWidth="200.0">
                <items>
+                  <Button fx:id="startStopButton" onAction="#startStopSimulation" mnemonicParsing="false" text="Start" />
                   <Label text="Speed" />
                   <Slider fx:id="speedSlider" />
                    <Label text="Dead-cell color" />
-                  <ColorPicker fx:id="deadCellColor" />
+                  <ColorPicker fx:id="deadCellColor" focusTraversable="false" />
                    <Label text="Living-cell color" />
-                  <ColorPicker fx:id="livingCellColor" />
+                  <ColorPicker fx:id="livingCellColor" focusTraversable="false" />
+                  <ChoiceBox fx:id="ruleChooser" onAction="#getChosenRule" prefWidth="150.0" />
                </items>
             </ToolBar>
+              <Canvas fx:id="canvas" height="535.0" width="800" />
           </children>
        </VBox>
    </children>

@@ -103,10 +103,10 @@ public class PatternChooserForm extends Stage implements Initializable
 
         dropShadow = new DropShadow();
         dropShadow.setRadius(15);
+        dropShadow.setColor(Color.rgb(124, 120, 118));
 
         selected = new DropShadow();
         selected.setRadius(15);
-        selected.setColor(Color.rgb(100,143,1));
 
         addLoadedTiles();
     }
