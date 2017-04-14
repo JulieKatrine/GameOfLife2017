@@ -44,6 +44,7 @@ public class Pattern
         {
             if(string.length() > 0)
             {
+                string = string.replaceAll("#", "");
                 char prefix = string.charAt(0);
                 String line = string.substring(1).trim();
 
@@ -63,7 +64,8 @@ public class Pattern
         this.cellData = cellData;
     }
 
-    public void setRule(String rule){
+    public void setRule(String rule)
+    {
         this.rule = rule;
     }
 

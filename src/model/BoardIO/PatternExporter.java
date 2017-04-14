@@ -37,7 +37,9 @@ public class PatternExporter
 
     private void addBoardSizeAndRule(StringBuilder sb, boolean[][] data, String rule)
     {
-        rule = (rule != null) ? rule : "B3/S23";
+        if(rule == null || rule.length() == 0)
+            rule = "B3/S23";
+
         sb.append("x = " + data[0].length + ", y = " + data.length + ", rule = " + rule + "\n");
     }
 

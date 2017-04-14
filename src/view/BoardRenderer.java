@@ -1,8 +1,6 @@
 package view;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import model.GameBoard;
 
@@ -32,13 +30,11 @@ public abstract class BoardRenderer
     {
         double maxCellWidth = canvas.getWidth() / (board.getWidth() + 2);
         double maxCellHeight = canvas.getHeight() / (board.getHeight() + 2);
-        camera.reeset();
+        camera.reset();
         camera.setZoom(Math.min(maxCellWidth, maxCellHeight));
     }
 
     public abstract void render(GameBoard board);
-
     public abstract void setDeadCellColor(Paint value);
-
     public abstract void setLivingCellColor(Paint value);
 }

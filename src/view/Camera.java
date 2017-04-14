@@ -63,7 +63,7 @@ public class Camera
         posY = Math.min(0.5, Math.max(-0.5, posY));
     }
 
-    public void reeset()
+    public void reset()
     {
         zoom = DEFAULT_ZOOM_VALUE;
         posX = posY = 0;

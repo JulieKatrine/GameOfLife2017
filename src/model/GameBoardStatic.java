@@ -73,4 +73,5 @@ public class GameBoardStatic extends GameBoard
         thisGeneration = nextGeneration;
         nextGeneration = temp;
     }
+
 }

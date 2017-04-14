@@ -43,7 +43,6 @@ public abstract class GameBoard
      */
     public abstract int getAmountOfLivingNeighbours(Point point);
 
-
     /**
      * Gets the state of cell at a given point in the current generation.
      * @param point The position to check.
@@ -51,14 +50,12 @@ public abstract class GameBoard
      */
     public abstract boolean isCellAliveInThisGeneration(Point point);
 
-
     /**
      * Sets the state of a cell in the next generation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param point The position of the cell to be set.
      */
     public abstract void setStateInNextGeneration(boolean state, Point point);
-
 
     /**
      * Edits the state of a cell in the current generation.
@@ -68,10 +65,136 @@ public abstract class GameBoard
      */
     public abstract void editThisGeneration(boolean state, Point point);
 
-
     /**
      * Makes the next generation become the current one.
      * This updates the underlying data structure, which is necessary after every simulation step.
      */
     public abstract void makeNextGenerationCurrent();
+
+    /**
+     * Counts the living cells in this generation.
+     * @return The total amount of living cells.
+     */
+    public int getPopulation()
+    {
+        int count = 0;
+        Point pos = new Point();
+        for(pos.y = 0; pos.y < height; pos.y++)
+            for(pos.x = 0; pos.x < width; pos.x++)
+                if(isCellAliveInThisGeneration(pos))
+                    count++;
+        return count;
+    }
+
+    /**
+     * Generates a unique hash code from the current generation.
+     * This is useful for comparing the similarity between boards.
+     * This implementation is based on the Arrays.hashCode() algorithm.
+     * @return A hash code representing this generation.
+     */
+    public int hashCode()
+    {
+        int code = 1;
+        Point pos = new Point();
+        for(pos.y = 0; pos.y < height; pos.y++)
+            for(pos.x = 0; pos.x < width; pos.x++)
+                code = 31 * code + (isCellAliveInThisGeneration(pos) ? 1231 : 1237);
+
+        return code;
+    }
+
+    /**
+     * @return A deep copy of the GameBoard.
+     */
+    public GameBoard getDeepCopy()
+    {
+        return getSubBoard(new Point(0,0), new Point(width, height), 0);
+    }
+
+    /**
+     * @return A trimmed copy of the GameBoard.
+     */
+    public GameBoard trimmedCopy()
+    {
+        return trimmedCopy(0);
+    }
+
+    /**
+     * Creates a trimmed copy of the GameBoard with a padded layer of dead cells around it.
+     * @return A trimmed copy of the GameBoard.
+     */
+    public GameBoard trimmedCopy(int padding)
+    {
+        padding = Math.max(0, padding);
+        Point[] bBox = getBoundingBox();
+        return getSubBoard(bBox[0], bBox[1], padding);
+    }
+
+    /**
+     * Finds the top-left and bottom-right corners of the living cells in
+     * the current generation.
+     * @return A Point array. First element = start, last element = stop.
+     */
+    public Point[] getBoundingBox()
+    {
+        Point stop = new Point();
+        Point cellPos = new Point();
+        Point start = new Point(width, height);
+
+        for (cellPos.y = 0; cellPos.y < height; cellPos.y++)
+            for (cellPos.x = 0; cellPos.x < width; cellPos.x++)
+                if(isCellAliveInThisGeneration(cellPos))
+                {
+                    start.x = Math.min(cellPos.x, start.x);
+                    start.y = Math.min(cellPos.y, start.y);
+                    stop.x  = Math.max(cellPos.x + 1, stop.x);
+                    stop.y  = Math.max(cellPos.y + 1, stop.y);
+                }
+
+        // If no living cells where found, return full size.
+        if(start.x == width || start.y == height)
+        {
+            start = new Point();
+            stop = new Point(width, height);
+        }
+
+        return new Point[] {start, stop};
+    }
+
+    /**
+     * Creates a new bord from the given start and stop coordinates.
+     * @param start The start point of the sub area on the GameBoard.
+     * @param stop The end point of the sub area on the GameBoard.
+     * @return A sub area of the GameBoard
+     */
+    private GameBoard getSubBoard(Point start, Point stop, int padding)
+    {
+        Point size = Point.sub(stop, start).add(padding * 2);
+        GameBoard subBoard = getNewInstance(size.x, size.y);
+
+        Point pos = new Point();
+        for(pos.y = start.y; pos.y < stop.y; pos.y++)
+            for(pos.x = start.x; pos.x < stop.x; pos.x++)
+                subBoard.editThisGeneration(this.isCellAliveInThisGeneration(pos), Point.sub(pos, start).add(padding));
+
+        return subBoard;
+    }
+
+    /**
+     * This method returns a new instance of the current one.
+     * @param width The width of the new GameBoard.
+     * @param height The height of the new GameBoard.
+     * @return A new GameBoard instance.
+     */
+    private GameBoard getNewInstance(int width, int height)
+    {
+        // I'd love to know how this could be done better??
+        GameBoard newBoard = null;
+        if(this instanceof GameBoardDynamic)
+            newBoard = new GameBoardDynamic(width, height);
+        else if(this instanceof GameBoardStatic)
+            newBoard = new GameBoardStatic(width, height);
+
+        return newBoard;
+    }
 }

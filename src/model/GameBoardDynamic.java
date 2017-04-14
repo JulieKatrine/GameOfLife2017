@@ -20,11 +20,11 @@ package model;
 public class GameBoardDynamic extends GameBoard
 {
     private int maxCellCount = 15000 * 15000;
+    private int sizeExtension = 10;
     private byte[][] thisGeneration;
     private byte[][] nextGeneration;
     private int arrayWidth;
     private int arrayHeight;
-    private int sizeExtension = 10;
     private Point boardStart;
 
     /**

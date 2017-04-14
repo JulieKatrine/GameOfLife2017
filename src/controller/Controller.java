@@ -91,10 +91,10 @@ public class Controller implements Initializable
 
     private void addEventListeners()
     {
-        /*TODO: deadCellColor is still listed as Color.Black (and green) in BoardRendererImpl. Can that somehow be removed?
-        * TODO: StartStopMenuItem should be selected by default when the color is chosen.
+        /*
         * TODO: Put the label in the box, not on the side. I think css is the way to go.
-        * */
+        */
+
         // Allows the user to change the pattern-colors.
         deadCellColor.setValue(Color.BLACK);
         boardRender.setDeadCellColor(Color.BLACK);
@@ -292,24 +292,15 @@ public class Controller implements Initializable
      */
     @FXML private void saveGameBoard()
     {
- //       PatternEditorForm editorForm = new PatternEditorForm();
- //       editorForm.showAndWait();
-
-        try
+        PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
+        editorForm.showAndWait();
+        GameBoard selectedGameBoard = editorForm.getSelectedGameBoard();
+        if(selectedGameBoard != null)
         {
-            Pattern pattern = PatternChooserForm.getSelectedPattern();
-
-            if(pattern != null)
-            {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showSaveDialog(null);
-                PatternExporter pExporter = new PatternExporter();
-                pExporter.export(pattern, file);
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+            gameModel.setGameBoard(selectedGameBoard);
+            boardRender.getCamera().reset();
+            boardRender.scaleViewToFitBoard(selectedGameBoard);
+            drawBoard();
         }
     }
 
