@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
 public class PatternChooserForm extends Stage implements Initializable
 {
     private static Stack<Pattern> patternsToLoad;
-    private static ArrayList<Tile> loadedTiles;
+    private static List<Tile> loadedTiles;
     private static File lastDirectoryOpened;
     private static Pattern selectedPattern;
     private static double scrollBarPos;

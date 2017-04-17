@@ -19,6 +19,7 @@ public class BoardRendererImpl extends BoardRenderer
     private Paint aliveCellColor;
     private Paint gridColor = Color.GRAY;
     private double gridRenderThreshold = 4;
+    private boolean renderGrid = true;
 
     /**
      * Focuses the camera to the middle of the board.
@@ -41,6 +42,12 @@ public class BoardRendererImpl extends BoardRenderer
     public void setLivingCellColor(Paint aliveCellColor)
     {
         this.aliveCellColor = aliveCellColor;
+    }
+
+    @Override
+    public void enableGridRendering(boolean state)
+    {
+        renderGrid = state;
     }
 
     /**
@@ -78,7 +85,7 @@ public class BoardRendererImpl extends BoardRenderer
     {
         double cellSize = camera.getZoom();
 
-        if(cellSize < gridRenderThreshold)
+        if(!renderGrid || cellSize < gridRenderThreshold)
             return;
 
         GraphicsContext gc = canvas.getGraphicsContext2D();

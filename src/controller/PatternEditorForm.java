@@ -6,10 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseButton;
@@ -17,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.BoardEditor;
 import model.BoardIO.Pattern;
@@ -34,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -46,25 +45,12 @@ public class PatternEditorForm extends Stage implements Initializable
 {
     /**
      * TODO:
-     *  [X] close on save? close button?
-     *  [X] Open board button?
-     *  [X] Add generation generationTiles
-     *  [X] Only tile rendering or additional onPressed functionality?
-     *  [X] Automatic generation simulation or button?
-     *  [X] Add the saved pattern to the loaded list
-     *  [X] CSS stylesheet
-     *  [X] Scalable window
-     *  [X] Alert dialog on empty board
      *  [ ] Get the colors from the main application (through a ColorProfile object)
      *  [ ] Get the rule from the main app?
      *  [ ] Simulate with the user defined rule
-     *  [ ] Add GIF exporter? as filetype in fileChooser?
-     *  [ ] Text when patterns repeat? good candidate for GIF?
      *  [ ] Unit tests for export
      *  [ ] JavaDoc
      */
-
-    private final int NUMBER_OF_STRIP_TILES = 20;
 
     private GenerationTile selectedTile;
     private BoardRenderer boardRenderer;
@@ -120,8 +106,6 @@ public class PatternEditorForm extends Stage implements Initializable
 
         boardRenderer.setLivingCellColor(Color.color(0.0275, 0.9882, 0));
         boardRenderer.setDeadCellColor(Color.BLACK);
-
-        tilePane.setPrefColumns(NUMBER_OF_STRIP_TILES);
 
         updateGenerationStrip();
         drawBoard();
@@ -205,51 +189,30 @@ public class PatternEditorForm extends Stage implements Initializable
         tilePane.getChildren().clear();
         scrollPane.setHvalue(0);
 
-        // Add the selected til back in with an updated image.
-        GameBoard currentBoard = selectedTile.getGameBoard().trimmedCopy(1);
-        selectedTile = new GenerationTile(currentBoard);
-        tilePane.getChildren().add(selectedTile);
+        List<Integer> generationHashCodes = new ArrayList<>();
+
+        // Simulate and generate new tiles
+        GameBoard currentBoard = selectedTile.getGameBoard();
+        for(int i = 0; i < tilePane.getPrefColumns(); i++)
+        {
+            GameBoard trimmedBoard = currentBoard.trimmedCopy(1);
+            tilePane.getChildren().add(new GenerationTile(trimmedBoard));
+            generationHashCodes.add(trimmedBoard.hashCode());
+
+            simulator.executeOn(currentBoard);
+
+            // Stop adding tiles if the generation has died out.
+            if(currentBoard.getPopulation() == 0)
+                break;
+        }
+
+        // Set the selected tile to the first one in the strip.
+        selectedTile = (GenerationTile) tilePane.getChildren().get(0);
         addSelectedEffectTo(selectedTile);
 
-        // Add the rest of the tiles
-        for(int i = 1; i < NUMBER_OF_STRIP_TILES; i++)
-        {
-            GameBoard board = currentBoard.trimmedCopy();
-            simulator.executeOn(board);
-            if(board.getPopulation() > 0)
-            {
-                tilePane.getChildren().add(new GenerationTile(board));
-                currentBoard = board;
-            }
-            else break;
-        }
-
-       removeStaticGenerationTiles();
-    }
-
-    /**
-     *  Removes all unnecessary static generations.
-     *  It uses the boards hash codes to compare and remove similar generations
-     *  from the back of the generation strip.
-     */
-    private void removeStaticGenerationTiles()
-    {
-        // Gather all hash codes
-        int[] hashCodes = new int[tilePane.getChildren().size()];
-        for(int i = 0; i < tilePane.getChildren().size(); i++)
-            hashCodes[i] = ((GenerationTile)tilePane.getChildren().get(i)).getGameBoard().hashCode();
-
-        // Remove generations with the same hash code
-        for(int i = hashCodes.length - 1; i > 0; i--)
-        {
-            if (hashCodes[i] != hashCodes[i - 1] || i == 1)
-            {
-                if (i < hashCodes.length - 1 && i < tilePane.getChildren().size() - 1)
-                    tilePane.getChildren().remove(i, hashCodes.length);
-
-                break;
-            }
-        }
+        // Clean up the strip by removing repetition
+        removeStaticGenerationTiles(generationHashCodes);
+        replaceRepeatingPatternsWithGIFExport(generationHashCodes);
     }
 
     /**
@@ -261,6 +224,68 @@ public class PatternEditorForm extends Stage implements Initializable
     {
         tilePane.getChildren().forEach(e -> e.setEffect(new DropShadow()));
         tile.setEffect(new DropShadow(10, Color.GREEN));
+    }
+
+
+    /**
+     *  Removes all unnecessary static generations.
+     *  It uses the boards hash codes to compare and remove similar generations,
+     *  starting from the back of the strip. Leaves the first tile if all tiles are the same.
+     *  @param hashCodeList A list of hash codes matching the generations in the tilePane.
+     */
+    private void removeStaticGenerationTiles(List<Integer> hashCodeList)
+    {
+        // Remove generations with the same hash code
+        for(int i = hashCodeList.size() - 1; i > 0; i--)
+        {
+            if (!hashCodeList.get(i).equals(hashCodeList.get(i - 1)) || i == 1)
+            {
+                if (i < hashCodeList.size() - 1 && i < tilePane.getChildren().size() - 1)
+                    tilePane.getChildren().remove(i, hashCodeList.size());
+
+                break;
+            }
+        }
+    }
+
+    /**
+     * Replaces repeating patterns with an option to export the remaining tiles to a GIF.
+     * This method uses a search function provided by the GIFExporterForm.
+     * @param hashCodeList A list of hash codes matching the generations in the tilePane.
+     * @see GIFExporterForm
+     */
+    private void replaceRepeatingPatternsWithGIFExport(List<Integer> hashCodeList)
+    {
+        int result = GIFExporterForm.lastIndexOfRepeatingPattern(hashCodeList);
+        if(result != -1)
+        {
+            // Remove all tiles after the first sequence.
+            tilePane.getChildren().remove(result, tilePane.getChildren().size());
+
+            // Add a special GIF-button tile to the strip.
+            GenerationTile tile = new GenerationTile(null);
+            tile.setImage(new Image("file:resources/createGIF.png"));
+            tile.setOnMouseClicked(event -> openGIFExporterDialog(null));
+            Tooltip.install(tile, new Tooltip("Create a GIF of this repeating pattern"));
+            tilePane.getChildren().add(tile);
+        }
+    }
+
+    /**
+     * Opens a new GIFExporter dialog window.
+     * @param file The output file. If null, a FileChooser will be opened later.
+     */
+    private void openGIFExporterDialog(File file)
+    {
+        GIFExporterForm exporterForm = new GIFExporterForm(
+                selectedTile.getGameBoard(),
+                simulator,
+                tilePane.getChildren().size(),
+                file
+        );
+        exporterForm.initModality(Modality.WINDOW_MODAL);
+        exporterForm.initOwner(this);
+        exporterForm.showAndWait();
     }
 
     /**
@@ -284,18 +309,25 @@ public class PatternEditorForm extends Stage implements Initializable
         {
             Pattern pattern = createPattern();
             FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"));
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"),
+                    new FileChooser.ExtensionFilter("Animation", " *.gif"));
             fileChooser.setInitialFileName(pattern.getName());
             File file = fileChooser.showSaveDialog(this);
 
             if(file != null)
             {
-                PatternExporter exporter = new PatternExporter();
-                exporter.export(pattern, file);
+                if(file.getName().endsWith(".rle"))
+                {
+                    PatternExporter exporter = new PatternExporter();
+                    exporter.export(pattern, file);
 
-                // Add the pattern to the pattern chooser
-                pattern.setOrigin("FILE:" + file.getCanonicalPath());
-                PatternChooserForm.addPattern(pattern);
+                    // Add the pattern to the pattern chooser
+                    pattern.setOrigin("FILE:" + file.getCanonicalPath());
+                    PatternChooserForm.addPattern(pattern);
+                }
+                else if(file.getName().endsWith(".gif"))
+                    openGIFExporterDialog(file);
             }
         }
         catch (PatternFormatException e)
@@ -371,7 +403,7 @@ public class PatternEditorForm extends Stage implements Initializable
      */
     private class GenerationTile extends ImageView
     {
-        private final int TILE_SIZE = 100;
+        public static final int TILE_SIZE = 100;
         private GameBoard board;
 
         public GenerationTile(GameBoard board)
@@ -390,6 +422,9 @@ public class PatternEditorForm extends Stage implements Initializable
 
         private Image createTileImage()
         {
+            if(board == null)
+                return null;
+
             double scale = Math.min((double)TILE_SIZE / board.getWidth(), (double)TILE_SIZE / board.getHeight());
             int width = (int) Math.ceil(board.getWidth() * scale);
             int height = (int) Math.ceil(board.getHeight() * scale);

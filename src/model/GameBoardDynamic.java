@@ -13,6 +13,27 @@ package model;
  * set alive. This count is read in the next simulation step and cleared when
  * makeNextGenerationCurrent() is called.
  *
+ * <p>There are some specific reasons for why we chose this solution instead of using
+ * a dynamic List implementation from the Java Collection library.
+ *  - The available lists don't support primitive types, and since we want our application
+ *    to be able to load the largest common patterns, storing the cell data
+ *    efficiently is key. The numeric data wrapper for a byte may occupy up to 16 bytes,
+ *    depending on the platform, and compared to only using on single byte, wrapping the
+ *    data in an object like this, is not something we can afford.
+ *  - Smaller memory usage per cell enables more of the board to fit in the processors cache,
+ *    which in turn causes fewer cache misses and faster simulation.
+ *  - The different List implementations all perform internal bounding checks on data access.
+ *    By making sure our simulator-implementations only do work inside of the allocated arrays,
+ *    we can skip these bounding checks for every cell read/write and further increase performance.
+ *  - We gain more control over the dynamic resizing by doing it this way. Reallocation is never
+ *    done mid-simulation and is only performed when strictly needed. Checks for when the board
+ *    should expand is not done on every read/write to a cell, but rather on a small selection of
+ *    cells near the edges, one time per simulation step.
+ *
+ * <p>The Java Collection library offers allot of useful and convenient functionality, but for this specific
+ * purpose we think our manual array implementation fits better. See the GIFExporterForm, PatternEditorForm,
+ * PatternChooserForm and RLEParser classes for other cases where we chose to use the library.
+ *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @see GameBoard
@@ -72,13 +93,17 @@ public class GameBoardDynamic extends GameBoard
     /**
      * Sets the state of a cell in the current generation.
      * NOTE: this method has the side effect of updating the living neighbour count of nearby cells.
+     * This method is synchronized to prevent concurrency problems with the ThreadedSimulator implementation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param p The position of the cell to be set.
      */
     @Override
     public void editThisGeneration(boolean state, Point p)
     {
-        setStateAndUpdateNeighbourCount(state, (boardStart.x + p.x), (boardStart.y + p.y), thisGeneration);
+        synchronized(thisGeneration)
+        {
+            setStateAndUpdateNeighbourCount(state, (boardStart.x + p.x), (boardStart.y + p.y), thisGeneration);
+        }
     }
 
     /**

@@ -60,6 +60,12 @@ public abstract class Simulator
         return simulationTimeInMilliSeconds;
     }
 
+    public SimRule getSimulationRule()
+    {
+        return simulationRule;
+    }
+
+
     /**
      * Executes a simulation on the given board according to the set rule.
      * @param board The GameBoard to be used under the simulation.

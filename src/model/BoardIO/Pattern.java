@@ -7,7 +7,7 @@ import model.simulation.CustomRule;
 import model.simulation.DefaultRuleSet;
 import model.simulation.SimRule;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class wraps relevant information of a loaded pattern into a convenient Pattern object.
@@ -37,7 +37,7 @@ public class Pattern
      *
      * @param metadataList A list of metadata lines.
      */
-    public void setMetadata(ArrayList<String> metadataList)
+    public void setMetadata(List<String> metadataList)
     {
         StringBuilder commentBuilder = new StringBuilder();
         for(String string : metadataList)

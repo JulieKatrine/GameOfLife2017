@@ -37,4 +37,5 @@ public abstract class BoardRenderer
     public abstract void render(GameBoard board);
     public abstract void setDeadCellColor(Paint value);
     public abstract void setLivingCellColor(Paint value);
+    public abstract void enableGridRendering(boolean state);
 }

@@ -41,7 +41,7 @@
                   <Insets left="15.0" right="15.0" top="20.0" />
                </VBox.margin>
             </TextField>
-            <TextArea fx:id="descriptionTextArea" prefHeight="222.0" prefWidth="200.0" promptText="Description">
+            <TextArea fx:id="descriptionTextArea" promptText="Description" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="20.0" />
                </VBox.margin>
@@ -87,12 +87,12 @@
                         <Insets />
                      </HBox.margin>
                      <tooltip>
-                        <Tooltip text="Open this pattern in the main application" />
+                        <Tooltip text="Opens the selected pattern in the main application" />
                      </tooltip>
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets left="15.0" right="15.0" top="20.0" />
+                  <Insets bottom="20.0" left="15.0" right="15.0" top="18.0" />
                </VBox.margin>
             </HBox>
          </children></VBox>
@@ -104,7 +104,7 @@
                </cursor></Canvas>
             <ScrollPane fx:id="scrollPane" fitToHeight="true" focusTraversable="false" hbarPolicy="ALWAYS" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="140.0" style="-fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-background-color: transparent;" styleClass="edge-to-edge" vbarPolicy="NEVER">
                <content>
-                  <TilePane fx:id="tilePane" alignment="CENTER_LEFT" hgap="10.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="670.0" prefColumns="20" prefHeight="130.0" prefRows="1" style="-fx-background-color: #878787;" tileAlignment="CENTER_LEFT" vgap="10.0">
+                  <TilePane fx:id="tilePane" alignment="CENTER_LEFT" hgap="10.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefColumns="20" prefHeight="130.0" prefRows="1" style="-fx-background-color: #878787;" vgap="10.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding></TilePane>

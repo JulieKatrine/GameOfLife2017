@@ -3,6 +3,7 @@ package model.BoardIO;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is a parser implementation for .rle files.
@@ -19,7 +20,7 @@ public class RLEParser implements Parser
     private final char END_OF_ROW = '$';
     private final char END_OF_DATA = '!';
 
-    private ArrayList<String> metadata;
+    private List<String> metadata;
     private int width = INVALID;
     private int height = INVALID;
     private boolean[][] boardData;
