@@ -22,14 +22,13 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
 import model.Point;
 import model.simulation.CustomRule;
 import view.BoardRenderer;
-import view.BoardRendererImpl;
+import view.ColorProfile;
 
 /**
  * Controls the screen in co-operation with UserInterface.fxml.
@@ -72,12 +71,13 @@ public class Controller implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        boardRender  = new BoardRendererImpl(canvas);
+        boardRender  = new BoardRenderer(canvas);
         boardEditor  = new BoardEditor(boardRender.getCamera());
         lastMousePos = new Point();
         gameModel    = new GameModel();
         updateTimer  = new UpdateTimer();
 
+        boardRender.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
         updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
 
@@ -92,21 +92,19 @@ public class Controller implements Initializable
         */
 
         // Allows the user to change the pattern-colors.
-        deadCellColor.setValue(Color.BLACK);
-        boardRender.setDeadCellColor(Color.BLACK);
+        deadCellColor.setValue((Color)boardRender.getColorProfile().getDeadColor());
         deadCellColor.setOnMouseExited(event -> canvas.requestFocus());
         deadCellColor.setOnAction(event ->
         {
-            boardRender.setDeadCellColor(deadCellColor.getValue());
+            boardRender.getColorProfile().setDeadColor(deadCellColor.getValue());
             drawBoard();
         });
 
-        livingCellColor.setValue(Color.color(0.0275, 0.9882, 0));
-        boardRender.setLivingCellColor(Color.color(0.0275, 0.9882, 0));
+        livingCellColor.setValue((Color)boardRender.getColorProfile().getAliveColor());
         livingCellColor.setOnMouseExited(event -> canvas.requestFocus());
         livingCellColor.setOnAction(event ->
         {
-            boardRender.setLivingCellColor(livingCellColor.getValue());
+            boardRender.getColorProfile().setAliveColor(livingCellColor.getValue());
             drawBoard();
         });
 
@@ -242,12 +240,24 @@ public class Controller implements Initializable
     {
         scene.setOnKeyPressed(event ->
         {
-            if(event.getCode() == KeyCode.SPACE)
+            KeyCode code = event.getCode();
+            if(code == KeyCode.SPACE)
                 startStopSimulation();
-            else if(event.getCode() == KeyCode.N)
+            else if(code == KeyCode.N)
                 simulateNextGeneration();
-            else if(event.getCode() == KeyCode.CONTROL)
+            else if(code == KeyCode.CONTROL)
                 controlPressed = true;
+            else if(code == KeyCode.R)
+            {
+                Pattern p = PatternChooserForm.getSelectedPattern();
+                if(p != null)
+                {
+                    gameModel.setGameBoard(PatternChooserForm.getSelectedPattern().getGameBoard());
+                    drawBoard();
+                }
+            }
+            else if(code == KeyCode.O)
+                loadNewGameBoard();
         });
 
         scene.setOnKeyReleased(event ->
@@ -289,6 +299,7 @@ public class Controller implements Initializable
     @FXML private void saveGameBoard()
     {
         PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
+        editorForm.setColorProfile(boardRender.getColorProfile());
         editorForm.showAndWait();
         GameBoard selectedGameBoard = editorForm.getSelectedGameBoard();
         if(selectedGameBoard != null)
@@ -385,7 +396,6 @@ public class Controller implements Initializable
         grid.add(birth, 1, 0);
         grid.add(new Label("Survival:"), 0, 1);
         grid.add(survival, 1, 1);
-
 
         inputDialog.getDialogPane().setContent(grid);
         inputDialog.showAndWait();

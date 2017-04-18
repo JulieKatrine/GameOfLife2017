@@ -9,6 +9,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
@@ -26,7 +28,7 @@ import model.simulation.DefaultRuleSet;
 import model.simulation.Simulator;
 import model.simulation.ThreadedSimulator;
 import view.BoardRenderer;
-import view.BoardRendererImpl;
+import view.ColorProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static javafx.scene.input.KeyCode.KP_RIGHT;
 
 /**
  * This is the stage and controller class for the pattern editor/saver.
@@ -56,7 +60,6 @@ public class PatternEditorForm extends Stage implements Initializable
     private BoardRenderer boardRenderer;
     private BoardEditor boardEditor;
     private Simulator simulator;
-    private Scene scene;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -78,7 +81,7 @@ public class PatternEditorForm extends Stage implements Initializable
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditorForm.fxml"));
             loader.setController(this);
-            scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load());
 
             super.setTitle("Edit and save your pattern");
             super.getIcons().add(GameOfLife.APPLICATION_ICON);
@@ -100,12 +103,10 @@ public class PatternEditorForm extends Stage implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        boardRenderer = new BoardRendererImpl(canvas);
+        boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
         simulator = new ThreadedSimulator(new DefaultRuleSet());
-
-        boardRenderer.setLivingCellColor(Color.color(0.0275, 0.9882, 0));
-        boardRenderer.setDeadCellColor(Color.BLACK);
+        boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
         updateGenerationStrip();
         drawBoard();
@@ -126,18 +127,41 @@ public class PatternEditorForm extends Stage implements Initializable
             drawBoard();
         });
 
-        scene.widthProperty().addListener((a, b, newVal) ->
+        super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
             // 200 = width of left bar.
             canvas.setWidth(newVal.intValue() - 200);
             drawBoard();
         });
 
-        scene.heightProperty().addListener((a, b, newVal) ->
+        super.getScene().heightProperty().addListener((a, b, newVal) ->
         {
             // 140 = height of generation strip.
             canvas.setHeight(newVal.intValue() - 140);
             drawBoard();
+        });
+
+        super.addEventHandler(KeyEvent.ANY, event ->
+        {
+            int index = tilePane.getChildren().indexOf(selectedTile);
+            if(event.getCode() == KeyCode.RIGHT)
+            {
+                if(index != -1 && index + 1 < tilePane.getChildren().size())
+                {
+                    addSelectedEffectTo((selectedTile = (GenerationTile)tilePane.getChildren().get(index + 1)));
+                    scrollPane.setHvalue(scrollPane.getHvalue() + (1.0 / tilePane.getChildren().size()));
+                    drawBoard();
+                }
+            }
+            else if(event.getCode() == KeyCode.LEFT)
+            {
+                if(index != -1 && index - 1 < tilePane.getChildren().size())
+                {
+                    addSelectedEffectTo((selectedTile = (GenerationTile)tilePane.getChildren().get(index - 1)));
+                    scrollPane.setHvalue(scrollPane.getHvalue() - (1.0 / tilePane.getChildren().size()));
+                    drawBoard();
+                }
+            }
         });
     }
 
@@ -395,6 +419,11 @@ public class PatternEditorForm extends Stage implements Initializable
             return selectedTile.getGameBoard();
         else
             return null;
+    }
+
+    public void setColorProfile(ColorProfile profile)
+    {
+        boardRenderer.setColorProfile(profile);
     }
 
     /**

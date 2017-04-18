@@ -14,7 +14,7 @@ import model.BoardIO.GIFExporter;
 import model.GameBoard;
 import model.simulation.Simulator;
 import view.BoardRenderer;
-import view.BoardRendererImpl;
+import view.ColorProfile;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,10 +92,10 @@ public class GIFExporterForm extends Stage implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        boardRenderer = new BoardRendererImpl(canvas);
-        boardRenderer.setLivingCellColor(Color.BLACK);
-        boardRenderer.setDeadCellColor(Color.WHITESMOKE);
-        boardRenderer.enableGridRendering(false);
+        boardRenderer = new BoardRenderer(canvas);
+        ColorProfile cProfile = new ColorProfile(Color.WHITESMOKE,Color.BLACK, Color.GRAY);
+        cProfile.setGridRendering(false);
+        boardRenderer.setColorProfile(cProfile);
 
         cellSize = (int) cellSizeSlider.getValue();
         frameRate = (int) frameRateSlider.getValue();

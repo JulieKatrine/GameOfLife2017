@@ -15,6 +15,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
@@ -96,6 +98,8 @@ public class PatternChooserForm extends Stage implements Initializable
 
         addEventListener();
         addLoadedTiles();
+
+        Platform.runLater(() -> tilePane.requestFocus());
     }
 
     /**
@@ -128,6 +132,16 @@ public class PatternChooserForm extends Stage implements Initializable
             scrollPane.layout();
             scrollPane.setVvalue(scrollBarPos);
         });
+
+        super.addEventHandler(KeyEvent.ANY, event ->
+        {
+            if(event.getCode() == KeyCode.SPACE)
+            {
+                if (selectedPattern != null)
+                    closeWindow();
+            }
+        });
+
     }
 
     /**
@@ -135,9 +149,7 @@ public class PatternChooserForm extends Stage implements Initializable
      */
     private void closeWindow()
     {
-        for(Tile t : loadedTiles)
-            t.releasePattern();
-
+        loadedTiles.forEach(Tile::releasePattern);
         executorService.shutdown();
         System.gc();
         super.close();
@@ -160,8 +172,7 @@ public class PatternChooserForm extends Stage implements Initializable
         while(patternsToLoad != null && patternsToLoad.size() > 0)
             loadAndAddPatternToForm(patternsToLoad.pop().getOrigin());
 
-        for(Tile t : loadedTiles)
-            addTileEventListener(t);
+        loadedTiles.forEach(t -> addTileEventListener(t));
 
         tilePane.getChildren().addAll(loadedTiles);
 
@@ -212,18 +223,20 @@ public class PatternChooserForm extends Stage implements Initializable
                 if(tile != null)
                 {
                     addTileEventListener(tile);
+                    addSelectedEffect(tile);
                     tilePane.getChildren().add(0, tile);
                     loadedTiles.add(0, tile);
                     selectedPattern = tile.pattern;
-
-                    for(Tile t : loadedTiles)
-                        t.setEffect(dropShadow);
-
-                    tile.setEffect(selected);
                 }
                 tilePane.getChildren().remove(hourGlass);
             });
         });
+    }
+
+    private void addSelectedEffect(Tile tile)
+    {
+        loadedTiles.forEach(t -> t.setEffect(dropShadow));
+        tile.setEffect(selected);
     }
 
     /**
@@ -252,7 +265,7 @@ public class PatternChooserForm extends Stage implements Initializable
             e.printStackTrace();
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
-                    "The pattern you are trying to load is in the wrong format." +
+                     "The pattern you are trying to load is in the wrong format." +
                     "\nMake sure this is an rle file.");
         }
         catch (OutOfMemoryError e)
@@ -316,10 +329,7 @@ public class PatternChooserForm extends Stage implements Initializable
             selectedPattern = loadedTile.pattern;
             textArea.setText(loadedTile.pattern.getAllMetadata());
 
-            for(Tile t : loadedTiles)
-                t.setEffect(dropShadow);
-
-            loadedTile.setEffect(selected);
+            addSelectedEffect(loadedTile);
 
             if(event.getClickCount() == 2)
                 closeWindow();
