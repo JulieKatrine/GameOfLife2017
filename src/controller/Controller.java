@@ -1,32 +1,30 @@
 package controller;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
 import model.Point;
 import model.simulation.CustomRule;
+import model.simulation.DefaultRuleSet;
 import view.BoardRenderer;
 import view.ColorProfile;
 
@@ -56,10 +54,10 @@ public class Controller implements Initializable
     @FXML private Slider speedSlider;
     @FXML private MenuItem startStopMenuItem;
     @FXML private MenuItem nextMenuItem;
-    @FXML private Button startStopButton;
+    @FXML private ToggleButton startStopButton;
     @FXML private ColorPicker deadCellColor;
     @FXML private ColorPicker livingCellColor;
-    @FXML private ChoiceBox<String> ruleChooser;
+    @FXML private Label ruleInfo;
 
     /**
      * Called to initialize the controller after it's root element has been completely processed.
@@ -207,24 +205,25 @@ public class Controller implements Initializable
         // Updates the canvas height when the window is resized
         anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
         {
-            canvas.setHeight(newValue.doubleValue() - 40 - 20);
+            canvas.setHeight(newValue.doubleValue() - 58 - 20);
             drawBoard();
         });
-
-        //Shows the user different choices of rules
-
+/*
         listOfRuleSets = FXCollections.observableArrayList
                 ("Change rule", "Default Rule", "Replicator", "Fredkin", "Seeds", "Live Free or Die", "Life without death",
                         "Custom rule");
         ruleChooser.setValue("Change rule");
+
         ruleChooser.setItems(listOfRuleSets);
         ruleChooser.setOnMouseExited(event -> canvas.requestFocus());
+        */
     }
 
     private void drawBoard()
     {
         boardRender.render(gameModel.getGameBoard());
     }
+
 
     /**
      * Handles the events of a user using the key-board.
@@ -284,10 +283,9 @@ public class Controller implements Initializable
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             cellSizeSlider.setValue(boardRender.getCamera().getZoom());
             updateTimer.setRunning(false);
-            startStopMenuItem.setText("Start");
-            startStopButton.setText("Start");
+            startStopMenuItem.setText("start");
             nextMenuItem.setDisable(false);
-            pattern.getRule();
+            ruleInfo.setText("Rule: " + pattern.getRuleString());
             drawBoard();
         }
     }
@@ -315,7 +313,7 @@ public class Controller implements Initializable
     {
         updateTimer.setRunning(!updateTimer.isRunning());
         startStopMenuItem.setText(updateTimer.isRunning() ? "Stop" : "Start");
-        startStopButton.setText(updateTimer.isRunning() ? "Stop" : "Start");
+        startStopButton.setSelected(updateTimer.isRunning());
         nextMenuItem.setDisable(updateTimer.isRunning());
     }
 
@@ -342,83 +340,33 @@ public class Controller implements Initializable
         alert.showAndWait();
     }
 
-    @FXML private void getChosenRule()
-    {       String rule;
-            if(ruleChooser.getValue() != null) {
-                rule = ruleChooser.getValue();
-                ruleConverter(rule);
-            }
-    }
-
-    /*TODO: Julie:
-    * Make it possible to "re-click" on "custom rule"
-    * Disable the first button (Change rule)
-    * Default Ruleset could be done better
-    * Add logo in window corners
-    * Show the actual rule, not just the name
-    * To add more rules: http://www.conwaylife.com/wiki/Rules#Rules*/
-    private void ruleConverter(String rule)
+    @FXML private void setNewRuleFromFXML(Event event)
     {
-        if (rule.equals("Default Rule"))
-            setNewRule("B3/S23");
-        else if(rule.equals("Replicator"))
-            setNewRule("B1357/S1357");
-        else if(rule.equals("Fredkin"))
-            setNewRule("B1357/S02468");
-        else if(rule.equals("Seeds"))
-            setNewRule("B2/S");
-        else if(rule.equals("Live Free or Die"))
-            setNewRule("B2/S0");
-        else if(rule.equals("Life without death"))
-            setNewRule("B3/S012345678");
-        else if(rule.equals("Custom rule"))
-            customChangeRule();
+        String ruleFromFXML;
+        ruleFromFXML = ((MenuItem)event.getSource()).getId();
+        ruleFromFXML = ruleFromFXML.trim().replaceAll("S", "/S");
+        setNewRule(ruleFromFXML);
+        ruleInfo.setText("Rule: " + ((MenuItem) event.getSource()).getText() + " - " + ruleFromFXML);
     }
 
     @FXML private void customChangeRule()
     {
-        TextInputDialog inputDialog = new TextInputDialog();
-        String newRule = "";
+        CustomRuleCreator customRuleCreator = new CustomRuleCreator();
+        customRuleCreator.showAndWait();
+        String rule = customRuleCreator.getRuleString();
 
-        inputDialog.setHeaderText("Please enter the amount of living neighbors\nthat will cause the following state of a cell:");
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField birth = new TextField();
-        birth.setPromptText("3");
-        TextField survival = new TextField();
-        survival.setPromptText("2, 3");
-
-        grid.add(new Label("Birth:"), 0, 0);
-        grid.add(birth, 1, 0);
-        grid.add(new Label("Survival:"), 0, 1);
-        grid.add(survival, 1, 1);
-
-        inputDialog.getDialogPane().setContent(grid);
-        inputDialog.showAndWait();
-
-        newRule += "B"+birth.getText()+"/S"+survival.getText();
-        newRule.trim().replaceAll(",", "");
-        newRule.trim().replaceAll(" ", "");
-        System.out.println(newRule);
-        setNewRule(newRule);
-
-        if(birth.getText().isEmpty() || survival.getText().isEmpty())
-        {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("");
-            alert.setHeaderText("");
-            alert.setContentText("The rule was set to " + newRule);
-            alert.show();
-        }
+                if(rule != null) {
+                    setNewRule(rule);
+                    ruleInfo.setText("Rule: " + rule);
+                }
     }
 
     private void setNewRule(String rule)
     {
-        gameModel.setRule(new CustomRule(rule));
+        if (rule.equals("B3/S23"))
+            gameModel.setRule(new DefaultRuleSet());
+        else
+            gameModel.setRule(new CustomRule(rule));
     }
 
     public void closeRequest() {

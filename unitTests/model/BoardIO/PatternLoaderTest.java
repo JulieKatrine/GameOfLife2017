@@ -22,7 +22,7 @@ class PatternLoaderTest
         assertEquals("1100101101111110000010000",      cellData,            "Test cell data");
         assertEquals("TestPattern",                    pattern.getName(),   "Test name");
         assertEquals("FILE:patterns\\testPattern.rle", pattern.getOrigin(), "Test origin");
-        assertEquals(DefaultRuleSet.class,                      pattern.getRule().getClass(),"Test rule");
+        assertEquals(DefaultRuleSet.class,                      pattern.getRuleString().getClass(),"Test rule");
     }
 
     @Test

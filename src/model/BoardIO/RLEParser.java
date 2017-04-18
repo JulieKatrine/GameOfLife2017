@@ -140,7 +140,7 @@ public class RLEParser implements Parser
         Pattern p = new Pattern();
         p.setMetadata(metadata);
         p.setCellData(boardData);
-        p.setRule(getRuleInStandardFormat(rule));
+        p.setRuleString(getRuleInStandardFormat(rule));
         return p;
     }
 
