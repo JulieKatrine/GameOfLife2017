@@ -188,7 +188,7 @@ public abstract class GameBoard
      */
     private GameBoard getNewInstance(int width, int height)
     {
-        // I'd love to know how this could be done better??
+        //TODO: I'd love to know how this could be done better??
         GameBoard newBoard = null;
         if(this instanceof GameBoardDynamic)
             newBoard = new GameBoardDynamic(width, height);

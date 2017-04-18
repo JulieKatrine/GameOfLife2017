@@ -1,9 +1,13 @@
 package model.simulation;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+
 /**
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
+
 public class CustomRule implements SimRule
 {
     private Result[] precalculatedResult;
@@ -20,6 +24,7 @@ public class CustomRule implements SimRule
         for(int i = rule.length() - 1; i >= 0; i--)
             if(Character.isDigit(rule.charAt(i)))
                 precalculatedResult[rule.charAt(i) - '0'] = (i < indexOfSlash) ? Result.BIRTH : Result.SURVIVE;
+
     }
 
     @Override

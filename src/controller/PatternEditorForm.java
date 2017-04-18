@@ -381,7 +381,7 @@ public class PatternEditorForm extends Stage implements Initializable
         Pattern pattern = new Pattern();
         pattern.setMetadata(metaData);
         pattern.setCellData(cellData);
-        pattern.setRule(rule);
+        pattern.setRuleString(rule);
         return pattern;
     }
 

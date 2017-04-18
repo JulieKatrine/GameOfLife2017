@@ -2,6 +2,7 @@ package model.BoardIO;
 
 import model.GameBoard;
 import model.GameBoardDynamic;
+import model.GameBoardStatic;
 import model.Point;
 import model.simulation.CustomRule;
 import model.simulation.DefaultRuleSet;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class Pattern
 {
-    private String rule;
+    private String ruleString;
     private String name;
     private String author;
     private String origin;
@@ -64,9 +65,10 @@ public class Pattern
         this.cellData = cellData;
     }
 
-    public void setRule(String rule)
+    public void setRuleString(String ruleString)
     {
-        this.rule = rule;
+        this.ruleString = ruleString;
+
     }
 
     public void setOrigin(String origin)
@@ -101,15 +103,15 @@ public class Pattern
 
     public SimRule getRule()
     {
-        if(rule != null && !rule.equals("B3/S23"))
-            return new CustomRule(rule);
+        if(ruleString != null && !ruleString.equals("B3/S23"))
+            return new CustomRule(ruleString);
         else
             return new DefaultRuleSet();
     }
 
     public String getRuleString()
     {
-        return rule;
+        return ruleString;
     }
 
     /**
@@ -119,7 +121,7 @@ public class Pattern
     {
         return (name != null ? ("Name: " + name + '\n') : "")  +
                 (author != null ? ("Author: " + author + '\n') : "") +
-                (rule != null ? ("Rule: " + rule + '\n') : "Default ruleset: B3/S23 \n") +
+                (ruleString != null ? ("Rule: " + ruleString + '\n') : "Default ruleset: B3/S23 \n") +
                 (comments != null ? ("\nComments: \n" + comments) : "");
     }
 

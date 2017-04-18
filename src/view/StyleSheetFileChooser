@@ -29,3 +29,19 @@
 {
     -fx-color-label-visible: false;
 }
+
+.buttonImage
+{
+    -fx-background-image: url("file:resources/play.png");
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.buttonImage:selected
+{
+    -fx-background-image: url("file:resources/pause.png");
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}

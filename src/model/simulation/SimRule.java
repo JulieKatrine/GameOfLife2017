@@ -1,5 +1,7 @@
 package model.simulation;
 
+import javafx.fxml.FXML;
+
 /**
  * This interface is used to enable multiple rule implementations for the Simulator.
  *

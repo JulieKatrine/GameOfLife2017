@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.CustomMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.Pane?>
 <AnchorPane fx:id="anchorPane" prefHeight="600" prefWidth="800" stylesheets="@StyleSheetFileChooser" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -35,15 +36,18 @@
                                  <items>
                                      <MenuItem fx:id="startStopMenuItem" onAction="#startStopSimulation" text="Start" />
                                      <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" text="Next" />
-                                     <Menu text="Speed">
-                                        <items>
-                                            <CustomMenuItem>
-                                                <content>
-                                                    <Slider fx:id="speedSliderMenuItem" blockIncrement="1" max="100" min="1" value="50" />
-                                                </content>
-                                            </CustomMenuItem>
-                                        </items>
-                                     </Menu>
+                              <Menu mnemonicParsing="false" text="Change Rule">
+                                <items>
+                                  <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Default Rule" />
+                                    <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Replicator" />
+                                    <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Fredkin" />
+                                    <MenuItem fx:id="B2S" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Seeds" />
+                                    <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Live Free or Die" />
+                                    <MenuItem fx:id="B3S012345678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Life without death" />
+                                    <SeparatorMenuItem> </SeparatorMenuItem>
+                                    <MenuItem fx:id="customRule" mnemonicParsing="false" onAction="#customChangeRule" text="Custom Rule" />
+                                </items>
+                              </Menu>
                                  </items>
                              </Menu>
                              <Menu text="View">
@@ -68,19 +72,18 @@
                      </MenuBar>
                  </children>
               </HBox>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
+              <Canvas fx:id="canvas" height="523.5" width="800" />
+            <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0">
                <items>
-                  <Button fx:id="startStopButton" onAction="#startStopSimulation" mnemonicParsing="false" text="Start" />
+                  <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
                   <Label text="Speed" />
                   <Slider fx:id="speedSlider" />
-                   <Label text="Dead-cell color" />
                   <ColorPicker fx:id="deadCellColor" focusTraversable="false" />
-                   <Label text="Living-cell color" />
                   <ColorPicker fx:id="livingCellColor" focusTraversable="false" />
-                  <ChoiceBox fx:id="ruleChooser" onAction="#getChosenRule" prefWidth="150.0" />
+                   <Pane HBox.hgrow ="ALWAYS" />
+                  <Label fx:id="ruleInfo" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Rule: B3/S23" />
                </items>
             </ToolBar>
-              <Canvas fx:id="canvas" height="535.0" width="800" />
           </children>
        </VBox>
    </children>

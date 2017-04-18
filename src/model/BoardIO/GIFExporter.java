@@ -4,7 +4,6 @@ import lieng.GIFWriter;
 import model.GameBoard;
 import model.Point;
 import model.simulation.Simulator;
-
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
