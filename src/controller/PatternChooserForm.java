@@ -43,6 +43,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
     private DropShadow selected;
     private DropShadow dropShadow;
+    private Image hourGlassImage;
     private ExecutorService executorService;
 
     @FXML private TextField urlTextField;
@@ -89,6 +90,7 @@ public class PatternChooserForm extends Stage implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        hourGlassImage = new Image(getClass().getResourceAsStream("/img/hourglass.png"));
         dropShadow = new DropShadow();
         dropShadow.setRadius(15);
         dropShadow.setColor(Color.rgb(124, 120, 118));
@@ -188,7 +190,7 @@ public class PatternChooserForm extends Stage implements Initializable
         String[] defaultPatterns = { "test01.rle", "blockstacker.rle"};
 
         for(String s : defaultPatterns)
-            loadAndAddPatternToForm("FILE:patterns/" + s);
+            loadAndAddPatternToForm("STREAM:/patterns/" + s);
     }
 
     /**
@@ -204,9 +206,8 @@ public class PatternChooserForm extends Stage implements Initializable
             if(t.getOrigin().equals(path))
                 return;
 
-        // Adds the temporary hourglass image while the pattern is loading
-        //Tile hourGlass = new Tile(new Image(getClass().getResourceAsStream("/resources/hourglass.png")));
-        Tile hourGlass = new Tile(new Image("file:resources/hourglass.png"));
+        // Adds a temporary hourglass image while the pattern is loading
+        Tile hourGlass = new Tile(hourGlassImage);
 
         hourGlass.setEffect(dropShadow);
         tilePane.getChildren().add(0, hourGlass);
@@ -255,10 +256,13 @@ public class PatternChooserForm extends Stage implements Initializable
             PatternLoader loader = new PatternLoader();
 
             if(path.startsWith("FILE:"))
-                return loader.load(new File(path.substring(5)));
+                return loader.loadFile(new File(path.substring(5)));
 
             else if (path.startsWith("URL:"))
-                return loader.load(path.substring(4));
+                return loader.loadURL(path.substring(4));
+
+            else if(path.startsWith("STREAM:"))
+                return loader.loadAsStream(path.substring(7));
         }
         catch (PatternFormatException e)
         {

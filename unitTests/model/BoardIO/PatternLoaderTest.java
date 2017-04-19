@@ -15,14 +15,14 @@ class PatternLoaderTest
     void testRLEFileLoading() throws IOException, PatternFormatException
     {
         PatternLoader loader = new PatternLoader();
-        Pattern pattern  = loader.load(new File("patterns/testPattern.rle"));
+        Pattern pattern  = loader.loadAsStream("/patterns/testPattern.rle");
 
         String cellData = TestUtils.gameBoardToString(pattern.getGameBoard());
 
         assertEquals("1100101101111110000010000",      cellData,            "Test cell data");
         assertEquals("TestPattern",                    pattern.getName(),   "Test name");
-        assertEquals("FILE:patterns\\testPattern.rle", pattern.getOrigin(), "Test origin");
-        assertEquals(DefaultRuleSet.class,                      pattern.getRuleString().getClass(),"Test rule");
+        assertEquals("STREAM:/patterns/testPattern.rle", pattern.getOrigin(), "Test origin");
+        assertEquals(DefaultRuleSet.class,                      pattern.getRule().getClass(),"Test rule");
     }
 
     @Test
@@ -31,7 +31,7 @@ class PatternLoaderTest
         assertThrows(PatternFormatException.class, () ->
         {
             PatternLoader loader = new PatternLoader();
-            loader.load(new File("patterns/nonSupportedTestPattern.abc"));
+            loader.loadAsStream("/patterns/nonSupportedTestPattern.abc");
         });
     }
 }

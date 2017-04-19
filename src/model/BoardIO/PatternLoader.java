@@ -22,9 +22,25 @@ public class PatternLoader
      * @throws PatternFormatException If a problem occurs while parsing the file.
      * @see Pattern
      */
-    public Pattern load(File file) throws IOException, PatternFormatException
+    public Pattern loadFile(File file) throws IOException, PatternFormatException
     {
         return loadPattern(new FileReader(file), "FILE:" + file.getPath());
+    }
+
+    /**
+     * Loads a file as a stream and returns a Pattern object.
+     * This method is used for loading patterns from the project directory or from
+     * packed JAR files.
+     *
+     * @param path The path to the file.
+     * @return A Pattern object parsed from the specified file.
+     * @throws IOException If a problem occurs while reading the file content.
+     * @throws PatternFormatException If a problem occurs while parsing the file.
+     * @see Pattern
+     */
+    public Pattern loadAsStream(String path) throws IOException, PatternFormatException
+    {
+        return loadPattern(new InputStreamReader(getClass().getResourceAsStream(path)), "STREAM:" + path);
     }
 
     /**
@@ -36,7 +52,7 @@ public class PatternLoader
      * @throws PatternFormatException If a problem occurs while parsing the file.
      * @see Pattern
      */
-    public Pattern load(String url) throws IOException, PatternFormatException
+    public Pattern loadURL(String url) throws IOException, PatternFormatException
     {
         URL destination = new URL(url);
         URLConnection urlConnection = destination.openConnection();
@@ -70,7 +86,6 @@ public class PatternLoader
         else
             return "";
     }
-
 }
 
 

@@ -24,7 +24,7 @@ class ThreadedSimulatorTest
     void executeOn() throws IOException, PatternFormatException
     {
         PatternLoader pLoader = new PatternLoader();
-        GameBoard board = pLoader.load(new File("patterns/period6oscillators.rle")).getGameBoard();
+        GameBoard board = pLoader.loadAsStream("/patterns/period6oscillators.rle").getGameBoard();
 
         String expected = TestUtils.gameBoardToString(board);
 

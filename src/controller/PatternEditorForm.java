@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static javafx.scene.input.KeyCode.KP_RIGHT;
-
 /**
  * This is the stage and controller class for the pattern editor/saver.
  * @author Niklas Johansen
@@ -60,6 +58,7 @@ public class PatternEditorForm extends Stage implements Initializable
     private BoardRenderer boardRenderer;
     private BoardEditor boardEditor;
     private Simulator simulator;
+    private Image createGIFImage;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -106,6 +105,8 @@ public class PatternEditorForm extends Stage implements Initializable
         boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
         simulator = new ThreadedSimulator(new DefaultRuleSet());
+        createGIFImage = new Image(getClass().getResourceAsStream("/img/createGIF.png"));
+
         boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
         updateGenerationStrip();
@@ -288,7 +289,8 @@ public class PatternEditorForm extends Stage implements Initializable
 
             // Add a special GIF-button tile to the strip.
             GenerationTile tile = new GenerationTile(null);
-            tile.setImage(new Image("file:resources/createGIF.png"));
+
+            tile.setImage(createGIFImage);
             tile.setOnMouseClicked(event -> openGIFExporterDialog(null));
             Tooltip.install(tile, new Tooltip("Create a GIF of this repeating pattern"));
             tilePane.getChildren().add(tile);

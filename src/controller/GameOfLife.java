@@ -1,16 +1,11 @@
 package controller;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.util.Optional;
 
 /**
  * The programs main class.
@@ -23,7 +18,6 @@ import java.util.Optional;
 public class GameOfLife extends Application
 {
     public static Image APPLICATION_ICON;
-    private PatternChooserForm patternChooserForm;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -42,8 +36,7 @@ public class GameOfLife extends Application
         root.prefHeightProperty().bind(scene.heightProperty());
 
         primaryStage.setTitle("Game of Life");
-//      primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/resources/Logo.png"))));'
-        primaryStage.getIcons().add((APPLICATION_ICON = new Image("file:resources/Logo.png")));
+        primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/Logo.png"))));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {

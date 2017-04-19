@@ -30,7 +30,6 @@ import java.util.ResourceBundle;
  */
 public class GIFExporterForm extends Stage implements Initializable
 {
-    private Scene scene;
     private File outputFile;
     private Simulator simulator;
     private GameBoard startBoard;
@@ -68,9 +67,9 @@ public class GIFExporterForm extends Stage implements Initializable
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GIFExporter.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GifExporterForm.fxml"));
             loader.setController(this);
-            scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load());
 
             super.setTitle("Save your animation");
             super.getIcons().add(GameOfLife.APPLICATION_ICON);
@@ -170,14 +169,14 @@ public class GIFExporterForm extends Stage implements Initializable
             }
         });
 
-        scene.widthProperty().addListener((a, b, newVal) ->
+        super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
             // 200 = width of left bar.
             canvas.setWidth(newVal.intValue() - 200);
             drawBoard();
         });
 
-        scene.heightProperty().addListener((a, b, newVal) ->
+        super.getScene().heightProperty().addListener((a, b, newVal) ->
         {
             canvas.setHeight(newVal.intValue());
             drawBoard();

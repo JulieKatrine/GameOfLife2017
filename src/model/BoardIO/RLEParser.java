@@ -107,24 +107,29 @@ public class RLEParser implements Parser
 
     private void readCellData(Reader reader) throws IOException, PatternFormatException
     {
-        int character;
-        int number = 0;
         int row = 0;
         int index = 0;
+        int number = 0;
+        int character;
 
         while ((character = reader.read()) != INVALID && character != END_OF_DATA)
         {
             if (Character.isDigit((char) character))
                 number = number * 10 + (character - '0');
 
-            else if (character == DEAD_CELL || character == LIVING_CELL)
+            else if (character == LIVING_CELL)
             {
                 number = Math.max(1, number);
 
-                for (int x = index; x < (index+number); x++)
-                    boardData[row][x] = (character == LIVING_CELL);
+                for (int x = index; x < (index + number); x++)
+                    boardData[row][x] = true;
 
                 index += number;
+                number = 0;
+            }
+            else if(character == DEAD_CELL)
+            {
+                index += Math.max(1, number);
                 number = 0;
             }
             else if (character == END_OF_ROW)

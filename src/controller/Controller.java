@@ -208,22 +208,12 @@ public class Controller implements Initializable
             canvas.setHeight(newValue.doubleValue() - 58 - 20);
             drawBoard();
         });
-/*
-        listOfRuleSets = FXCollections.observableArrayList
-                ("Change rule", "Default Rule", "Replicator", "Fredkin", "Seeds", "Live Free or Die", "Life without death",
-                        "Custom rule");
-        ruleChooser.setValue("Change rule");
-
-        ruleChooser.setItems(listOfRuleSets);
-        ruleChooser.setOnMouseExited(event -> canvas.requestFocus());
-        */
     }
 
     private void drawBoard()
     {
         boardRender.render(gameModel.getGameBoard());
     }
-
 
     /**
      * Handles the events of a user using the key-board.
