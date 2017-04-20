@@ -39,7 +39,7 @@ public class ColorProfile
 
     public boolean renderGrid()
     {
-        return  renderGrid;
+        return renderGrid;
     }
 
     public Paint getDeadColor()

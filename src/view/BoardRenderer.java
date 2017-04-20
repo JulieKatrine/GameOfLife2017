@@ -19,6 +19,7 @@ public class BoardRenderer
     protected final Camera camera;
     private ColorProfile colorProfile;
     private double gridRenderThreshold = 4;
+    private boolean scaleViewOnRender = false;
 
     public BoardRenderer(Canvas canvas)
     {
@@ -32,9 +33,23 @@ public class BoardRenderer
         return camera;
     }
 
-    public ColorProfile getColorProfile()
+    /**
+     * Clears the board, and then renders respectively the dead cells, the grid and the living cells.
+     * @param board The current board.
+     */
+    public void render(GameBoard board)
     {
-        return colorProfile;
+        clearCanvas();
+        scaleView(board);
+        renderDeadCells(board);
+        renderGrid(board);
+        renderLivingCells(board);
+    }
+
+    private void scaleView(GameBoard board)
+    {
+        if(scaleViewOnRender)
+            scaleViewToFitBoard(board);
     }
 
     public void scaleViewToFitBoard(GameBoard board)
@@ -43,24 +58,6 @@ public class BoardRenderer
         double maxCellHeight = canvas.getHeight() / (board.getHeight() + 2);
         camera.reset();
         camera.setZoom(Math.min(maxCellWidth, maxCellHeight));
-    }
-
-    public void setColorProfile(ColorProfile profile)
-    {
-        this.colorProfile = profile;
-    }
-
-
-    /**
-     * Clears the board, and then renders respectively the dead cells, the grid and the living cells.
-     * @param board The current board.
-     */
-    public void render(GameBoard board)
-    {
-        clearCanvas();
-        renderDeadCells(board);
-        renderGrid(board);
-        renderLivingCells(board);
     }
 
     private void clearCanvas()
@@ -161,5 +158,21 @@ public class BoardRenderer
         stopPos.x = Math.min(board.getWidth(),  startPos.x + (int)(canvas.getWidth()  / camera.getZoom()) + 1);
         stopPos.y = Math.min(board.getHeight(), startPos.y + (int)(canvas.getHeight() / camera.getZoom()) + 1);
         return stopPos;
+    }
+
+    public ColorProfile getColorProfile()
+    {
+        return colorProfile;
+    }
+
+
+    public void setColorProfile(ColorProfile profile)
+    {
+        this.colorProfile = profile;
+    }
+
+    public void setScaleViewOnRender(boolean state)
+    {
+        this.scaleViewOnRender = state;
     }
 }

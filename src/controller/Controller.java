@@ -2,11 +2,14 @@ package controller;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
+import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.scene.Scene;
@@ -14,9 +17,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -46,7 +47,6 @@ public class Controller implements Initializable
     private UpdateTimer updateTimer;
     private long drawTimer;
     private boolean controlPressed;
-    private ObservableList<String> listOfRuleSets;
 
     @FXML private AnchorPane anchorPane;
     @FXML private Canvas canvas;
@@ -75,12 +75,13 @@ public class Controller implements Initializable
         gameModel    = new GameModel();
         updateTimer  = new UpdateTimer();
 
+        boardRender.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY));
         boardRender.setColorProfile(new ColorProfile(Color.gray(0.949), Color.gray(0.0902), Color.GRAY));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
         updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
 
+        scaleViewToFitBoard();
         addEventListeners();
-        drawBoard();
     }
 
     private void addEventListeners()
@@ -208,6 +209,15 @@ public class Controller implements Initializable
             canvas.setHeight(newValue.doubleValue() - 58 - 20);
             drawBoard();
         });
+
+
+    }
+
+    private void scaleViewToFitBoard()
+    {
+        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
+        cellSizeSlider.setValue(boardRender.getCamera().getZoom());
+        drawBoard();
     }
 
     private void drawBoard()
@@ -234,6 +244,10 @@ public class Controller implements Initializable
                 startStopSimulation();
             else if(code == KeyCode.N)
                 simulateNextGeneration();
+            else if(code == KeyCode.S && controlPressed)
+                saveGameBoard();
+            else if(code == KeyCode.C)
+                createEmptyBoard();
             else if(code == KeyCode.CONTROL)
                 controlPressed = true;
             else if(code == KeyCode.R)
@@ -254,6 +268,28 @@ public class Controller implements Initializable
             if(event.getCode() == KeyCode.CONTROL)
                 controlPressed = false;
         });
+    }
+
+    @FXML private void enableGridRendering(ActionEvent event)
+    {
+        CheckMenuItem item = (CheckMenuItem) event.getSource();
+        boardRender.getColorProfile().setGridRendering(item.isSelected());
+        drawBoard();
+    }
+
+    @FXML private void setBoardViewScaling(ActionEvent event)
+    {
+        CheckMenuItem item = (CheckMenuItem) event.getSource();
+        boardRender.setScaleViewOnRender(item.isSelected());
+        if(item.isSelected())
+            scaleViewToFitBoard();
+    }
+
+    @FXML private void trimBoardToSize()
+    {
+        GameBoard trimmedBoard = gameModel.getGameBoard().trimmedCopy(1);
+        gameModel.setGameBoard(trimmedBoard);
+        scaleViewToFitBoard();
     }
 
     @FXML private void simulateNextGeneration()
@@ -293,6 +329,23 @@ public class Controller implements Initializable
             boardRender.scaleViewToFitBoard(selectedGameBoard);
             drawBoard();
         }
+    }
+
+    @FXML private void fileOver(DragEvent event)
+    {
+        Dragboard board = event.getDragboard();
+        if (board.hasFiles()) {
+            event.acceptTransferModes(TransferMode.ANY);
+            System.out.println("asdsadasd");
+        }
+    }
+
+    @FXML private void fileDropped(DragEvent event)
+    {
+        List<File> files = event.getDragboard().getFiles();
+        for(File f : files)
+            System.out.println(f.getName());
+
     }
 
     @FXML private void startStopSimulation()
