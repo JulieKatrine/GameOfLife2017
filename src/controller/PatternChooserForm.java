@@ -15,8 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
@@ -33,13 +32,14 @@ import java.util.concurrent.Executors;
 
 public class PatternChooserForm extends Stage implements Initializable
 {
-    private static Stack<Pattern> patternsToLoad;
+    private static Queue<String> fileLoadingQueue;
     private static List<Tile> loadedTiles;
     private static File lastDirectoryOpened;
     private static Pattern selectedPattern;
     private static double scrollBarPos;
     private static int height;
     private static int width;
+    private static boolean isOpened;
 
     private DropShadow selected;
     private DropShadow dropShadow;
@@ -56,7 +56,8 @@ public class PatternChooserForm extends Stage implements Initializable
      */
     public PatternChooserForm()
     {
-        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.isOpened = true;
 
         try
         {
@@ -152,6 +153,7 @@ public class PatternChooserForm extends Stage implements Initializable
     private void closeWindow()
     {
         loadedTiles.forEach(Tile::releasePattern);
+        isOpened = false;
         executorService.shutdown();
         System.gc();
         super.close();
@@ -171,10 +173,10 @@ public class PatternChooserForm extends Stage implements Initializable
         }
 
         // Adds the saved patterns to the chooser.
-        while(patternsToLoad != null && patternsToLoad.size() > 0)
-            loadAndAddPatternToForm(patternsToLoad.pop().getOrigin());
+        while(fileLoadingQueue != null && fileLoadingQueue.size() > 0)
+            loadAndAddPatternToForm(fileLoadingQueue.poll());
 
-        loadedTiles.forEach(t -> addTileEventListener(t));
+        loadedTiles.forEach(this::addTileEventListener);
 
         tilePane.getChildren().addAll(loadedTiles);
 
@@ -208,29 +210,28 @@ public class PatternChooserForm extends Stage implements Initializable
 
         // Adds a temporary hourglass image while the pattern is loading
         Tile hourGlass = new Tile(hourGlassImage);
-
         hourGlass.setEffect(dropShadow);
         tilePane.getChildren().add(0, hourGlass);
 
         executorService.execute(() ->
         {
-            Pattern p = loadPattern(path);
-            Tile tile = new Tile(p);
-
-            // Interaction with JavaFX elements cannot be done from a separate thread,
-            // and is therefor passed on to the Platform.
-            Platform.runLater(() ->
+            Pattern pattern = loadPattern(path);
+            if(pattern != null)
             {
-                if(tile != null)
+                Tile tile = new Tile(pattern);
+                // Interaction with JavaFX elements cannot be done from a separate thread,
+                // and is therefor passed on to the Platform.
+                Platform.runLater(() ->
                 {
                     addTileEventListener(tile);
                     addSelectedEffect(tile);
                     tilePane.getChildren().add(0, tile);
                     loadedTiles.add(0, tile);
                     selectedPattern = tile.pattern;
-                }
-                tilePane.getChildren().remove(hourGlass);
-            });
+                });
+            }
+
+            Platform.runLater(() -> tilePane.getChildren().remove(hourGlass));
         });
     }
 
@@ -266,15 +267,14 @@ public class PatternChooserForm extends Stage implements Initializable
         }
         catch (PatternFormatException e)
         {
-            e.printStackTrace();
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
                      "The pattern you are trying to load is in the wrong format." +
-                    "\nMake sure this is an rle file.");
+                    "\nMake sure the file is in any of these supported formats: " +
+                    Arrays.toString(FileType.getFileTypes()));
         }
         catch (OutOfMemoryError e)
         {
-            e.printStackTrace();
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
                     "The pattern you are trying to load is too large!");
@@ -392,6 +392,29 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
+     * The method is called when the user hovers a file over the application window.
+     * It accepts the action and a "move" GUI-element will show that this application
+     * accepts this type of file loading.
+     * @param event The DragEvent
+     */
+    @FXML private void fileOver(DragEvent event)
+    {
+        Dragboard board = event.getDragboard();
+        if (board.hasFiles())
+            event.acceptTransferModes(TransferMode.ANY);
+    }
+
+    /**
+     * The method is called when the user drops one or more files over the application window.
+     * It reads in the files and adds them as patterns to the tilePane.
+     * @param event The DragEvent
+     */
+    @FXML private void fileDropped(DragEvent event)
+    {
+        event.getDragboard().getFiles().forEach(file -> loadAndAddPatternToForm("FILE:" + file));
+    }
+
+    /**
      * This method is used to access the PatternChooserForms selected pattern.
      * @return A Pattern object.
      */
@@ -401,17 +424,23 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * Adds the pattern to a Stack for future loading.
-     * The pattern gets loaded when a new PatternChooser instance is created.
-     * @param pattern The Pattern to be loaded.
+     * Adds the file to a queue for future loading.
+     * The file gets loaded when a new PatternChooser instance is created.
+     * @param file The file to be loaded.
      */
-    public static void addPattern(Pattern pattern)
+    public static void addFileToLoadingQueue(File file)
     {
-        if(patternsToLoad == null)
-            patternsToLoad = new Stack<>();
+        if(fileLoadingQueue == null)
+            fileLoadingQueue = new LinkedList<>();
 
-        patternsToLoad.add(pattern);
+        fileLoadingQueue.add("FILE:" + file);
     }
+
+    public static boolean isOpened()
+    {
+        return isOpened;
+    }
+
 
     /**
      * This private Tile class adds some functionality to JavaFX ImageView.

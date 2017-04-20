@@ -122,6 +122,7 @@ public class Pattern
         return (name != null ? ("Name: " + name + '\n') : "")  +
                 (author != null ? ("Author: " + author + '\n') : "") +
                 (ruleString != null ? ("Rule: " + ruleString + '\n') : "Default ruleset: B3/S23 \n") +
+                "Size: " + cellData[0].length + " x " + cellData.length + "\n" +
                 (comments != null ? ("\nComments: \n" + comments) : "");
     }
 

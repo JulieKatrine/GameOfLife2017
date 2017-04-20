@@ -348,9 +348,8 @@ public class PatternEditorForm extends Stage implements Initializable
                     PatternExporter exporter = new PatternExporter();
                     exporter.export(pattern, file);
 
-                    // Add the pattern to the pattern chooser
-                    pattern.setOrigin("FILE:" + file.getCanonicalPath());
-                    PatternChooserForm.addPattern(pattern);
+                    // Add the file to the PatternChooserForm
+                    PatternChooserForm.addFileToLoadingQueue(file);
                 }
                 else if(file.getName().endsWith(".gif"))
                     openGIFExporterDialog(file);

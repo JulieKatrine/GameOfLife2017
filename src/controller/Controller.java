@@ -1,15 +1,12 @@
 package controller;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-import java.io.File;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.scene.Scene;
@@ -20,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
@@ -54,6 +52,8 @@ public class Controller implements Initializable
     @FXML private Slider speedSlider;
     @FXML private MenuItem startStopMenuItem;
     @FXML private MenuItem nextMenuItem;
+    @FXML private MenuItem reloadPatternMenuItem;
+    @FXML private CheckMenuItem autoZoomMenuItem;
     @FXML private ToggleButton startStopButton;
     @FXML private ColorPicker deadCellColor;
     @FXML private ColorPicker livingCellColor;
@@ -126,7 +126,10 @@ public class Controller implements Initializable
             if(controlPressed)
                 cellSizeSlider.adjustValue(cellSizeSlider.getValue() + cellSizeSlider.getBlockIncrement() * Math.signum(event.getDeltaY()));
             else
+            {
                 boardRender.getCamera().move(gameModel.getGameBoard(), event.getDeltaX(), event.getDeltaY());
+                disableAutoZoom();
+            }
 
             drawBoard();
         });
@@ -150,47 +153,22 @@ public class Controller implements Initializable
             lastMousePos.x = (int)event.getX();
             lastMousePos.y = (int)event.getY();
 
-            // Setts a cell alive when the mouse i pressed
-            if(event.getButton() == MouseButton.PRIMARY)
-            {
-                boardEditor.edit(gameModel.getGameBoard(),
-                        new Point((int)event.getX(), (int)event.getY()),
-                        true);
-                drawBoard();
-            }
-            else if (event.getButton() == MouseButton.SECONDARY)
-            {
-                boardEditor.edit(gameModel.getGameBoard(),
-                        new Point((int)event.getX(), (int)event.getY()),
-                        false);
-                drawBoard();
-            }
+            editBoard(event);
+            drawBoard();
         });
 
         canvas.setOnMouseDragged(event ->
         {
-            // Updates the camera position when the user drags the mouse and
-            if(event.getButton() == MouseButton.SECONDARY)
-            {
-                boardEditor.edit(gameModel.getGameBoard(),
-                        new Point((int)event.getX(), (int)event.getY()),
-                        false);
-            }
+            editBoard(event);
 
-            // Setts a cell alive when the mouse i dragged over it
-            else if(event.getButton() == MouseButton.PRIMARY)
+            if(event.getButton() == MouseButton.MIDDLE)
             {
-                boardEditor.edit(gameModel.getGameBoard(),
-                        new Point((int)event.getX(), (int)event.getY()),
-                        true);
-            }
-
-            else if(event.getButton() == MouseButton.MIDDLE){
                 double deltaX = (int)event.getX() - lastMousePos.x;
                 double deltaY = (int)event.getY() - lastMousePos.y;
                 boardRender.getCamera().move(gameModel.getGameBoard(), deltaX, deltaY);
                 lastMousePos.x = (int)event.getX();
                 lastMousePos.y = (int)event.getY();
+                disableAutoZoom();
             }
 
             drawBoard();
@@ -209,8 +187,22 @@ public class Controller implements Initializable
             canvas.setHeight(newValue.doubleValue() - 58 - 20);
             drawBoard();
         });
+    }
 
-
+    private void editBoard(MouseEvent event)
+    {
+        if(event.getButton() == MouseButton.SECONDARY)
+        {
+            boardEditor.edit(gameModel.getGameBoard(),
+                    new Point((int)event.getX(), (int)event.getY()),
+                    false);
+        }
+        else if(event.getButton() == MouseButton.PRIMARY)
+        {
+            boardEditor.edit(gameModel.getGameBoard(),
+                    new Point((int)event.getX(), (int)event.getY()),
+                    true);
+        }
     }
 
     private void scaleViewToFitBoard()
@@ -244,23 +236,16 @@ public class Controller implements Initializable
                 startStopSimulation();
             else if(code == KeyCode.N)
                 simulateNextGeneration();
+            else if(code == KeyCode.O)
+                loadNewGameBoard();
+            else if(code == KeyCode.C)
+                clearBoard();
             else if(code == KeyCode.S && controlPressed)
                 saveGameBoard();
-            else if(code == KeyCode.C)
-                createEmptyBoard();
             else if(code == KeyCode.CONTROL)
                 controlPressed = true;
             else if(code == KeyCode.R)
-            {
-                Pattern p = PatternChooserForm.getSelectedPattern();
-                if(p != null)
-                {
-                    gameModel.setGameBoard(PatternChooserForm.getSelectedPattern().getGameBoard());
-                    drawBoard();
-                }
-            }
-            else if(code == KeyCode.O)
-                loadNewGameBoard();
+                reloadPattern();
         });
 
         scene.setOnKeyReleased(event ->
@@ -277,12 +262,18 @@ public class Controller implements Initializable
         drawBoard();
     }
 
-    @FXML private void setBoardViewScaling(ActionEvent event)
+    @FXML private void autoZoomAction(ActionEvent event)
     {
         CheckMenuItem item = (CheckMenuItem) event.getSource();
         boardRender.setScaleViewOnRender(item.isSelected());
         if(item.isSelected())
             scaleViewToFitBoard();
+    }
+
+    private void disableAutoZoom()
+    {
+        boardRender.setScaleViewOnRender(false);
+        autoZoomMenuItem.setSelected(false);
     }
 
     @FXML private void trimBoardToSize()
@@ -300,26 +291,33 @@ public class Controller implements Initializable
     @FXML protected void loadNewGameBoard()
     {
         PatternChooserForm loader = new PatternChooserForm();
+        loader.initModality(Modality.WINDOW_MODAL);
+        loader.initOwner(anchorPane.getScene().getWindow());
         loader.showAndWait();
         Pattern pattern = loader.getSelectedPattern();
         if(pattern != null)
         {
             gameModel.setGameBoard(pattern.getGameBoard());
             gameModel.setRule(pattern.getRule());
-            boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
-            cellSizeSlider.setValue(boardRender.getCamera().getZoom());
             updateTimer.setRunning(false);
             startStopMenuItem.setText("Start");
             nextMenuItem.setDisable(false);
+            reloadPatternMenuItem.setDisable(false);
             ruleInfo.setText("Rule: " + pattern.getRuleString());
+            scaleViewToFitBoard();
             drawBoard();
         }
     }
 
     @FXML private void saveGameBoard()
     {
+        if(updateTimer.isRunning())
+            startStopSimulation();
+
         PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
         editorForm.setColorProfile(boardRender.getColorProfile());
+        editorForm.initModality(Modality.WINDOW_MODAL);
+        editorForm.initOwner(anchorPane.getScene().getWindow());
         editorForm.showAndWait();
         GameBoard selectedGameBoard = editorForm.getSelectedGameBoard();
         if(selectedGameBoard != null)
@@ -331,21 +329,42 @@ public class Controller implements Initializable
         }
     }
 
-    @FXML private void fileOver(DragEvent event)
+    @FXML private void reloadPattern()
     {
-        Dragboard board = event.getDragboard();
-        if (board.hasFiles()) {
-            event.acceptTransferModes(TransferMode.ANY);
-            System.out.println("asdsadasd");
+        Pattern pattern = PatternChooserForm.getSelectedPattern();
+        if(pattern != null)
+        {
+            gameModel.setGameBoard(PatternChooserForm.getSelectedPattern().getGameBoard());
+            gameModel.setRule(pattern.getRule());
+            scaleViewToFitBoard();
+            drawBoard();
         }
     }
 
+    /**
+     * The method is called when the user hovers a file over the application window.
+     * It accepts the action and a "move" GUI-element will show that this application
+     * accepts this type of file loading. The transfer will not be accepted if a
+     * PatternChooserForm is already opened.
+     * @param event The DragEvent
+     */
+    @FXML private void fileOver(DragEvent event)
+    {
+        Dragboard board = event.getDragboard();
+        if (board.hasFiles() && !PatternChooserForm.isOpened())
+            event.acceptTransferModes(TransferMode.ANY);
+    }
+
+    /**
+     * The method is called when the user drops one or more files over the application window.
+     * It reads in the files and adds them to the PatternChooserForms loading queue.
+     * The PatternChooserForms will the be opened.
+     * @param event The DragEvent
+     */
     @FXML private void fileDropped(DragEvent event)
     {
-        List<File> files = event.getDragboard().getFiles();
-        for(File f : files)
-            System.out.println(f.getName());
-
+        event.getDragboard().getFiles().forEach(file -> PatternChooserForm.addFileToLoadingQueue(file));
+        Platform.runLater(() -> loadNewGameBoard());
     }
 
     @FXML private void startStopSimulation()
@@ -356,11 +375,12 @@ public class Controller implements Initializable
         nextMenuItem.setDisable(updateTimer.isRunning());
     }
 
-    @FXML private void createEmptyBoard()
+    @FXML private void clearBoard()
     {
         gameModel.setGameBoard(new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT));
-        boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
-        cellSizeSlider.setValue(boardRender.getCamera().getZoom());
+        if(updateTimer.isRunning())
+            startStopSimulation();
+        scaleViewToFitBoard();
         drawBoard();
     }
 
@@ -381,11 +401,9 @@ public class Controller implements Initializable
 
     @FXML private void setNewRuleFromFXML(Event event)
     {
-        String ruleFromFXML;
-        ruleFromFXML = ((MenuItem)event.getSource()).getId();
-        ruleFromFXML = ruleFromFXML.trim().replaceAll("S", "/S");
-        setNewRule(ruleFromFXML);
+        String ruleFromFXML = ((MenuItem)event.getSource()).getId().trim().replaceAll("S", "/S");
         ruleInfo.setText("Rule: " + ((MenuItem) event.getSource()).getText() + " - " + ruleFromFXML);
+        setNewRule(ruleFromFXML);
     }
 
     @FXML private void customChangeRule()
@@ -393,11 +411,11 @@ public class Controller implements Initializable
         CustomRuleCreator customRuleCreator = new CustomRuleCreator();
         customRuleCreator.showAndWait();
         String rule = customRuleCreator.getRuleString();
-
-                if(rule != null) {
-                    setNewRule(rule);
-                    ruleInfo.setText("Rule: " + rule);
-                }
+        if(rule.length() > 0)
+        {
+            setNewRule(rule);
+            ruleInfo.setText("Rule: " + rule);
+        }
     }
 
     private void setNewRule(String rule)
@@ -409,8 +427,8 @@ public class Controller implements Initializable
     }
 
     //TODO: Activate me!!
-    public void closeRequest() {
-
+    public void closeRequest()
+    {
         closeApplication();
 /*
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

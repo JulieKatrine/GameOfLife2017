@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.CustomMenuItem?>
 <?import javafx.scene.control.Label?>
@@ -28,11 +29,17 @@
                                  <items>
                                      <MenuItem onAction="#loadNewGameBoard" styleClass="menuItem" text="Open File..." />
                                      <MenuItem onAction="#saveGameBoard" styleClass="menuItem" text="Save As..." />
-                                     <MenuItem onAction="#createEmptyBoard" styleClass="menuItem" text="Clear Board" />
                                      <MenuItem onAction="#closeApplication" styleClass="menuItem" text="Exit" />
                                  </items>
                              </Menu>
-                             <Menu text="Action">
+                        <Menu mnemonicParsing="false" text="Edit">
+                          <items>
+                              <MenuItem fx:id="reloadPatternMenuItem" disable="true" mnemonicParsing="false" onAction="#reloadPattern" text="Reload pattern" />
+                                     <MenuItem onAction="#clearBoard" styleClass="menuItem" text="Clear board" />
+                            <MenuItem mnemonicParsing="false" onAction="#trimBoardToSize" text="Trim to size" />
+                          </items>
+                        </Menu>
+                             <Menu text="Simulation">
                                  <items>
                                      <MenuItem fx:id="startStopMenuItem" onAction="#startStopSimulation" styleClass="menuItem" text="Start" />
                                      <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" styleClass="menuItem" text="Next" />
@@ -54,6 +61,8 @@
                              </Menu>
                              <Menu text="View">
                                  <items>
+                              <CheckMenuItem mnemonicParsing="false" onAction="#enableGridRendering" selected="true" text="Draw grid" />
+                              <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomAction" text="Auto zoom" />
                                      <Menu styleClass="menuItem" text="Cell size">
                                         <items>
                                             <CustomMenuItem styleClass="menuSlider">
@@ -74,7 +83,7 @@
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="525.0" width="800" />
+              <Canvas fx:id="canvas" height="525.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
             <ToolBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />

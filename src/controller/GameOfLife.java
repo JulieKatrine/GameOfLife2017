@@ -1,13 +1,11 @@
 package controller;
 
-import com.sun.prism.paint.Color;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * The programs main class.
@@ -39,7 +37,7 @@ public class GameOfLife extends Application
         primaryStage.setTitle("Game of Life");
         primaryStage.setMinWidth(root.getMinWidth());
         primaryStage.setMinHeight(root.getMinHeight());
-        primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/logo3.png"))));
+        primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/newLogo.png"))));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {
