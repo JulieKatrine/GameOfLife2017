@@ -1,11 +1,13 @@
 package controller;
 
+import com.sun.prism.paint.Color;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * The programs main class.
@@ -27,15 +29,16 @@ public class GameOfLife extends Application
 
         AnchorPane root = loader.load();
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-        root.setStyle("-fx-background-color: #878787");
 
         Controller controller = loader.getController();
         controller.handleKeyEvent(scene);
 
         root.prefWidthProperty().bind(scene.widthProperty());
         root.prefHeightProperty().bind(scene.heightProperty());
-
+        
         primaryStage.setTitle("Game of Life");
+        primaryStage.setMinWidth(root.getMinWidth());
+        primaryStage.setMinHeight(root.getMinHeight());
         primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/Logo.png"))));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->

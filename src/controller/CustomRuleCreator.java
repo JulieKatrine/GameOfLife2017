@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public class CustomRuleCreator extends TextInputDialog {
     TextField birth;
     TextField survival;
-    String newRule;
+    String newRule = "";
 
     public CustomRuleCreator()
     {

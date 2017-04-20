@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="660.0" stylesheets="@StyleSheetFileChooser" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="660.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="220.0" style="-fx-background-color: #373833;">
+      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="217.0" styleClass="backgroundColor">
          <children>
             <Button maxHeight="35.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openFileChooser" prefHeight="35.0" styleClass="GreyButton" text="Open..." textFill="WHITE" VBox.vgrow="ALWAYS">
                <VBox.margin>
@@ -29,7 +29,7 @@
                         <Insets right="5.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadURL" styleClass="GreyButton" text="Go" textFill="WHITE" HBox.hgrow="ALWAYS">
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#loadURL" prefWidth="100.0" styleClass="GreyButton" text="Go" textFill="WHITE" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="5.0" />
                      </HBox.margin>

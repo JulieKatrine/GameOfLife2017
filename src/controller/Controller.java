@@ -75,7 +75,7 @@ public class Controller implements Initializable
         gameModel    = new GameModel();
         updateTimer  = new UpdateTimer();
 
-        boardRender.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY));
+        boardRender.setColorProfile(new ColorProfile(Color.gray(0.949), Color.gray(0.0902), Color.GRAY));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
         updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
 
@@ -273,17 +273,13 @@ public class Controller implements Initializable
             boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
             cellSizeSlider.setValue(boardRender.getCamera().getZoom());
             updateTimer.setRunning(false);
-            startStopMenuItem.setText("start");
+            startStopMenuItem.setText("Start");
             nextMenuItem.setDisable(false);
             ruleInfo.setText("Rule: " + pattern.getRuleString());
             drawBoard();
         }
     }
 
-    /**
-     * Temporary test of pattern saving.
-     * Saves the currently loaded pattern.
-     */
     @FXML private void saveGameBoard()
     {
         PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
@@ -359,6 +355,7 @@ public class Controller implements Initializable
             gameModel.setRule(new CustomRule(rule));
     }
 
+    //TODO: Activate me!!
     public void closeRequest() {
 
         closeApplication();

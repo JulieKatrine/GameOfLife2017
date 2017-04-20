@@ -13,48 +13,50 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Pane?>
-<AnchorPane fx:id="anchorPane" prefHeight="600" prefWidth="800" stylesheets="@StyleSheetFileChooser" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="545.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
               <HBox>
                  <children>
-                     <MenuBar HBox.hgrow="ALWAYS">
+                     <MenuBar prefHeight="30.0" styleClass="barColor" HBox.hgrow="ALWAYS">
                          <menus>
                              <Menu text="File">
                                  <items>
-                                     <MenuItem onAction="#loadNewGameBoard" text="Open File..." />
-                                     <MenuItem onAction="#saveGameBoard" text="Save As..." />
-                                     <MenuItem onAction="#createEmptyBoard" text="Clear Board" />
-                                     <MenuItem onAction="#closeApplication" text="Exit" />
+                                     <MenuItem onAction="#loadNewGameBoard" styleClass="menuItem" text="Open File..." />
+                                     <MenuItem onAction="#saveGameBoard" styleClass="menuItem" text="Save As..." />
+                                     <MenuItem onAction="#createEmptyBoard" styleClass="menuItem" text="Clear Board" />
+                                     <MenuItem onAction="#closeApplication" styleClass="menuItem" text="Exit" />
                                  </items>
                              </Menu>
                              <Menu text="Action">
                                  <items>
-                                     <MenuItem fx:id="startStopMenuItem" onAction="#startStopSimulation" text="Start" />
-                                     <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" text="Next" />
-                              <Menu mnemonicParsing="false" text="Change Rule">
+                                     <MenuItem fx:id="startStopMenuItem" onAction="#startStopSimulation" styleClass="menuItem" text="Start" />
+                                     <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" styleClass="menuItem" text="Next" />
+                              <Menu mnemonicParsing="false" styleClass="menuItem" text="Change Rule">
                                 <items>
-                                  <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Default Rule" />
-                                    <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Replicator" />
-                                    <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Fredkin" />
-                                    <MenuItem fx:id="B2S" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Seeds" />
-                                    <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Live Free or Die" />
-                                    <MenuItem fx:id="B3S012345678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" text="Life without death" />
+                                    <MenuItem fx:id="B3S12345" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Maze" />
+                                    <MenuItem fx:id="B3678S34678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Day and Night" />
+                                    <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Default Rule" />
+                                    <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Replicator" />
+                                    <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Fredkin" />
+                                    <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Live Free or Die" />
+                                    <MenuItem fx:id="B3S012345678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Life without death" />
+
                                     <SeparatorMenuItem> </SeparatorMenuItem>
-                                    <MenuItem fx:id="customRule" mnemonicParsing="false" onAction="#customChangeRule" text="Custom Rule" />
+                                    <MenuItem fx:id="customRule" mnemonicParsing="false" onAction="#customChangeRule" styleClass="menuItem" text="Custom Rule" />
                                 </items>
                               </Menu>
                                  </items>
                              </Menu>
                              <Menu text="View">
                                  <items>
-                                     <Menu text="Cell size">
+                                     <Menu styleClass="menuItem" text="Cell size">
                                         <items>
-                                            <CustomMenuItem>
+                                            <CustomMenuItem styleClass="menuSlider">
                                                 <content>
                                                     <Slider fx:id="cellSizeSlider" blockIncrement="0.6" max="50" min="1" value="20" />
                                                 </content>
@@ -65,22 +67,22 @@
                              </Menu>
                         <Menu mnemonicParsing="false" onAction="#shortCuts" text="About">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="About" />
+                            <MenuItem mnemonicParsing="false" styleClass="menuItem" text="About" />
                           </items>
                         </Menu>
                          </menus>
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="523.5" width="800" />
-            <ToolBar maxWidth="1.7976931348623157E308" prefHeight="40.0">
+              <Canvas fx:id="canvas" height="525.0" width="800" />
+            <ToolBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
                   <Label text="Speed" />
-                  <Slider fx:id="speedSlider" />
-                  <ColorPicker fx:id="deadCellColor" focusTraversable="false" />
-                  <ColorPicker fx:id="livingCellColor" focusTraversable="false" />
-                   <Pane HBox.hgrow ="ALWAYS" />
+                  <Slider fx:id="speedSlider" value="50.0" />
+                  <ColorPicker fx:id="deadCellColor" focusTraversable="false" styleClass="buttonColor" />
+                  <ColorPicker fx:id="livingCellColor" focusTraversable="false" styleClass="buttonColor" />
+                   <Pane minHeight="-Infinity" prefHeight="10.0" HBox.hgrow="ALWAYS" />
                   <Label fx:id="ruleInfo" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Rule: B3/S23" />
                </items>
             </ToolBar>
