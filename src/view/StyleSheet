@@ -1,0 +1,108 @@
+
+/*-----File Chooser-----*/
+.backgroundColor
+{
+    -fx-background-color: #373833;
+}
+
+.GreyButton
+{
+    -fx-background-color: #656563;
+}
+
+.GreyButton:hover
+{
+    -fx-background-color: #757572;
+}
+
+.SelectButton
+{
+    -fx-background-color: #3D8F13;
+}
+
+.SelectButton:hover
+{
+    -fx-background-color: #48ad14;
+
+}
+
+/*-----Pattern-----*/
+
+#deadCellColor
+{
+    -fx-color-label-visible: false;
+}
+
+#livingCellColor
+{
+    -fx-color-label-visible: false;
+}
+
+/*-----Menu- & Tool- Bar-----*/
+/*TODO: Fix so that not all fxml-s use this root-colors*/
+.root
+{
+    -fx-background-color: #5c605a;
+    -fx-accent: #3D8F13;
+    -fx-focus-color: #3D8F13;
+}
+
+.barColor
+{
+    -fx-background-color: #373833;
+}
+
+.barColor .label
+{
+    -fx-text-fill: beige;
+}
+
+.menuItem .label
+{
+    -fx-text-fill: black;
+}
+
+.menuSlider
+{
+    -fx-background-color: beige;
+}
+
+.buttonColor
+{
+    -fx-background-color: #373833;
+}
+
+.slider .track
+{
+    -fx-background-color: #5c605a;
+}
+
+.slider .thumb
+{
+    -fx-color: #3D8F13;
+}
+
+.slider .thumb:hover
+{
+    -fx-color: #48ad14;
+}
+
+/*-----Tool Bar-----*/
+
+.buttonImage
+{
+    -fx-background-image: url("/img/play.png");
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: #373833;
+}
+
+.buttonImage:selected
+{
+    -fx-background-image: url("/img/pause.png");
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: #373833;
+}
