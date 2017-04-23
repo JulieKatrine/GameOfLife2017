@@ -243,8 +243,9 @@ public class PatternChooserForm extends Stage implements Initializable
 
     /**
      * This method loads a pattern from a given path.
-     * The path needs to have one of two prefixes:
+     * The path needs to have one of three prefixes:
      * "FILE:" - the path to a local file.
+     * "STREAM:" - the path to a application resource.
      * "URL:" - the web address to the file.
      * The method handles all exceptions and will inform the user if errors occur while loading.
      * @param path The path prefixed with either FILE: or URL:
@@ -255,35 +256,29 @@ public class PatternChooserForm extends Stage implements Initializable
         try
         {
             PatternLoader loader = new PatternLoader();
-
-            if(path.startsWith("FILE:"))
-                return loader.loadFile(new File(path.substring(5)));
-
-            else if (path.startsWith("URL:"))
-                return loader.loadURL(path.substring(4));
-
-            else if(path.startsWith("STREAM:"))
-                return loader.loadAsStream(path.substring(7));
+            return loader.loadFromPrefixedPath(path);
         }
         catch (PatternFormatException e)
         {
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
-                     "The pattern you are trying to load is in the wrong format." +
-                    "\nMake sure the file is in any of these supported formats: " +
-                    Arrays.toString(FileType.getFileTypes()));
+                    e.getErrorCode().name(),
+                    e.getErrorMessage());
         }
         catch (OutOfMemoryError e)
         {
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
-                    "The pattern you are trying to load is too large!");
+                    "Warning!",
+                    "The application ran out of available memory and failed to load the pattern.\n" +
+                            "The chosen pattern may be to large or to many patterns have been opened at once.");
         }
         catch (Exception e)
         {
             e.printStackTrace();
             showAlertDialog(Alert.AlertType.ERROR,
                     "Error message",
+                    "Error",
                     "Something went wrong while loading this pattern!");
         }
 
@@ -296,7 +291,7 @@ public class PatternChooserForm extends Stage implements Initializable
      * @param title The title of the dialog.
      * @param content The alert content text.
      */
-    private void showAlertDialog(Alert.AlertType alertType, String title, String content)
+    private void showAlertDialog(Alert.AlertType alertType, String title, String header, String content)
     {
         Platform.runLater(() ->
         {
@@ -304,6 +299,7 @@ public class PatternChooserForm extends Stage implements Initializable
             ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
             alert.getDialogPane().setPrefWidth(450);
             alert.setTitle(title);
+            alert.setHeaderText(header);
             alert.setContentText(content);
             alert.showAndWait();
         });
@@ -325,16 +321,14 @@ public class PatternChooserForm extends Stage implements Initializable
             Tile loadedTile = (Tile) event.getSource();
 
             if(loadedTile.pattern == null)
-            {
-                System.out.println("Reloading pattern...");
                 loadedTile.pattern = loadPattern(tile.getOrigin());
-            }
 
             selectedPattern = loadedTile.pattern;
             textArea.setText(loadedTile.pattern.getAllMetadata());
 
             addSelectedEffect(loadedTile);
 
+            // Double clicking a pattern opens it
             if(event.getClickCount() == 2)
                 closeWindow();
         });

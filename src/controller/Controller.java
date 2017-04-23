@@ -184,7 +184,7 @@ public class Controller implements Initializable
         // Updates the canvas height when the window is resized
         anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
         {
-            canvas.setHeight(newValue.doubleValue() - 58 - 20);
+            canvas.setHeight(newValue.doubleValue() - 45 - 30);
             drawBoard();
         });
     }

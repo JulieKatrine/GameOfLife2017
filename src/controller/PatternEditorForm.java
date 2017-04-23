@@ -361,7 +361,7 @@ public class PatternEditorForm extends Stage implements Initializable
             ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
             alert.getDialogPane().setPrefWidth(450);
             alert.setTitle("Empty board");
-            alert.setContentText("The pattern you are trying to save contains no living cells");
+            alert.setContentText(e.getErrorMessage());
             alert.showAndWait();
         }
         catch (IOException e)
@@ -380,7 +380,7 @@ public class PatternEditorForm extends Stage implements Initializable
         GameBoard board = selectedTile.getGameBoard().trimmedCopy();
 
         if(board.getPopulation() == 0)
-            throw new PatternFormatException("The board contains no living cells.");
+            throw new PatternFormatException(PatternFormatException.ErrorCode.NO_LIVING_CELLS);
 
         // Creates a new data array and copies the data over.
         boolean[][] cellData = new boolean[board.getHeight()][board.getWidth()];

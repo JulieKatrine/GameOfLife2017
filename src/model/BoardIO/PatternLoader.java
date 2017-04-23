@@ -10,9 +10,31 @@ import java.net.URLConnection;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see Pattern
  */
 public class PatternLoader
 {
+    /**
+     * Loads a file from a prefixed path and returns a Pattern object.
+     * The supported prefixes ar FILE:, STREAM:, and URL:.
+     *
+     * @param path The prefixed path.
+     * @return A Pattern object parsed from the specified file.
+     * @throws IOException If a problem occurs while reading the file content.
+     * @throws PatternFormatException If a problem occurs while parsing the file.
+     */
+    public Pattern loadFromPrefixedPath(String path) throws IOException, PatternFormatException
+    {
+        if(path.startsWith("FILE:"))
+            return loadFile(new File(path.substring(5)));
+        else if (path.startsWith("URL:"))
+            return loadURL(path.substring(4));
+        else if(path.startsWith("STREAM:"))
+            return loadAsStream(path.substring(7));
+        else
+            throw new PatternFormatException(PatternFormatException.ErrorCode.WRONG_PATH_PREFIX);
+    }
+
     /**
      * Loads a file form the local machine and returns a Pattern object.
      *
@@ -20,7 +42,6 @@ public class PatternLoader
      * @return A Pattern object parsed from the specified file.
      * @throws IOException If a problem occurs while reading the file content.
      * @throws PatternFormatException If a problem occurs while parsing the file.
-     * @see Pattern
      */
     public Pattern loadFile(File file) throws IOException, PatternFormatException
     {
@@ -36,7 +57,6 @@ public class PatternLoader
      * @return A Pattern object parsed from the specified file.
      * @throws IOException If a problem occurs while reading the file content.
      * @throws PatternFormatException If a problem occurs while parsing the file.
-     * @see Pattern
      */
     public Pattern loadAsStream(String path) throws IOException, PatternFormatException
     {
@@ -50,7 +70,6 @@ public class PatternLoader
      * @return A Pattern object parsed from the specified file.
      * @throws IOException If a problem occurs while reading the file content.
      * @throws PatternFormatException If a problem occurs while parsing the file.
-     * @see Pattern
      */
     public Pattern loadURL(String url) throws IOException, PatternFormatException
     {
@@ -70,15 +89,24 @@ public class PatternLoader
 
         if(parser != null)
         {
-            Pattern pattern = parser.parse(reader);
-            pattern.setOrigin(path);
-            return  pattern;
+            try
+            {
+                Pattern pattern = parser.parse(reader);
+                pattern.setOrigin(path);
+                return  pattern;
+            }
+            catch(PatternFormatException e)
+            {
+                // Close the reader before passing on the exception
+                reader.close();
+                throw e;
+            }
         }
         else
-            throw new PatternFormatException("." + fileType + " files is currently not supported");
+            throw new PatternFormatException(PatternFormatException.ErrorCode.FILE_FORMAT_NOT_SUPPORTED);
     }
 
-    private String extractFileType(String fileName)
+    public static String extractFileType(String fileName)
     {
         int dotPosition = fileName.lastIndexOf('.') + 1;
         if (dotPosition > 0 && dotPosition < fileName.length())

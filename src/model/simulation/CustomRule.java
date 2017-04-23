@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 
 public class CustomRule implements SimRule
 {
-    private Result[] precalculatedResult;
+    private final Result[] precalculatedResult;
 
     public CustomRule(String rule)
     {

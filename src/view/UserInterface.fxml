@@ -34,9 +34,9 @@
                              </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                           <items>
-                              <MenuItem fx:id="reloadPatternMenuItem" disable="true" mnemonicParsing="false" onAction="#reloadPattern" text="Reload pattern" />
+                              <MenuItem fx:id="reloadPatternMenuItem" disable="true" mnemonicParsing="false" onAction="#reloadPattern" styleClass="menuItem" text="Reload pattern" />
                                      <MenuItem onAction="#clearBoard" styleClass="menuItem" text="Clear board" />
-                            <MenuItem mnemonicParsing="false" onAction="#trimBoardToSize" text="Trim to size" />
+                            <MenuItem mnemonicParsing="false" onAction="#trimBoardToSize" styleClass="menuItem" text="Trim to size" />
                           </items>
                         </Menu>
                              <Menu text="Simulation">
@@ -61,8 +61,8 @@
                              </Menu>
                              <Menu text="View">
                                  <items>
-                              <CheckMenuItem mnemonicParsing="false" onAction="#enableGridRendering" selected="true" text="Draw grid" />
-                              <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomAction" text="Auto zoom" />
+                              <CheckMenuItem mnemonicParsing="false" onAction="#enableGridRendering" selected="true" styleClass="menuItem" text="Draw grid" />
+                              <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomAction" styleClass="menuItem" text="Auto zoom" />
                                      <Menu styleClass="menuItem" text="Cell size">
                                         <items>
                                             <CustomMenuItem styleClass="menuSlider">

@@ -8,9 +8,10 @@ import java.util.List;
 /**
  * This class is a parser implementation for .rle files.
  * Its parse() method reads data from a Reader and returns a Pattern object.
- *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see Pattern
+ * @see PatternLoader
  */
 public class RLEParser implements Parser
 {
@@ -33,17 +34,14 @@ public class RLEParser implements Parser
 
     /**
      * Reads a Reader object character by character and returns the parsed data in a Pattern object.
-     *
      * @param reader A Reader object of type FileReader, InputStreamReader, etc.
      * @return A Pattern object.
      * @throws IOException If a problem occurs while reading the file content.
      * @throws PatternFormatException If the format of the file don't match the RLE standard.
-     * @see Pattern
      */
     public Pattern parse(Reader reader) throws IOException, PatternFormatException
     {
         int character;
-
         while ((character = reader.read()) != INVALID)
         {
             if (character == '#')
@@ -58,9 +56,14 @@ public class RLEParser implements Parser
         if (boardData != null)
             return createPattern();
         else
-            throw new PatternFormatException("Failed to load pattern");
+            throw new PatternFormatException(PatternFormatException.ErrorCode.GENERAL_LOADING_ERROR);
     }
 
+    /**
+     * Reads the rest of the line and adds it to the metadata list.
+     * @param reader The reader to read the data from.
+     * @throws IOException If reading from the reader fails.
+     */
     private void readMetadata(Reader reader) throws IOException
     {
         int character;
@@ -73,7 +76,14 @@ public class RLEParser implements Parser
             metadata.add(dataBuilder.toString());
     }
 
-    private void readBoardDefinitionAndInstantiateBoardDataArray(Reader reader) throws IOException
+    /**
+     * Reads the board definition line (x = n, y = m ...) and instantiates
+     * the boardData array if the dimensions are loaded correctly.
+     * @param reader The reader to read the data from.
+     * @throws IOException If the reading fails.
+     * @throws PatternFormatException If it fails to load the pattern dimensions.
+     */
+    private void readBoardDefinitionAndInstantiateBoardDataArray(Reader reader) throws IOException, PatternFormatException
     {
         int character;
         int number = 0;
@@ -99,12 +109,19 @@ public class RLEParser implements Parser
                     Character.isDigit((char) character))
                 rule += (char)character;
         }
-        if (width != INVALID && height != INVALID){
-            boardData = new boolean[height][width];
-        }
 
+        if(width == INVALID || height == INVALID)
+            throw new PatternFormatException(PatternFormatException.ErrorCode.PATTERN_SIZE_NOT_DEFINED);
+
+        boardData = new boolean[height][width];
     }
 
+    /**
+     * Parses the cell data character by character and adds it to the boardData array.
+     * @param reader The reader to read the data from.
+     * @throws IOException If the reading fails.
+     * @throws PatternFormatException If the cell data is defined outside of the given dimensions.
+     */
     private void readCellData(Reader reader) throws IOException, PatternFormatException
     {
         int row = 0;
@@ -120,6 +137,9 @@ public class RLEParser implements Parser
             else if (character == LIVING_CELL)
             {
                 number = Math.max(1, number);
+
+                if(index + number > boardData[0].length)
+                    throw new PatternFormatException(PatternFormatException.ErrorCode.ERROR_IN_CELL_DATA);
 
                 for (int x = index; x < (index + number); x++)
                     boardData[row][x] = true;
@@ -140,35 +160,17 @@ public class RLEParser implements Parser
         }
     }
 
-    private Pattern createPattern()
+    /**
+     * Creates a new Pattern object from the parsed data.
+     * @return A Pattern object.
+     * @throws PatternFormatException If the rule is in a unknown format.
+     */
+    private Pattern createPattern() throws PatternFormatException
     {
         Pattern p = new Pattern();
         p.setMetadata(metadata);
         p.setCellData(boardData);
-        p.setRuleString(getRuleInStandardFormat(rule));
+        p.setRuleString(RuleStringFormatter.format(rule));
         return p;
-    }
-
-    private String getRuleInStandardFormat(String rule)
-    {
-        rule = rule.trim().replaceAll(" ", "").toUpperCase();
-        int indexOfB = rule.indexOf("B");
-        int indexOfS = rule.indexOf("S");
-
-        String birthNumbers = "";
-        String survivalNumbers = "";
-
-        if(indexOfB == -1 && indexOfS == -1)
-            return "B" + rule.replaceAll("/", "/S");
-
-        if(indexOfB != -1)
-            for(indexOfB +=1; (indexOfB < rule.length() && Character.isDigit(rule.charAt(indexOfB))); indexOfB++)
-                birthNumbers += rule.charAt(indexOfB);
-
-        if(indexOfS != -1)
-            for(indexOfS +=1; (indexOfS < rule.length() && Character.isDigit(rule.charAt(indexOfS))); indexOfS++)
-                survivalNumbers += rule.charAt(indexOfS);
-
-        return "B" + birthNumbers + "/S" + survivalNumbers;
     }
 }
