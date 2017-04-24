@@ -59,6 +59,7 @@ public class PatternEditorForm extends Stage implements Initializable
     private BoardEditor boardEditor;
     private Simulator simulator;
     private Image createGIFImage;
+    private Image loopImage;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -105,7 +106,8 @@ public class PatternEditorForm extends Stage implements Initializable
         boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
         simulator = new ThreadedSimulator(new DefaultRuleSet());
-        createGIFImage = new Image(getClass().getResourceAsStream("/img/createGIF.png"));
+        createGIFImage = new Image(getClass().getResourceAsStream("/img/newCreateGIF.png"));
+        loopImage = new Image(getClass().getResourceAsStream("/img/loop.png"));
 
         boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
@@ -251,7 +253,6 @@ public class PatternEditorForm extends Stage implements Initializable
         tile.setEffect(new DropShadow(10, Color.GREEN));
     }
 
-
     /**
      *  Removes all unnecessary static generations.
      *  It uses the boards hash codes to compare and remove similar generations,
@@ -265,8 +266,18 @@ public class PatternEditorForm extends Stage implements Initializable
         {
             if (!hashCodeList.get(i).equals(hashCodeList.get(i - 1)) || i == 1)
             {
+                i += 3; // Show some of the repeated patterns
                 if (i < hashCodeList.size() - 1 && i < tilePane.getChildren().size() - 1)
+                {
                     tilePane.getChildren().remove(i, hashCodeList.size());
+
+                    // Add the loop image if the static pattern repeats
+                    GenerationTile tile = new GenerationTile(null);
+                    tile.setImage(loopImage);
+                    tile.setOnMouseClicked(event -> {});
+                    Tooltip.install(tile, new Tooltip("This pattern repeats indefinitely"));
+                    tilePane.getChildren().add(tile);
+                }
 
                 break;
             }

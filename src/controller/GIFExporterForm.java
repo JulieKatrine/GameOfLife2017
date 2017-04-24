@@ -41,6 +41,9 @@ public class GIFExporterForm extends Stage implements Initializable
     private int frameRate;
     private int cellSize;
 
+    private int largestFrameWidth;
+    private int largestFrameHeight;
+
     @FXML private Canvas canvas;
     @FXML private TextField framesField;
     @FXML private Label framesTextLabel;
@@ -160,6 +163,7 @@ public class GIFExporterForm extends Stage implements Initializable
             try
             {
                 numberOfFrames = Math.max(1, Integer.parseInt(newVal));
+                largestFrameWidth = largestFrameHeight = 0;
                 updateRepeatingPatternHint(false);
             }
             catch(NumberFormatException e)
@@ -222,6 +226,9 @@ public class GIFExporterForm extends Stage implements Initializable
 
             if(centerPatternCheckBox.isSelected())
                 currentBoard = currentBoard.trimmedCopy(1);
+
+            largestFrameWidth = Math.max(largestFrameWidth, currentBoard.getWidth());
+            largestFrameHeight = Math.max(largestFrameHeight, currentBoard.getHeight());
         }
         else
         {
@@ -310,7 +317,7 @@ public class GIFExporterForm extends Stage implements Initializable
     /**
      * This method is called when the user presses the Export button.
      * It creates a GIFExporter and sends in the user specified data.
-     * If the this form was opened form the generation strip in the PatternEditorForm,
+     * If this form was opened form the generation strip in the PatternEditorForm,
      * no output file has been selected and a FileChooser is opened.
      * @see GIFExporter
      */
@@ -329,8 +336,16 @@ public class GIFExporterForm extends Stage implements Initializable
         {
             try
             {
-                GIFExporter exporter = new GIFExporter(outputFile, simulator, frameRate, cellSize, centerPatternCheckBox.isSelected());
-                exporter.export(startBoard, numberOfFrames);
+                GIFExporter exporter = new GIFExporter(
+                        outputFile,
+                        simulator,
+                        frameRate,
+                        cellSize,
+                        largestFrameWidth,
+                        largestFrameHeight,
+                        centerPatternCheckBox.isSelected());
+
+                exporter.export(startBoard.getDeepCopy(), numberOfFrames);
 
                 super.close();
             }

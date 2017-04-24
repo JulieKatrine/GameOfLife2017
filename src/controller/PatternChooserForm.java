@@ -261,7 +261,7 @@ public class PatternChooserForm extends Stage implements Initializable
         catch (PatternFormatException e)
         {
             showAlertDialog(Alert.AlertType.ERROR,
-                    "Error message",
+                    path,
                     e.getErrorCode().name(),
                     e.getErrorMessage());
         }
