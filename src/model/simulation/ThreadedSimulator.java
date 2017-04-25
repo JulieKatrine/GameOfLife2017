@@ -97,6 +97,7 @@ public class ThreadedSimulator extends Simulator
         }
 
         board.makeNextGenerationCurrent();
+        increaseGenerationCount();
         stopTimer();
     }
 

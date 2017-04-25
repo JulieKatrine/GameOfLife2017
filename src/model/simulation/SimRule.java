@@ -13,4 +13,5 @@ import javafx.fxml.FXML;
 public interface SimRule
 {
     Result execute(int numberOfLivingNeighbors);
+    String getStringRule();
 }

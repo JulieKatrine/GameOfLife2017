@@ -1,8 +1,4 @@
 controller
-javafx.event
-javafx.geometry
-javafx.scene
-javafx.scene.input
 model
 model.BoardIO
 model.simulation

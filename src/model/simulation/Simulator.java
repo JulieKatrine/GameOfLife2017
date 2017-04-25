@@ -17,6 +17,10 @@ public abstract class Simulator
     private double simulationTimeInMilliSeconds;
     private long startTime;
 
+    private int generationCount;
+    private long generationCountTimer;
+    private int generationsPerSecond;
+
     /**
      * @param rule The rule to be used under simulation.
      */
@@ -25,16 +29,9 @@ public abstract class Simulator
         this.simulationRule = rule;
     }
 
-    /**
-     * @param simRule The rule to be used under simulation
-     */
-    public void setRule(SimRule simRule)
-    {
-        simulationRule = simRule;
-    }
 
     /**
-     * Sets the starting point for the timer.
+     * Sets the starting point for the generationCountTimer.
      * It is used by the simulator implementations to acquire a simulation time.
      */
     protected void startTimer()
@@ -51,6 +48,24 @@ public abstract class Simulator
         simulationTimeInMilliSeconds = (System.nanoTime() - startTime) / 1000000.0;
     }
 
+    protected void increaseGenerationCount(){
+        generationCount++;
+
+        if(System.currentTimeMillis() > generationCountTimer + 1000)
+        {
+            generationsPerSecond = generationCount;
+            generationCount = 0;
+            generationCountTimer = System.currentTimeMillis();
+        }
+    }
+
+    public int getGenerationsPerSecond()
+    {
+        return generationsPerSecond;
+    }
+
+
+
     /**
      * Returns the total time of the last executed simulation.
      * @return Time in milliseconds
@@ -60,11 +75,18 @@ public abstract class Simulator
         return simulationTimeInMilliSeconds;
     }
 
+    /**
+     * @param simRule The rule to be used under simulation
+     */
+    public void setRule(SimRule simRule)
+    {
+        simulationRule = simRule;
+    }
+
     public SimRule getSimulationRule()
     {
         return simulationRule;
     }
-
 
     /**
      * Executes a simulation on the given board according to the set rule.

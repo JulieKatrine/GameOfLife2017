@@ -8,7 +8,7 @@ import model.GameBoard;
 import model.Point;
 
 /**
- * Renders the board with Canvas.
+ * This class renders the board with Canvas.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -137,9 +137,7 @@ public class BoardRenderer
         }
     }
 
-    /**
-     Calculates the point of the first (top, left) visible cell in GameBoard.
-     */
+    //Calculates the point of the first (top, left) visible cell in GameBoard.
     private Point calculateStartPoint(GameBoard board)
     {
         Point camPos = camera.getCenterOffsetRenderingPosition(board);

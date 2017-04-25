@@ -58,6 +58,7 @@ public class Controller implements Initializable
     @FXML private ColorPicker deadCellColor;
     @FXML private ColorPicker livingCellColor;
     @FXML private Label ruleInfo;
+    @FXML private Label speed;
 
     /**
      * Called to initialize the controller after it's root element has been completely processed.
@@ -86,9 +87,7 @@ public class Controller implements Initializable
 
     private void addEventListeners()
     {
-        /*
-        * TODO: Put the label in the box, not on the side. I think css is the way to go.
-        */
+        //TODO: Put the label in the box, not on the side. I think css is the way to go.
 
         // Allows the user to change the pattern-colors.
         deadCellColor.setValue((Color)boardRender.getColorProfile().getDeadColor());
@@ -115,6 +114,7 @@ public class Controller implements Initializable
             if(System.currentTimeMillis() > drawTimer + 16)
             {
                 Platform.runLater(this::drawBoard);
+                Platform.runLater(this::generationsPerSecond);
                 drawTimer = System.currentTimeMillis();
             }
         });
@@ -187,6 +187,13 @@ public class Controller implements Initializable
             canvas.setHeight(newValue.doubleValue() - 45 - 30);
             drawBoard();
         });
+    }
+
+    private void generationsPerSecond()
+    {
+        int speed = gameModel.getSimulator().getGenerationsPerSecond();
+
+         this.speed.setText(updateTimer.isRunning() ? speed + " g/s" : "0 g/s");
     }
 
     private void editBoard(MouseEvent event)
@@ -314,7 +321,7 @@ public class Controller implements Initializable
         if(updateTimer.isRunning())
             startStopSimulation();
 
-        PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard());
+        PatternEditorForm editorForm = new PatternEditorForm(gameModel.getGameBoard(), gameModel.getSimulator());
         editorForm.setColorProfile(boardRender.getColorProfile());
         editorForm.initModality(Modality.WINDOW_MODAL);
         editorForm.initOwner(anchorPane.getScene().getWindow());
@@ -373,6 +380,7 @@ public class Controller implements Initializable
         startStopMenuItem.setText(updateTimer.isRunning() ? "Stop" : "Start");
         startStopButton.setSelected(updateTimer.isRunning());
         nextMenuItem.setDisable(updateTimer.isRunning());
+        speed.setText("0 g/s");
     }
 
     @FXML private void clearBoard()

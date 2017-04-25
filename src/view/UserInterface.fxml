@@ -12,12 +12,13 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="545.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@StyleSheet" styleClass="backGroundColor" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="545.0" prefHeight="600.0" prefWidth="800.0" styleClass="backGroundColor" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
@@ -45,9 +46,9 @@
                                      <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" styleClass="menuItem" text="Next" />
                               <Menu mnemonicParsing="false" styleClass="menuItem" text="Change Rule">
                                 <items>
+                                    <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Default Rule" />
                                     <MenuItem fx:id="B3S12345" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Maze" />
                                     <MenuItem fx:id="B3678S34678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Day and Night" />
-                                    <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Default Rule" />
                                     <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Replicator" />
                                     <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Fredkin" />
                                     <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Live Free or Die" />
@@ -87,10 +88,21 @@
             <ToolBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
-                  <Label text="Speed" />
+                  <Label fx:id="speed" text="Speed" />
+                  <Label prefWidth="60.0" text="0 g/s">
+                     <tooltip>
+                        <Tooltip text="Generations per second" />
+                     </tooltip>
+                  </Label>
                   <Slider fx:id="speedSlider" value="50.0" />
-                  <ColorPicker fx:id="deadCellColor" focusTraversable="false" styleClass="buttonColor" />
-                  <ColorPicker fx:id="livingCellColor" focusTraversable="false" styleClass="buttonColor" />
+                  <ColorPicker fx:id="deadCellColor" focusTraversable="false" styleClass="buttonColor">
+                     <tooltip>
+                        <Tooltip text="Dead cell-color" />
+                     </tooltip></ColorPicker>
+                  <ColorPicker fx:id="livingCellColor" focusTraversable="false" styleClass="buttonColor">
+                     <tooltip>
+                        <Tooltip text="Living cell-color" />
+                     </tooltip></ColorPicker>
                    <Pane minHeight="-Infinity" prefHeight="10.0" HBox.hgrow="ALWAYS" />
                   <Label fx:id="ruleInfo" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Rule: B3/S23" />
                </items>

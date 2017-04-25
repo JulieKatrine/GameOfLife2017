@@ -27,10 +27,7 @@ import model.BoardIO.RuleStringFormatter;
 import model.GameBoard;
 import model.GameModel;
 import model.Point;
-import model.simulation.CustomRule;
-import model.simulation.DefaultRuleSet;
-import model.simulation.Simulator;
-import model.simulation.ThreadedSimulator;
+import model.simulation.*;
 import view.BoardRenderer;
 import view.ColorProfile;
 
@@ -61,9 +58,9 @@ public class PatternEditorForm extends Stage implements Initializable
     private GenerationTile selectedTile;
     private BoardRenderer boardRenderer;
     private BoardEditor boardEditor;
-    private Simulator simulator;
     private Image createGIFImage;
     private Image loopImage;
+    private Simulator simulator;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -79,9 +76,10 @@ public class PatternEditorForm extends Stage implements Initializable
      * Loads the FXML and sets up the new stage.
      * @param board The GameBoard to be used as the first generation.
      */
-    public PatternEditorForm(GameBoard board)
+    public PatternEditorForm(GameBoard board, Simulator simulator)
     {
         selectedTile = new GenerationTile(board.trimmedCopy(1));
+        this.simulator = simulator;
 
         try
         {
@@ -111,10 +109,10 @@ public class PatternEditorForm extends Stage implements Initializable
     {
         boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
-        simulator = new ThreadedSimulator(new DefaultRuleSet());
+
         createGIFImage = new Image(getClass().getResourceAsStream("/img/newCreateGIF.png"));
         loopImage = new Image(getClass().getResourceAsStream("/img/loop.png"));
-
+        ruleTextField.setText(simulator.getSimulationRule().getStringRule());
         boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
         Platform.runLater(() -> saveButton.requestFocus());
@@ -181,8 +179,10 @@ public class PatternEditorForm extends Stage implements Initializable
         RuleStringFormatter ruleStringFormatter = new RuleStringFormatter();
         try {
             rule = ruleStringFormatter.format(rule);
+            ruleTextField.setText(rule);
         } catch (PatternFormatException e) {
-            e.printStackTrace();
+            rule = "B3/S23";
+            ruleTextField.setText(rule);
         }
         simulator.setRule(new CustomRule(rule));
         updateGenerationStrip();

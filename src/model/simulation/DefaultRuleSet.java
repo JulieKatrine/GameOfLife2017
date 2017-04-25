@@ -27,4 +27,9 @@ public class DefaultRuleSet implements SimRule
         else
             return Result.SURVIVE;
     }
+
+    @Override
+    public String getStringRule() {
+        return "B3/S23";
+    }
 }

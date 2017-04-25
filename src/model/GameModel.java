@@ -19,8 +19,7 @@ public class GameModel
     private Simulator simulator;
 
     /**
-     * The constructor sets up a default GameBoard with size (50, 50) and a default
-     * Simulator with the DefaultRuleSet.
+     * The constructor sets up a default GameBoard and a default Simulator with the DefaultRuleSet.
      */
     public GameModel()
     {
@@ -46,5 +45,10 @@ public class GameModel
     public void setRule(SimRule simulatorRule)
     {
         simulator.setRule(simulatorRule);
+    }
+
+    public Simulator getSimulator()
+    {
+        return simulator;
     }
 }
