@@ -1,3 +1,8 @@
+/*-----User Interface-----*/
+.backGroundColor
+{
+    -fx-background-color: #5c605a;
+}
 
 /*-----File Chooser-----*/
 .backgroundColor
@@ -8,6 +13,7 @@
 .GreyButton
 {
     -fx-background-color: #656563;
+    -fx-text-fill: #ffffff;
 }
 
 .GreyButton:hover
@@ -18,6 +24,7 @@
 .SelectButton
 {
     -fx-background-color: #3D8F13;
+    -fx-text-fill: #ffffff;
 }
 
 .SelectButton:hover
@@ -42,7 +49,6 @@
 /*TODO: Fix so that not all fxml-s use this root-colors*/
 .root
 {
-    -fx-background-color: #5c605a;
     -fx-accent: #3D8F13;
     -fx-focus-color: #3D8F13;
 }

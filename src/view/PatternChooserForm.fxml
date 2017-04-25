@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#fileDropped" onDragOver="#fileOver" prefHeight="400.0" prefWidth="660.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#fileDropped" onDragOver="#fileOver" prefHeight="500.0" prefWidth="800.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="400.0" prefWidth="217.0" styleClass="backgroundColor">
+      <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="600.0" prefWidth="250.0" styleClass="backgroundColor">
          <children>
             <Button maxHeight="35.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openFileChooser" prefHeight="35.0" styleClass="GreyButton" text="Open..." textFill="WHITE" VBox.vgrow="ALWAYS">
                <VBox.margin>
@@ -57,11 +57,11 @@
             </Button>
          </children>
       </VBox>
-      <ScrollPane id="test" fx:id="scrollPane" hbarPolicy="NEVER" minHeight="400.0" minWidth="370.0" pannable="true" style="-fx-background-color: #656563" vbarPolicy="ALWAYS" HBox.hgrow="ALWAYS">
+      <ScrollPane id="test" fx:id="scrollPane" hbarPolicy="NEVER" minWidth="550.0" pannable="true" style="-fx-background-color: #656563" vbarPolicy="ALWAYS" HBox.hgrow="ALWAYS">
          <content>
             <TilePane fx:id="tilePane" hgap="10.0" prefColumns="10" prefRows="10" vgap="10.0">
                <padding>
-                  <Insets left="10.0" top="10.0" />
+                  <Insets left="20.0" right="20.0" top="30.0" />
                </padding>
                <opaqueInsets>
                   <Insets />

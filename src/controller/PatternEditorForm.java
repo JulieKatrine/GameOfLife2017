@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,8 +23,11 @@ import model.BoardEditor;
 import model.BoardIO.Pattern;
 import model.BoardIO.PatternExporter;
 import model.BoardIO.PatternFormatException;
+import model.BoardIO.RuleStringFormatter;
 import model.GameBoard;
+import model.GameModel;
 import model.Point;
+import model.simulation.CustomRule;
 import model.simulation.DefaultRuleSet;
 import model.simulation.Simulator;
 import model.simulation.ThreadedSimulator;
@@ -68,6 +72,8 @@ public class PatternEditorForm extends Stage implements Initializable
     @FXML private TextField authorTextField;
     @FXML private TextField patternNameTextField;
     @FXML private TextArea descriptionTextArea;
+    @FXML private Button applyRuleButton;
+    @FXML private Button saveButton;
 
     /**
      * Loads the FXML and sets up the new stage.
@@ -96,7 +102,7 @@ public class PatternEditorForm extends Stage implements Initializable
     }
 
     /**
-     * Sets up the local objects, updates the genration strip and draw the board.
+     * Sets up the local objects, updates the generation strip and draw the board.
      * @param location Some location.
      * @param resources Some resource.
      */
@@ -111,6 +117,7 @@ public class PatternEditorForm extends Stage implements Initializable
 
         boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
+        Platform.runLater(() -> saveButton.requestFocus());
         updateGenerationStrip();
         drawBoard();
     }
@@ -166,6 +173,19 @@ public class PatternEditorForm extends Stage implements Initializable
                 }
             }
         });
+    }
+
+    @FXML private void applyRule()
+    {
+        String rule = ruleTextField.getText();
+        RuleStringFormatter ruleStringFormatter = new RuleStringFormatter();
+        try {
+            rule = ruleStringFormatter.format(rule);
+        } catch (PatternFormatException e) {
+            e.printStackTrace();
+        }
+        simulator.setRule(new CustomRule(rule));
+        updateGenerationStrip();
     }
 
     /**

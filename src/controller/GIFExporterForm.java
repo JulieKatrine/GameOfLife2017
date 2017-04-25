@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -52,6 +53,7 @@ public class GIFExporterForm extends Stage implements Initializable
     @FXML private TextField cellSizeField;
     @FXML private TextField frameRateField;
     @FXML private CheckBox centerPatternCheckBox;
+    @FXML private Button createGIFButton;
 
     /**
      * Loads the FXML and sets up the stage.
@@ -103,6 +105,7 @@ public class GIFExporterForm extends Stage implements Initializable
         frameRate = (int) frameRateSlider.getValue();
         framesField.setText(String.valueOf(numberOfFrames));
 
+        Platform.runLater(() -> createGIFButton.requestFocus());
         createAndStartAnimationTimer();
         updateRepeatingPatternHint(true);
     }
@@ -322,7 +325,7 @@ public class GIFExporterForm extends Stage implements Initializable
      * @see GIFExporter
      */
     @FXML
-    private void export()
+    private void createGif()
     {
         if (outputFile == null)
         {

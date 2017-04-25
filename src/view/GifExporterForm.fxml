@@ -9,30 +9,23 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="620.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefWidth="200.0" style="-fx-background-color: #373833;">
+      <VBox minWidth="220.0" prefHeight="375.0" prefWidth="220.0" style="-fx-background-color: #373833;">
          <children>
-            <Label text="Animation" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="29.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="30.0" top="30.0" />
-               </VBox.margin>
-            </Label>
             <Label text="Frame rate" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
                <VBox.margin>
-                  <Insets left="15.0" top="10.0" />
+                  <Insets left="15.0" top="30.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT">
                <children>
                   <TextField fx:id="frameRateField" prefHeight="25.0" prefWidth="40.0" text="15" />
                   <Slider fx:id="frameRateSlider" max="60.0" min="1.0" prefWidth="100.0" value="15.0" HBox.hgrow="ALWAYS">
@@ -52,7 +45,7 @@
                   <Insets left="15.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="CENTER_LEFT" layoutX="25.0" layoutY="113.0" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT" layoutX="25.0" layoutY="113.0">
                <children>
                   <TextField fx:id="cellSizeField" prefHeight="25.0" prefWidth="40.0" text="10" />
                   <Slider fx:id="cellSizeSlider" max="50.0" min="1.0" prefWidth="100.0" value="10.0" HBox.hgrow="ALWAYS">
@@ -73,12 +66,12 @@
                   <Insets left="15.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <HBox alignment="CENTER_LEFT" layoutX="25.0" layoutY="168.0" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="25.0" layoutY="168.0">
                <children>
                   <TextField fx:id="framesField" minWidth="-Infinity" prefHeight="25.0" prefWidth="40.0" />
                   <Label fx:id="framesTextLabel" textFill="WHITE" wrapText="true">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </Label>
                </children>
@@ -94,7 +87,12 @@
                   <Font size="14.0" />
                </font>
             </CheckBox>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#export" prefHeight="60.0" styleClass="SelectButton" text="Export" textFill="WHITE">
+            <Pane minHeight="0.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Pane>
+            <Button fx:id="createGIFButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#createGif" prefHeight="60.0" styleClass="SelectButton" text="Create GIF" textFill="WHITE">
                <VBox.margin>
                   <Insets bottom="20.0" left="15.0" right="15.0" top="20.0" />
                </VBox.margin>
@@ -106,6 +104,6 @@
                </cursor>
             </Button>
          </children></VBox>
-      <Canvas fx:id="canvas" height="400.0" width="400.0" />
+      <Canvas fx:id="canvas" height="375.0" width="400.0" />
    </children>
 </HBox>
