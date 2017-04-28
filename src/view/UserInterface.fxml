@@ -68,7 +68,7 @@
                                         <items>
                                             <CustomMenuItem styleClass="menuSlider">
                                                 <content>
-                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.6" max="50" min="1" value="20" />
+                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.1" max="50" min="0.1" value="20" />
                                                 </content>
                                             </CustomMenuItem>
                                         </items>
@@ -88,8 +88,8 @@
             <ToolBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
-                  <Label fx:id="speed" text="Speed" />
-                  <Label prefWidth="60.0" text="0 g/s">
+                  <Label text="Speed" />
+                  <Label fx:id="speed" prefWidth="60.0" text="0 g/s">
                      <tooltip>
                         <Tooltip text="Generations per second" />
                      </tooltip>

@@ -23,9 +23,65 @@ class SimulatorTest
 
         // Simulate four generations
         for(int i = 0; i < 4; i++)
-            simulator.executeOn(board);
+            simulator.simulateNextGenerationOn(board);
 
         // The glider oscillates and should stay the same after 4 generations.
-        assertEquals(glider, TestUtils.gameBoardToString(board));
+        assertEquals(glider, TestUtils.trimmedGameBoardToString(board));
+    }
+
+    @Test
+    void testSimulationTime() throws InterruptedException
+    {
+        Simulator simulator = new Simulator(new DefaultRuleSet())
+        {
+            @Override
+            public void executeOn(GameBoard board)
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ignored) {}
+            }
+        };
+
+        simulator.simulateNextGenerationOn(TestUtils.getGameBoardImplementation(10,10));
+
+        assertEquals(100, (int)simulator.getSimulationTime(), 20);
+    }
+
+    @Test
+    void testGenerationCountPerSecond() throws InterruptedException
+    {
+        GameBoard board = TestUtils.getGameBoardImplementation(10, 10);
+        Simulator simulator = new Simulator(new DefaultRuleSet())
+        {
+            @Override
+            protected void executeOn(GameBoard board)
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ignored) {}
+            }
+        };
+
+        for(int i = 0; i < 15; i++)
+            simulator.simulateNextGenerationOn(board);
+
+        assertEquals(10, simulator.getGenerationsPerSecond(), 2);
+    }
+
+    @Test
+    void testGetterAndSetters()
+    {
+        SimRule defaultRule = new DefaultRuleSet();
+        Simulator simulator = new SimulatorImpl(defaultRule);
+        assertEquals(defaultRule, simulator.getSimulationRule());
+
+        SimRule customRule = new CustomRule("B3/S23");
+        simulator.setRule(customRule);
+        assertEquals(customRule, simulator.getSimulationRule());
     }
 }

@@ -174,6 +174,16 @@ public class Controller implements Initializable
             drawBoard();
         });
 
+        canvas.setOnMouseReleased(event ->
+        {
+            GameBoard board = gameModel.getGameBoard();
+            if(board instanceof GameBoardDynamic && !updateTimer.isRunning())
+            {
+                ((GameBoardDynamic)board).increaseBoardSizeIfNecessary();
+                drawBoard();
+            }
+        });
+
         // Updates the canvas width when the window is resized
         anchorPane.prefWidthProperty().addListener((o, oldValue, newValue) ->
         {
@@ -192,23 +202,28 @@ public class Controller implements Initializable
     private void generationsPerSecond()
     {
         int speed = gameModel.getSimulator().getGenerationsPerSecond();
-
-         this.speed.setText(updateTimer.isRunning() ? speed + " g/s" : "0 g/s");
+        this.speed.setText(updateTimer.isRunning() ? speed + " g/s" : "0 g/s");
     }
 
     private void editBoard(MouseEvent event)
     {
-        if(event.getButton() == MouseButton.SECONDARY)
+        double deltaX = event.getX() - lastMousePos.x;
+        double deltaY = event.getY() - lastMousePos.y;
+        lastMousePos.x = (int)event.getX();
+        lastMousePos.y = (int)event.getY();
+
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double stepDist = distance / boardRender.getCamera().getZoom();
+        MouseButton button = event.getButton();
+
+        if(button == MouseButton.PRIMARY || button == MouseButton.SECONDARY)
         {
-            boardEditor.edit(gameModel.getGameBoard(),
-                    new Point((int)event.getX(), (int)event.getY()),
-                    false);
-        }
-        else if(event.getButton() == MouseButton.PRIMARY)
-        {
-            boardEditor.edit(gameModel.getGameBoard(),
-                    new Point((int)event.getX(), (int)event.getY()),
-                    true);
+            for(double i = 0.0;  i < 1.0; i += 1.0 / stepDist)
+            {
+                int x = (int)(event.getX() - (i * deltaX));
+                int y = (int)(event.getY() - (i * deltaY));
+                boardEditor.edit(gameModel.getGameBoard(), new Point(x,y), button == MouseButton.PRIMARY);
+            }
         }
     }
 

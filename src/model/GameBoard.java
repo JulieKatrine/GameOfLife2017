@@ -186,15 +186,5 @@ public abstract class GameBoard
      * @param height The height of the new GameBoard.
      * @return A new GameBoard instance.
      */
-    private GameBoard getNewInstance(int width, int height)
-    {
-        //TODO: I'd love to know how this could be done better??
-        GameBoard newBoard = null;
-        if(this instanceof GameBoardDynamic)
-            newBoard = new GameBoardDynamic(width, height);
-        else if(this instanceof GameBoardStatic)
-            newBoard = new GameBoardStatic(width, height);
-
-        return newBoard;
-    }
+    protected abstract GameBoard getNewInstance(int width, int height);
 }

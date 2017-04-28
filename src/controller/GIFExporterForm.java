@@ -224,7 +224,7 @@ public class GIFExporterForm extends Stage implements Initializable
     {
         if(generationCount < numberOfFrames - 1)
         {
-            simulator.executeOn(currentBoard);
+            simulator.simulateNextGenerationOn(currentBoard);
             generationCount++;
 
             if(centerPatternCheckBox.isSelected())
@@ -312,7 +312,7 @@ public class GIFExporterForm extends Stage implements Initializable
         {
             board = board.trimmedCopy(1);
             hashCodes.add(board.hashCode());
-            simulator.executeOn(board);
+            simulator.simulateNextGenerationOn(board);
         }
         return hashCodes;
     }

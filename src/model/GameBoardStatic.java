@@ -3,7 +3,6 @@ package model;
 /**
  * This class is a static implementation of GameBoard.
  * It uses our old way of counting neighbours and is slower than its newer dynamic version.
- * TODO: MAKE FAST! GOGOGO!!!
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -72,6 +71,12 @@ public class GameBoardStatic extends GameBoard
         boolean[][] temp = thisGeneration;
         thisGeneration = nextGeneration;
         nextGeneration = temp;
+    }
+
+    @Override
+    protected GameBoard getNewInstance(int width, int height)
+    {
+        return new GameBoardStatic(width, height);
     }
 
 }

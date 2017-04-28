@@ -26,5 +26,7 @@ class SimRuleTest
 
         for(int i=0; i < expected.length; i++)
             assertEquals(expected[i], rule.execute(i));
+
+        assertEquals("B024/S57", rule.getStringRule());
     }
 }

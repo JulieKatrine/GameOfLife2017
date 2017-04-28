@@ -65,7 +65,7 @@ public class GIFExporter
         drawFrame(board);
 
         // Simulate the next generation
-        simulator.executeOn(board);
+        simulator.simulateNextGenerationOn(board);
 
         // Call this method recursively to generate the next frame.
         export(trimmedAndCentered ? board.trimmedCopy(1) : board, numberOfFrames - 1);

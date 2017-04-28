@@ -219,10 +219,10 @@ public class PatternChooserForm extends Stage implements Initializable
             if(pattern != null)
             {
                 Tile tile = new Tile(pattern);
-                // Interaction with JavaFX elements cannot be done from a separate thread,
-                // and is therefor passed on to the Platform.
                 Platform.runLater(() ->
                 {
+                    /*Interaction with JavaFX elements cannot be done from a separate thread
+                     and is therefor passed on to the Platform. */
                     addTileEventListener(tile);
                     addSelectedEffect(tile);
                     tilePane.getChildren().add(0, tile);

@@ -15,7 +15,6 @@ public abstract class Simulator
 {
     protected SimRule simulationRule;
     private double simulationTimeInMilliSeconds;
-    private long startTime;
 
     private int generationCount;
     private long generationCountTimer;
@@ -29,33 +28,34 @@ public abstract class Simulator
         this.simulationRule = rule;
     }
 
-
     /**
-     * Sets the starting point for the generationCountTimer.
-     * It is used by the simulator implementations to acquire a simulation time.
+     * Simulates the next generation on the given board according to the set rule.
+     * Takes the time of the simulation and
+     * @param board The GameBoard to be used under the simulation.
      */
-    protected void startTimer()
+    public void simulateNextGenerationOn(GameBoard board)
     {
-        startTime = System.nanoTime();
-    }
+        long startTime = System.nanoTime();
 
-    /**
-     * Calculates the elapsed time since startTimer() was called.
-     * It is used by the simulator implementations to acquire a simulation time.
-     */
-    protected void stopTimer()
-    {
+        executeOn(board);
+
         simulationTimeInMilliSeconds = (System.nanoTime() - startTime) / 1000000.0;
+
+        calculateGenerationPerSecond();
     }
 
-    protected void increaseGenerationCount(){
+    protected abstract void executeOn(GameBoard board);
+
+    private void calculateGenerationPerSecond()
+    {
         generationCount++;
 
-        if(System.currentTimeMillis() > generationCountTimer + 1000)
+        long now = System.currentTimeMillis();
+        if(now > generationCountTimer + 1000)
         {
-            generationsPerSecond = generationCount;
+            generationsPerSecond = (int)(generationCount * ((now - generationCountTimer) / 1000.0));
             generationCount = 0;
-            generationCountTimer = System.currentTimeMillis();
+            generationCountTimer = now;
         }
     }
 
@@ -64,20 +64,11 @@ public abstract class Simulator
         return generationsPerSecond;
     }
 
-
-
-    /**
-     * Returns the total time of the last executed simulation.
-     * @return Time in milliseconds
-     */
-    public double getTime()
+    public double getSimulationTime()
     {
         return simulationTimeInMilliSeconds;
     }
 
-    /**
-     * @param simRule The rule to be used under simulation
-     */
     public void setRule(SimRule simRule)
     {
         simulationRule = simRule;
@@ -87,10 +78,4 @@ public abstract class Simulator
     {
         return simulationRule;
     }
-
-    /**
-     * Executes a simulation on the given board according to the set rule.
-     * @param board The GameBoard to be used under the simulation.
-     */
-    public abstract void executeOn(GameBoard board);
 }

@@ -25,7 +25,6 @@ import model.BoardIO.PatternExporter;
 import model.BoardIO.PatternFormatException;
 import model.BoardIO.RuleStringFormatter;
 import model.GameBoard;
-import model.GameModel;
 import model.Point;
 import model.simulation.*;
 import view.BoardRenderer;
@@ -246,7 +245,7 @@ public class PatternEditorForm extends Stage implements Initializable
             tilePane.getChildren().add(new GenerationTile(trimmedBoard));
             generationHashCodes.add(trimmedBoard.hashCode());
 
-            simulator.executeOn(currentBoard);
+            simulator.simulateNextGenerationOn(currentBoard);
 
             // Stop adding tiles if the generation has died out.
             if(currentBoard.getPopulation() == 0)

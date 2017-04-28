@@ -30,6 +30,6 @@ class GameModelTest
         // Simulate one generation of the pattern
         gameModel.simulateNextGeneration();
 
-        assertEquals("101011010", TestUtils.gameBoardToString(gameModel.getGameBoard()));
+        assertEquals("101011010", TestUtils.trimmedGameBoardToString(gameModel.getGameBoard()));
     }
 }

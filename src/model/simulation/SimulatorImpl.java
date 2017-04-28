@@ -29,9 +29,8 @@ public class SimulatorImpl extends Simulator
      *
      * @param board The current board.
      */
-    public void executeOn(GameBoard board)
+    protected void executeOn(GameBoard board)
     {
-        startTimer();
         Point cellPos = new Point();
         for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
         {
@@ -57,8 +56,6 @@ public class SimulatorImpl extends Simulator
                 }
             }
         }
-        increaseGenerationCount();
         board.makeNextGenerationCurrent();
-        stopTimer();
     }
 }

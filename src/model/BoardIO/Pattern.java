@@ -35,7 +35,7 @@ public class Pattern
      * N - Patterns name
      * O - The author of the pattern
      * C - Other information
-     *
+     * D - Other information
      * @param metadataList A list of metadata lines.
      */
     public void setMetadata(List<String> metadataList)
@@ -43,7 +43,7 @@ public class Pattern
         StringBuilder commentBuilder = new StringBuilder();
         for(String string : metadataList)
         {
-            if(string.length() > 0)
+            if(string.length() > 2)
             {
                 string = string.replaceAll("#", "");
                 char prefix = string.charAt(0);

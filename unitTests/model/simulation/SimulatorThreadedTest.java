@@ -6,12 +6,11 @@ import model.GameBoard;
 import model.TestUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ThreadedSimulatorTest
+class SimulatorThreadedTest
 {
     /**
      * This test simulates 6000 generations of a 6-period pattern.
@@ -26,13 +25,13 @@ class ThreadedSimulatorTest
         PatternLoader pLoader = new PatternLoader();
         GameBoard board = pLoader.loadAsStream("/patterns/period6oscillators.rle").getGameBoard();
 
-        String expected = TestUtils.gameBoardToString(board);
+        String expected = TestUtils.trimmedGameBoardToString(board);
 
-        Simulator simulator = new ThreadedSimulator(new DefaultRuleSet());
+        Simulator simulator = new SimulatorThreaded(new DefaultRuleSet());
         for(int i = 0; i < 6 * 1000; i++)
-            simulator.executeOn(board);
+            simulator.simulateNextGenerationOn(board);
 
-        String actual = TestUtils.gameBoardToString(board);
+        String actual = TestUtils.trimmedGameBoardToString(board);
 
         assertEquals(actual, expected);
     }

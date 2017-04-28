@@ -16,11 +16,11 @@ public class TestUtils
     }
 
     /**
-     * Extracts the relevant cell data from a GameBoard to a string
+     * Extracts the relevant cell data from a GameBoard to a string.
      * @param board The GameBoard
      * @return A string containing the cell data
      */
-    public static String gameBoardToString(GameBoard board)
+    public static String trimmedGameBoardToString(GameBoard board)
     {
         StringBuilder sBuilder = new StringBuilder();
         Point[] boundingBox = board.getBoundingBox();
@@ -31,6 +31,39 @@ public class TestUtils
                 sBuilder.append(board.isCellAliveInThisGeneration(cellPos) ? '1' : '0');
 
         return sBuilder.toString();
+    }
+
+    /**
+     * Creates a string of the cell data in a GameBoard.
+     * @param board The GameBoard
+     * @return A string og 1 and 0 representing the cell data.
+     */
+    public static String gameBoardToString(GameBoard board)
+    {
+        StringBuilder sBuilder = new StringBuilder();
+        Point cellPos = new Point();
+        for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
+            for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
+                sBuilder.append(board.isCellAliveInThisGeneration(cellPos) ? '1' : '0');
+
+        return sBuilder.toString();
+    }
+
+
+    /**
+     * Fills the GameBoard with the array data.
+     * @param board A GameBoard.
+     * @param data A byte array with ones and zeros.
+     */
+    public static void addDataToGameBoard(GameBoard board, byte[][] data)
+    {
+        int width = Math.min(board.getWidth(), data[0].length);
+        int height = Math.min(board.getHeight(), data.length);
+
+        Point cellPos = new Point();
+        for(cellPos.y = 0; cellPos.y < height; cellPos.y++)
+            for(cellPos.x = 0; cellPos.x < width; cellPos.x++)
+                board.editThisGeneration(data[cellPos.y][cellPos.x] == 1, cellPos);
     }
 
     public static void addRandomCellDataTo(GameBoard board)

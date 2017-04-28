@@ -37,7 +37,7 @@ public class GameOfLife extends Application
         primaryStage.setTitle("Game of Life");
         primaryStage.setMinWidth(root.getMinWidth());
         primaryStage.setMinHeight(root.getMinHeight());
-        primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/newLogo.png"))));
+        primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/logo.png"))));
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event ->
         {

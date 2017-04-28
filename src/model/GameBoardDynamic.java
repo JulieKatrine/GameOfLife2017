@@ -93,7 +93,7 @@ public class GameBoardDynamic extends GameBoard
     /**
      * Sets the state of a cell in the current generation.
      * NOTE: this method has the side effect of updating the living neighbour count of nearby cells.
-     * This method is synchronized to prevent concurrency problems with the ThreadedSimulator implementation.
+     * This method is synchronized to prevent concurrency problems with the SimulatorThreaded implementation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param p The position of the cell to be set.
      */
@@ -175,7 +175,7 @@ public class GameBoardDynamic extends GameBoard
      * Searches along the edges for living cells and increases the board size if necessary.
      * If the new size is close to the actual array size, new larger arrays will be allocated.
      */
-    private void increaseBoardSizeIfNecessary()
+    public void increaseBoardSizeIfNecessary()
     {
         if(arrayWidth * arrayHeight >= maxCellCount)
             return;
@@ -243,4 +243,11 @@ public class GameBoardDynamic extends GameBoard
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected GameBoard getNewInstance(int width, int height)
+    {
+        return new GameBoardDynamic(width, height);
+    }
+
 }

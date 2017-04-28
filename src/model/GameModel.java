@@ -24,12 +24,12 @@ public class GameModel
     public GameModel()
     {
         gameBoard = new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT);
-        simulator = new ThreadedSimulator(new DefaultRuleSet());
+        simulator = new SimulatorThreaded(new DefaultRuleSet());
     }
 
     public void simulateNextGeneration()
     {
-        simulator.executeOn(getGameBoard());
+        simulator.simulateNextGenerationOn(getGameBoard());
     }
 
     public GameBoard getGameBoard()
