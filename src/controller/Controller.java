@@ -207,17 +207,17 @@ public class Controller implements Initializable
 
     private void editBoard(MouseEvent event)
     {
-        double deltaX = event.getX() - lastMousePos.x;
-        double deltaY = event.getY() - lastMousePos.y;
-        lastMousePos.x = (int)event.getX();
-        lastMousePos.y = (int)event.getY();
-
-        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        double stepDist = distance / boardRender.getCamera().getZoom();
         MouseButton button = event.getButton();
-
         if(button == MouseButton.PRIMARY || button == MouseButton.SECONDARY)
         {
+            double deltaX = event.getX() - lastMousePos.x;
+            double deltaY = event.getY() - lastMousePos.y;
+            lastMousePos.x = (int)event.getX();
+            lastMousePos.y = (int)event.getY();
+
+            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            double stepDist = distance / boardRender.getCamera().getZoom();
+
             for(double i = 0.0;  i < 1.0; i += 1.0 / stepDist)
             {
                 int x = (int)(event.getX() - (i * deltaX));
