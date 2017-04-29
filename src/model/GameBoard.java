@@ -7,6 +7,9 @@ package model;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see GameBoardDynamic
+ * @see GameBoardDynamicList
+ * @see GameBoardStatic
  */
 
 public abstract class GameBoard
@@ -26,11 +29,17 @@ public abstract class GameBoard
         this.height = height;
     }
 
+    /**
+     * @return The current width of the board.
+     */
     public int getWidth()
     {
         return width;
     }
 
+    /**
+     * @return The current height of the board.
+     */
     public int getHeight()
     {
         return height;
@@ -38,6 +47,8 @@ public abstract class GameBoard
 
     /**
      * Gets the amount of living neighbours at a given point in the current generation.
+     * NOTE: Bounding checks are not performed before data access and an IndexOutOfBoundsException
+     * will be thrown if the coordinates are out of bounds.
      * @param point The position from where to retrieve the neighbour count.
      * @return The amount of surrounding neighbours that are alive (0-8).
      */
@@ -45,6 +56,8 @@ public abstract class GameBoard
 
     /**
      * Gets the state of cell at a given point in the current generation.
+     * NOTE: Bounding checks are not performed before data access and an IndexOutOfBoundsException
+     * will be thrown if the coordinates are out of bounds.
      * @param point The position to check.
      * @return A boolean indicating whether the cell is living (true) or dead (false).
      */
@@ -52,6 +65,8 @@ public abstract class GameBoard
 
     /**
      * Sets the state of a cell in the next generation.
+     * NOTE: Bounding checks are not performed before data access and an IndexOutOfBoundsException
+     * will be thrown if the coordinates are out of bounds.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param point The position of the cell to be set.
      */
@@ -59,6 +74,8 @@ public abstract class GameBoard
 
     /**
      * Edits the state of a cell in the current generation.
+     * NOTE: Bounding checks are not performed before data access and an IndexOutOfBoundsException
+     * will be thrown if the coordinates are out of bounds.
      * Typically used when generating a board or changing cell states after a simulation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param point The position of the cell to be set.
@@ -92,6 +109,7 @@ public abstract class GameBoard
      * This implementation is based on the Arrays.hashCode() algorithm.
      * @return A hash code representing this generation.
      */
+    @Override
     public int hashCode()
     {
         int code = 1;
@@ -104,9 +122,10 @@ public abstract class GameBoard
     }
 
     /**
+     * Creates and returns a new instance of this board containing the same cell data.
      * @return A deep copy of the GameBoard.
      */
-    public GameBoard getDeepCopy()
+    public GameBoard deepCopy()
     {
         return getSubBoard(new Point(0,0), new Point(width, height), 0);
     }
@@ -121,6 +140,7 @@ public abstract class GameBoard
 
     /**
      * Creates a trimmed copy of the GameBoard with a padded layer of dead cells around it.
+     * @param padding The amount of empty cells around the pattern
      * @return A trimmed copy of the GameBoard.
      */
     public GameBoard trimmedCopy(int padding)

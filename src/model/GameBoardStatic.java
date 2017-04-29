@@ -6,7 +6,7 @@ package model;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @deprecated This implementation had been replaced by GameBoardDynamic
+ * @deprecated This implementation had been replaced by {@link GameBoardDynamic}
  * @see GameBoardDynamic
  * @see GameBoard
  */
@@ -78,5 +78,4 @@ public class GameBoardStatic extends GameBoard
     {
         return new GameBoardStatic(width, height);
     }
-
 }

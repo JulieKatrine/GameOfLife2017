@@ -8,13 +8,15 @@ import model.GameBoard;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see SimulatorThreaded
+ * @see SimulatorImpl
  * @see SimRule
  * @see GameBoard
  */
 public abstract class Simulator
 {
     protected SimRule simulationRule;
-    private double simulationTimeInMilliSeconds;
+    private long simulationTimeInMilliSeconds;
 
     private int generationCount;
     private long generationCountTimer;
@@ -28,6 +30,8 @@ public abstract class Simulator
         this.simulationRule = rule;
     }
 
+    protected abstract void executeOn(GameBoard board);
+
     /**
      * Simulates the next generation on the given board according to the set rule.
      * Takes the time of the simulation and
@@ -35,16 +39,14 @@ public abstract class Simulator
      */
     public void simulateNextGenerationOn(GameBoard board)
     {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         executeOn(board);
 
-        simulationTimeInMilliSeconds = (System.nanoTime() - startTime) / 1000000.0;
+        simulationTimeInMilliSeconds = (System.currentTimeMillis() - startTime);
 
         calculateGenerationPerSecond();
     }
-
-    protected abstract void executeOn(GameBoard board);
 
     private void calculateGenerationPerSecond()
     {
@@ -64,7 +66,7 @@ public abstract class Simulator
         return generationsPerSecond;
     }
 
-    public double getSimulationTime()
+    public long getSimulationTime()
     {
         return simulationTimeInMilliSeconds;
     }

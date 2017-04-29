@@ -74,6 +74,7 @@ public class PatternEditorForm extends Stage implements Initializable
     /**
      * Loads the FXML and sets up the new stage.
      * @param board The GameBoard to be used as the first generation.
+     * @param simulator The simulator to update the generation strip.
      */
     public PatternEditorForm(GameBoard board, Simulator simulator)
     {

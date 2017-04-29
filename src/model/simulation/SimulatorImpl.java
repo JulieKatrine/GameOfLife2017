@@ -9,6 +9,7 @@ import model.Point;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @deprecated This implementation is replaced by {@link SimulatorThreaded}
  * @see Simulator
  * @see GameBoard
  * @see SimRule

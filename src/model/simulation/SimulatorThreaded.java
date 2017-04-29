@@ -1,6 +1,7 @@
 package model.simulation;
 
 import model.GameBoard;
+import model.GameBoardDynamicList;
 import model.Point;
 
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +27,9 @@ import java.util.concurrent.TimeUnit;
  * slow running thread is accessing data at its to first rows, and a faster thread updates its last rows in
  * the adjacent region. This is solved by blocking all further processing until all threads are past their
  * second row and not allowing any threads to have fewer rows than 4. Boards with a smaller height than 8
- * will only utilize one thread.
+ * will only utilize one thread. This way of ensuring thread-safe simulation requires no further synchronization
+ * code in the GameBoard implementations. But to show how this can be done with either atomic data wrappers or
+ * synchronized method calls, see the {@link GameBoardDynamicList} class.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -40,7 +43,7 @@ public class SimulatorThreaded extends Simulator
 {
     private ExecutorService executorService;
     private CountDownLatch simulationExecutedLatch;
-    private CountDownLatch synchLatch;
+    private CountDownLatch syncLatch;
     private int availableProcessors;
 
     /**
@@ -60,7 +63,6 @@ public class SimulatorThreaded extends Simulator
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownExecutor));
     }
 
-
     /**
      * This method simulates a single generation on the given board.
      * It creates the appropriate amount of Workers, submits them to the
@@ -74,7 +76,7 @@ public class SimulatorThreaded extends Simulator
         int rowsPerThread = board.getHeight() / numberOfThreads;
 
         simulationExecutedLatch = new CountDownLatch(numberOfThreads);
-        synchLatch = new CountDownLatch(numberOfThreads);
+        syncLatch = new CountDownLatch(numberOfThreads);
 
         for (int i = 0; i < numberOfThreads; i++)
         {
@@ -187,8 +189,8 @@ public class SimulatorThreaded extends Simulator
                 {
                     try
                     {
-                        synchLatch.countDown();
-                        synchLatch.await();
+                        syncLatch.countDown();
+                        syncLatch.await();
                     }
                     catch (InterruptedException e)
                     {

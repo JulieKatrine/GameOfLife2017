@@ -12,7 +12,7 @@ package controller;
 public class UpdateTimer
 {
     private Object runLock;
-    private Action action;
+    private Runnable action;
     private int delayInMilliseconds = 500;
     private long lastTime;
     private boolean running;
@@ -40,7 +40,7 @@ public class UpdateTimer
 
                 if(System.currentTimeMillis() > lastTime + delayInMilliseconds)
                 {
-                    action.call();
+                    action.run();
                     lastTime = System.currentTimeMillis();
                 }
             }
@@ -69,7 +69,7 @@ public class UpdateTimer
     /**
      * @param action The action to be performed at every update.
      */
-    public void setOnUpdateAction(Action action)
+    public void setOnUpdateAction(Runnable action)
     {
         this.action = action;
     }

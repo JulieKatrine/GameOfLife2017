@@ -66,6 +66,15 @@ public class TestUtils
                 board.editThisGeneration(data[cellPos.y][cellPos.x] == 1, cellPos);
     }
 
+    public static void addDataToGameBoard(GameBoard dst, GameBoard src)
+    {
+        Point cellPos = new Point();
+        for(cellPos.y = 0; cellPos.y < src.getHeight(); cellPos.y++)
+            for(cellPos.x = 0; cellPos.x < src.getWidth(); cellPos.x++)
+                dst.editThisGeneration(src.isCellAliveInThisGeneration(cellPos), cellPos);
+    }
+
+
     public static void addRandomCellDataTo(GameBoard board)
     {
         Random r = new Random();

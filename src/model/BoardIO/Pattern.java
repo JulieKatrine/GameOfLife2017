@@ -1,9 +1,6 @@
 package model.BoardIO;
 
-import model.GameBoard;
-import model.GameBoardDynamic;
-import model.GameBoardStatic;
-import model.Point;
+import model.*;
 import model.simulation.CustomRule;
 import model.simulation.DefaultRuleSet;
 import model.simulation.SimRule;

@@ -65,7 +65,7 @@ public class GIFExporterForm extends Stage implements Initializable
     public GIFExporterForm(GameBoard startBoard, Simulator simulator, int numberOfFrames, File outputFile)
     {
         this.startBoard = startBoard;
-        this.currentBoard = startBoard.getDeepCopy();
+        this.currentBoard = startBoard.deepCopy();
         this.numberOfFrames = numberOfFrames;
         this.outputFile = outputFile;
         this.simulator = simulator;
@@ -235,7 +235,7 @@ public class GIFExporterForm extends Stage implements Initializable
         }
         else
         {
-            currentBoard = startBoard.getDeepCopy();
+            currentBoard = startBoard.deepCopy();
             generationCount = 0;
         }
     }
@@ -348,7 +348,7 @@ public class GIFExporterForm extends Stage implements Initializable
                         largestFrameHeight,
                         centerPatternCheckBox.isSelected());
 
-                exporter.export(startBoard.getDeepCopy(), numberOfFrames);
+                exporter.export(startBoard.deepCopy(), numberOfFrames);
 
                 super.close();
             }

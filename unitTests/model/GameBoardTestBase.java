@@ -98,7 +98,7 @@ public abstract class GameBoardTestBase
         GameBoard original = getGameBoardInstance(10, 10);
         TestUtils.addRandomCellDataTo(original);
 
-        GameBoard copy = original.getDeepCopy();
+        GameBoard copy = original.deepCopy();
 
         assertNotEquals(original, copy);
         assertEquals(TestUtils.trimmedGameBoardToString(original), TestUtils.trimmedGameBoardToString(copy));

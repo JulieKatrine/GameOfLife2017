@@ -18,8 +18,11 @@ public class ColorProfile
     private boolean renderGrid = true;
 
     /**
-    * Constructs the color profile of the pattern.
-    * */
+     * Constructs the color profile of the pattern.
+     * @param deadColor The color of dead cells.
+     * @param aliveColor The color of living cells.
+     * @param gridColor The color of the grid.
+     */
     public ColorProfile(Paint deadColor, Paint aliveColor, Paint gridColor)
     {
         this.deadColor = deadColor;
