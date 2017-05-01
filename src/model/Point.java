@@ -26,8 +26,8 @@ public class Point
 
     public Point add(int v) { x += v; y += v; return this; }
     public Point sub(int v) { x -= v; y -= v; return this; }
-    public Point mul(int v) { x *= v; y *= v; return this; }
-    public Point div(int v) { x /= v; y /= v; return this; }
+    public Point mul(double v) { x *= v; y *= v; return this; }
+    public Point div(double v) { x /= v; y /= v; return this; }
 
     public Point add(Point v) { x += v.x; y += v.y; return this; }
     public Point sub(Point v) { x -= v.x; y -= v.y; return this; }

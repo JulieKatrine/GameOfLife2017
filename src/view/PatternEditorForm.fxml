@@ -15,7 +15,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="500.0" prefWidth="800.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox minWidth="-Infinity" prefHeight="600.0" prefWidth="250.0" style="-fx-background-color: #373833;">
+      <VBox fx:id="leftBar" minWidth="-Infinity" prefHeight="600.0" prefWidth="250.0" style="-fx-background-color: #373833;">
          <children>
             <TextField fx:id="patternNameTextField" promptText="Pattern name">
                <VBox.margin>

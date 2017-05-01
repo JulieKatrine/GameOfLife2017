@@ -39,12 +39,12 @@ import view.ColorProfile;
 public class Controller implements Initializable
 {
     private GameModel gameModel;
-    private BoardRenderer boardRender;
     private Point lastMousePos;
+    private BoardRenderer boardRender;
     private BoardEditor boardEditor;
     private UpdateTimer updateTimer;
-    private long drawTimer;
     private boolean controlPressed;
+    private long drawTimer;
 
     @FXML private AnchorPane anchorPane;
     @FXML private Canvas canvas;
@@ -54,11 +54,14 @@ public class Controller implements Initializable
     @FXML private MenuItem nextMenuItem;
     @FXML private MenuItem reloadPatternMenuItem;
     @FXML private CheckMenuItem autoZoomMenuItem;
+    @FXML private CheckMenuItem fullscreenMenuItem;
     @FXML private ToggleButton startStopButton;
     @FXML private ColorPicker deadCellColor;
     @FXML private ColorPicker livingCellColor;
     @FXML private Label ruleInfo;
     @FXML private Label speed;
+    @FXML private ToolBar toolBar;
+    @FXML private MenuBar menuBar;
 
     /**
      * Called to initialize the controller after it's root element has been completely processed.
@@ -76,13 +79,14 @@ public class Controller implements Initializable
         gameModel    = new GameModel();
         updateTimer  = new UpdateTimer();
 
-        boardRender.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY));
         boardRender.setColorProfile(new ColorProfile(Color.gray(0.949), Color.gray(0.0902), Color.GRAY));
         boardRender.scaleViewToFitBoard(gameModel.getGameBoard());
         updateTimer.setDelayBetweenUpdates((int)(speedSlider.getMax() - speedSlider.getValue()));
+        deadCellColor.setValue((Color)boardRender.getColorProfile().getDeadColor());
+        livingCellColor.setValue((Color)boardRender.getColorProfile().getAliveColor());
 
         scaleViewToFitBoard();
-        addEventListeners();
+        Platform.runLater(() -> addEventListeners());
     }
 
     private void addEventListeners()
@@ -90,7 +94,6 @@ public class Controller implements Initializable
         //TODO: Put the label in the box, not on the side. I think css is the way to go.
 
         // Allows the user to change the pattern-colors.
-        deadCellColor.setValue((Color)boardRender.getColorProfile().getDeadColor());
         deadCellColor.setOnMouseExited(event -> canvas.requestFocus());
         deadCellColor.setOnAction(event ->
         {
@@ -98,7 +101,6 @@ public class Controller implements Initializable
             drawBoard();
         });
 
-        livingCellColor.setValue((Color)boardRender.getColorProfile().getAliveColor());
         livingCellColor.setOnMouseExited(event -> canvas.requestFocus());
         livingCellColor.setOnAction(event ->
         {
@@ -110,8 +112,9 @@ public class Controller implements Initializable
         // Limits the draw rate to 60 fps
         updateTimer.setOnUpdateAction(() ->
         {
+            int FPS = 60;
             gameModel.simulateNextGeneration();
-            if(System.currentTimeMillis() > drawTimer + 16)
+            if(System.currentTimeMillis() > drawTimer + (1000 / FPS))
             {
                 Platform.runLater(this::drawBoard);
                 Platform.runLater(this::generationsPerSecond);
@@ -145,6 +148,10 @@ public class Controller implements Initializable
         Higher slider value = smaller delay between updates */
         speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
                 updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
+
+
+        fullscreenMenuItem.setOnAction((ActionEvent event) ->
+                setFullscreen(fullscreenMenuItem.selectedProperty().getValue()));
 
         canvas.setOnMousePressed(event ->
         {
@@ -185,16 +192,16 @@ public class Controller implements Initializable
         });
 
         // Updates the canvas width when the window is resized
-        anchorPane.prefWidthProperty().addListener((o, oldValue, newValue) ->
+        anchorPane.getScene().widthProperty().addListener((o, oldValue, newValue) ->
         {
             canvas.setWidth(newValue.doubleValue());
             drawBoard();
         });
         
         // Updates the canvas height when the window is resized
-        anchorPane.prefHeightProperty().addListener((o, oldValue, newValue) ->
+        anchorPane.getScene().heightProperty().addListener((o, oldValue, newValue) ->
         {
-            canvas.setHeight(newValue.doubleValue() - 45 - 30);
+            canvas.setHeight(newValue.doubleValue() - toolBar.getPrefHeight() - menuBar.getHeight());
             drawBoard();
         });
     }
@@ -268,6 +275,8 @@ public class Controller implements Initializable
                 controlPressed = true;
             else if(code == KeyCode.R)
                 reloadPattern();
+            else if(code == KeyCode.ESCAPE && fullscreenMenuItem.isSelected())
+                setFullscreen(false);
         });
 
         scene.setOnKeyReleased(event ->
@@ -290,6 +299,12 @@ public class Controller implements Initializable
         boardRender.setScaleViewOnRender(item.isSelected());
         if(item.isSelected())
             scaleViewToFitBoard();
+    }
+
+    private void setFullscreen(boolean state)
+    {
+        fullscreenMenuItem.selectedProperty().setValue(state);
+        ((Stage) anchorPane.getScene().getWindow()).setFullScreen(state);
     }
 
     private void disableAutoZoom()
@@ -385,8 +400,8 @@ public class Controller implements Initializable
      */
     @FXML private void fileDropped(DragEvent event)
     {
-        event.getDragboard().getFiles().forEach(file -> PatternChooserForm.addFileToLoadingQueue(file));
-        Platform.runLater(() -> loadNewGameBoard());
+        event.getDragboard().getFiles().forEach(PatternChooserForm::addFileToLoadingQueue);
+        Platform.runLater(this::loadNewGameBoard);
     }
 
     @FXML private void startStopSimulation()

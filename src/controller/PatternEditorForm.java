@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -70,6 +71,7 @@ public class PatternEditorForm extends Stage implements Initializable
     @FXML private TextArea descriptionTextArea;
     @FXML private Button applyRuleButton;
     @FXML private Button saveButton;
+    @FXML private VBox leftBar;
 
     /**
      * Loads the FXML and sets up the new stage.
@@ -115,7 +117,7 @@ public class PatternEditorForm extends Stage implements Initializable
         ruleTextField.setText(simulator.getSimulationRule().getStringRule());
         boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
-        Platform.runLater(() -> saveButton.requestFocus());
+        Platform.runLater(() -> scrollPane.requestFocus());
         updateGenerationStrip();
         drawBoard();
     }
@@ -137,50 +139,52 @@ public class PatternEditorForm extends Stage implements Initializable
 
         super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
-            // 200 = width of left bar.
-            canvas.setWidth(newVal.intValue() - 200);
+            canvas.setWidth(newVal.intValue() - leftBar.getPrefWidth());
             drawBoard();
         });
 
         super.getScene().heightProperty().addListener((a, b, newVal) ->
         {
-            // 140 = height of generation strip.
-            canvas.setHeight(newVal.intValue() - 140);
+            canvas.setHeight(newVal.intValue() - tilePane.getPrefHeight());
             drawBoard();
         });
 
         super.addEventHandler(KeyEvent.ANY, event ->
         {
-            int index = tilePane.getChildren().indexOf(selectedTile);
-            if(event.getCode() == KeyCode.RIGHT)
+            KeyCode code = event.getCode();
+            if(scrollPane.isFocused() && (code == KeyCode.RIGHT || code == KeyCode.LEFT))
             {
-                if(index != -1 && index + 1 < tilePane.getChildren().size())
+                int direction = (code == KeyCode.RIGHT) ? 1 : -1;
+                int index = tilePane.getChildren().indexOf(selectedTile);
+                if(index + direction >= 0 && index + direction < tilePane.getChildren().size())
                 {
-                    addSelectedEffectTo((selectedTile = (GenerationTile)tilePane.getChildren().get(index + 1)));
-                    scrollPane.setHvalue(scrollPane.getHvalue() + (1.0 / tilePane.getChildren().size()));
-                    drawBoard();
-                }
-            }
-            else if(event.getCode() == KeyCode.LEFT)
-            {
-                if(index != -1 && index - 1 < tilePane.getChildren().size())
-                {
-                    addSelectedEffectTo((selectedTile = (GenerationTile)tilePane.getChildren().get(index - 1)));
-                    scrollPane.setHvalue(scrollPane.getHvalue() - (1.0 / tilePane.getChildren().size()));
-                    drawBoard();
+                    GenerationTile tile = (GenerationTile) tilePane.getChildren().get(index + direction);
+                    if(tile.board != null)
+                    {
+                        addSelectedEffectTo(selectedTile = tile);
+                        scrollPane.setHvalue(scrollPane.getHvalue() + (0.8 / tilePane.getPrefColumns()) * direction);
+                        drawBoard();
+                    }
                 }
             }
         });
     }
 
+    /**
+     * This method is called when the Apply button i pressed.
+     * It reads the rule text field and formats its to the standard form.
+     * Unknown format will be replaced with the default rule.
+     */
     @FXML private void applyRule()
     {
         String rule = ruleTextField.getText();
-        RuleStringFormatter ruleStringFormatter = new RuleStringFormatter();
-        try {
-            rule = ruleStringFormatter.format(rule);
+        try
+        {
+            rule = RuleStringFormatter.format(rule);
             ruleTextField.setText(rule);
-        } catch (PatternFormatException e) {
+        }
+        catch (PatternFormatException e)
+        {
             rule = "B3/S23";
             ruleTextField.setText(rule);
         }

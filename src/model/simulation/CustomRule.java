@@ -1,13 +1,10 @@
 package model.simulation;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 
 /**
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-
 public class CustomRule implements SimRule
 {
     private final Result[] precalculatedResult;
@@ -37,7 +34,8 @@ public class CustomRule implements SimRule
     }
 
     @Override
-    public String getStringRule() {
+    public String getStringRule()
+    {
         return rule;
     }
 }

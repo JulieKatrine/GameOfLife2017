@@ -13,7 +13,6 @@ import model.Point;
  * @see Simulator
  * @see GameBoard
  * @see SimRule
- * @see Result
  */
 public class SimulatorImpl extends Simulator
 {
@@ -39,7 +38,7 @@ public class SimulatorImpl extends Simulator
             {
                 int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                Result result = simulationRule.execute(numberOfLivingNeighbors);
+                SimRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
 
                 switch(result)
                 {

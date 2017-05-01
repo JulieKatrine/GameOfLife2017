@@ -1,8 +1,5 @@
 package model.simulation;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-
 /**
  * Implements the original rules in Conway's Game of Life.
  *
@@ -11,7 +8,6 @@ import javafx.scene.control.Label;
  */
 public class DefaultRuleSet implements SimRule
 {
-
     /**
      * Decides the state of a cell in the next generation according to the default rule set.
      *
@@ -29,7 +25,8 @@ public class DefaultRuleSet implements SimRule
     }
 
     @Override
-    public String getStringRule() {
+    public String getStringRule()
+    {
         return "B3/S23";
     }
 }

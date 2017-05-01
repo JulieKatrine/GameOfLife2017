@@ -1,6 +1,5 @@
 package model.simulation;
 
-import javafx.fxml.FXML;
 
 /**
  * This interface is used to enable multiple rule implementations for the Simulator.
@@ -12,6 +11,14 @@ import javafx.fxml.FXML;
  */
 public interface SimRule
 {
+    // This enum holds the different states a SimRule can return after being executed on a cell.
+    enum Result
+    {
+        BIRTH,
+        DEATH,
+        SURVIVE
+    }
+
     Result execute(int numberOfLivingNeighbors);
     String getStringRule();
 }

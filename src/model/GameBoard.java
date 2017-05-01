@@ -22,9 +22,13 @@ public abstract class GameBoard
     /**
      * @param width The width of the board
      * @param height The height of the board
+     * @throws IllegalArgumentException If size is less than one.
      */
     public GameBoard(int width, int height)
     {
+        if(width < 1 || height < 1)
+            throw new IllegalArgumentException("Size must be more than 0, was: " + Math.min(width, height));
+
         this.width = width;
         this.height = height;
     }

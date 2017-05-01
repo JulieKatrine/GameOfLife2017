@@ -15,7 +15,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="620.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox minWidth="220.0" prefHeight="375.0" prefWidth="220.0" style="-fx-background-color: #373833;">
+      <VBox fx:id="leftBar" minWidth="220.0" prefHeight="375.0" prefWidth="220.0" style="-fx-background-color: #373833;">
          <children>
             <Label text="Frame rate" textFill="WHITE">
                <font>

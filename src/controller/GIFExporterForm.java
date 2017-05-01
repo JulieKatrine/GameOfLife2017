@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -54,6 +55,7 @@ public class GIFExporterForm extends Stage implements Initializable
     @FXML private TextField frameRateField;
     @FXML private CheckBox centerPatternCheckBox;
     @FXML private Button createGIFButton;
+    @FXML private VBox leftBar;
 
     /**
      * Loads the FXML and sets up the stage.
@@ -178,8 +180,7 @@ public class GIFExporterForm extends Stage implements Initializable
 
         super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
-            // 200 = width of left bar.
-            canvas.setWidth(newVal.intValue() - 200);
+            canvas.setWidth(newVal.intValue() - leftBar.getPrefWidth());
             drawBoard();
         });
 

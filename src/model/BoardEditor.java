@@ -32,10 +32,7 @@ public class BoardEditor
     public void edit(GameBoard board, Point mousePosition, boolean drawLivingCells)
     {
         Point cameraPos = camera.getCenterOffsetRenderingPosition(board);
-        Point positionOnBoard = new Point();
-
-        positionOnBoard.x = (int)((mousePosition.x - cameraPos.x) / camera.getZoom());
-        positionOnBoard.y = (int)((mousePosition.y - cameraPos.y) / camera.getZoom());
+        Point positionOnBoard = Point.sub(mousePosition, cameraPos).div(camera.getZoom());
 
         if(positionOnBoard.x >= 0 &&
                 positionOnBoard.x < board.getWidth() &&

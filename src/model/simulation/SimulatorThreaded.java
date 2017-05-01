@@ -166,7 +166,7 @@ public class SimulatorThreaded extends Simulator
                 {
                     int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                    Result result = simulationRule.execute(numberOfLivingNeighbors);
+                    SimRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
 
                     switch(result)
                     {

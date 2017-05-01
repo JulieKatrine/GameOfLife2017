@@ -31,9 +31,6 @@ public class GameOfLife extends Application
         Controller controller = loader.getController();
         controller.handleKeyEvent(scene);
 
-        root.prefWidthProperty().bind(scene.widthProperty());
-        root.prefHeightProperty().bind(scene.heightProperty());
-
         primaryStage.setTitle("Game of Life");
         primaryStage.setMinWidth(root.getMinWidth());
         primaryStage.setMinHeight(root.getMinHeight());

@@ -1,6 +1,7 @@
 package model.simulation;
 
 import org.junit.jupiter.api.Test;
+import model.simulation.SimRule.Result;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -18,6 +18,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,24 +33,26 @@ import java.util.concurrent.Executors;
 
 public class PatternChooserForm extends Stage implements Initializable
 {
-    private static Queue<String> fileLoadingQueue;
     private static List<Tile> loadedTiles;
+    private static Queue<String> fileLoadingQueue;
     private static File lastDirectoryOpened;
     private static Pattern selectedPattern;
     private static double scrollBarPos;
+    private static boolean maximized;
+    private static boolean isOpened;
     private static int height;
     private static int width;
-    private static boolean isOpened;
 
-    private DropShadow selected;
-    private DropShadow dropShadow;
-    private Image hourGlassImage;
     private ExecutorService executorService;
+    private DropShadow dropShadowEffect;
+    private DropShadow selectedEffect;
+    private Image hourGlassImage;
 
     @FXML private TextField urlTextField;
     @FXML private ScrollPane scrollPane;
     @FXML private TilePane tilePane;
     @FXML private TextArea textArea;
+    @FXML private VBox leftBar;
 
     /**
      * The constructor loads the FXML document and sets up the new scene and stage,
@@ -57,7 +60,7 @@ public class PatternChooserForm extends Stage implements Initializable
     public PatternChooserForm()
     {
         this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        this.isOpened = true;
+        isOpened = true;
 
         try
         {
@@ -74,6 +77,7 @@ public class PatternChooserForm extends Stage implements Initializable
             Scene scene = new Scene(root, width, height);
             super.setTitle("Choose your pattern");
             super.getIcons().add(GameOfLife.APPLICATION_ICON);
+            super.setMaximized(maximized);
             super.setScene(scene);
         }
         catch (IOException e)
@@ -92,12 +96,12 @@ public class PatternChooserForm extends Stage implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         hourGlassImage = new Image(getClass().getResourceAsStream("/img/hourglass.png"));
-        dropShadow = new DropShadow();
-        dropShadow.setRadius(15);
-        dropShadow.setColor(Color.rgb(124, 120, 118));
+        dropShadowEffect = new DropShadow();
+        dropShadowEffect.setRadius(15);
+        dropShadowEffect.setColor(Color.rgb(124, 120, 118));
 
-        selected = new DropShadow();
-        selected.setRadius(15);
+        selectedEffect = new DropShadow();
+        selectedEffect.setRadius(15);
 
         addEventListener();
         addLoadedTiles();
@@ -114,17 +118,21 @@ public class PatternChooserForm extends Stage implements Initializable
         super.heightProperty().addListener((a, b, newVal) -> height = newVal.intValue());
 
         // Get the window width when the user resizes it and calculate the new preferred column count.
-        super.widthProperty().addListener((a, b, newVal) -> {
-            tilePane.setPrefColumns((newVal.intValue() - 220) / (Tile.TILE_SIZE + 20));
+        super.widthProperty().addListener((a, b, newVal) ->
+        {
+            tilePane.setPrefColumns((int)(newVal.intValue() - leftBar.getPrefWidth()) / (Tile.TILE_SIZE + 20));
             width = newVal.intValue();
         });
 
-        // Set selected pattern to null and close the window when the user presses the exit button.
+        // Set selectedEffect pattern to null and close the window when the user presses the exit button.
         super.setOnCloseRequest(Event ->
         {
             selectedPattern = null;
             closeWindow();
         });
+
+        // Get and store whether the window is maximized or not.
+        super.maximizedProperty().addListener((observable, oldValue, newValue) -> maximized = newValue);
 
         // Get the position of the vertical scroll bar.
         scrollPane.vvalueProperty().addListener((a, b, newVal) -> scrollBarPos = newVal.doubleValue());
@@ -144,7 +152,6 @@ public class PatternChooserForm extends Stage implements Initializable
                     closeWindow();
             }
         });
-
     }
 
     /**
@@ -210,7 +217,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
         // Adds a temporary hourglass image while the pattern is loading
         Tile hourGlass = new Tile(hourGlassImage);
-        hourGlass.setEffect(dropShadow);
+        hourGlass.setEffect(dropShadowEffect);
         tilePane.getChildren().add(0, hourGlass);
 
         executorService.execute(() ->
@@ -237,8 +244,8 @@ public class PatternChooserForm extends Stage implements Initializable
 
     private void addSelectedEffect(Tile tile)
     {
-        loadedTiles.forEach(t -> t.setEffect(dropShadow));
-        tile.setEffect(selected);
+        loadedTiles.forEach(t -> t.setEffect(dropShadowEffect));
+        tile.setEffect(selectedEffect);
     }
 
     /**
@@ -308,9 +315,9 @@ public class PatternChooserForm extends Stage implements Initializable
     /**
      * This method adds the onMouseClicked event to a Tile.
      * When a tile is clicked the event will check if the tile has a loaded pattern
-     * and set this as the selected one. If the Tile was loaded in a previous PatternChooseForm instance,
+     * and set this as the selectedEffect one. If the Tile was loaded in a previous PatternChooseForm instance,
      * its pattern will no longer exist in memory and has to be reloaded. The "dropshadow" effect is applied
-     * to all Tiles and the clicked tile gets the "selected" effect. The textArea is also updated with the
+     * to all Tiles and the clicked tile gets the "selectedEffect" effect. The textArea is also updated with the
      * patterns metadata.
      * @param tile A Tile object.
      */
@@ -336,7 +343,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
     /**
      * This method is called when the "Select pattern" button i pressed.
-     * The window is only closed if a pattern is selected.
+     * The window is only closed if a pattern is selectedEffect.
      */
     @FXML
     private void selectPattern()
@@ -409,7 +416,7 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * This method is used to access the PatternChooserForms selected pattern.
+     * This method is used to access the PatternChooserForms selectedEffect pattern.
      * @return A Pattern object.
      */
     public static Pattern getSelectedPattern()
@@ -459,7 +466,7 @@ public class PatternChooserForm extends Stage implements Initializable
             this.pattern = pattern;
             this.origin = pattern.getOrigin();
             super.setImage(createTileImage());
-            super.setEffect(dropShadow);
+            super.setEffect(dropShadowEffect);
             super.setCursor(Cursor.HAND);
         }
 

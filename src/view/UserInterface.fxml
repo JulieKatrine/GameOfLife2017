@@ -24,7 +24,7 @@
           <children>
               <HBox>
                  <children>
-                     <MenuBar prefHeight="30.0" styleClass="barColor" HBox.hgrow="ALWAYS">
+                     <MenuBar fx:id="menuBar" styleClass="barColor" HBox.hgrow="ALWAYS">
                          <menus>
                              <Menu text="File">
                                  <items>
@@ -64,11 +64,12 @@
                                  <items>
                               <CheckMenuItem mnemonicParsing="false" onAction="#enableGridRendering" selected="true" styleClass="menuItem" text="Draw grid" />
                               <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomAction" styleClass="menuItem" text="Auto zoom" />
+                              <CheckMenuItem fx:id="fullscreenMenuItem" mnemonicParsing="false" styleClass="menuItem" text="Fullscreen" />
                                      <Menu styleClass="menuItem" text="Cell size">
                                         <items>
                                             <CustomMenuItem styleClass="menuSlider">
                                                 <content>
-                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.1" max="50" min="0.1" value="20" />
+                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.6" max="50" min="0.1" value="20" />
                                                 </content>
                                             </CustomMenuItem>
                                         </items>
@@ -84,8 +85,8 @@
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="525.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
-            <ToolBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
+              <Canvas fx:id="canvas" height="540.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
+            <ToolBar fx:id="toolBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="35.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
                   <Label text="Speed" />
