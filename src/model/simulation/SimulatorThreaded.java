@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
  * @see Simulator
  * @see GameBoard
  * @see SimRule
- * @see Result
  */
 
 public class SimulatorThreaded extends Simulator

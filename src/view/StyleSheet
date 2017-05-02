@@ -48,7 +48,6 @@
 }
 
 /*-----Menu- & Tool- Bar-----*/
-/*TODO: Fix so that not all fxml-s use this root-colors*/
 .root
 {
     -fx-accent: #3D8F13;

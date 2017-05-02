@@ -92,8 +92,6 @@ public class Controller implements Initializable
 
     private void addEventListeners()
     {
-        //TODO: Put the label in the box, not on the side. I think css is the way to go.
-
         // Allows the user to change the pattern-colors.
         deadCellColor.setOnMouseExited(event -> canvas.requestFocus());
         deadCellColor.setOnAction(event ->
@@ -149,7 +147,6 @@ public class Controller implements Initializable
         Higher slider value = smaller delay between updates */
         speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
                 updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
-
 
         fullscreenMenuItem.setOnAction((ActionEvent event) ->
                 setFullscreen(fullscreenMenuItem.selectedProperty().getValue()));
@@ -266,16 +263,18 @@ public class Controller implements Initializable
                 startStopSimulation();
             else if(code == KeyCode.N)
                 simulateNextGeneration();
-            else if(code == KeyCode.O)
-                loadNewGameBoard();
             else if(code == KeyCode.C)
                 clearBoard();
+            else if(code == KeyCode.O && controlPressed)
+                loadNewGameBoard();
             else if(code == KeyCode.S && controlPressed)
                 saveGameBoard();
             else if(code == KeyCode.CONTROL)
                 controlPressed = true;
             else if(code == KeyCode.R)
                 reloadPattern();
+            else if(code == KeyCode.F)
+                setFullscreen(!fullscreenMenuItem.isSelected());
             else if(code == KeyCode.ESCAPE && fullscreenMenuItem.isSelected())
                 setFullscreen(false);
         });

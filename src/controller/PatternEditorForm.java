@@ -46,15 +46,6 @@ import java.util.ResourceBundle;
 
 public class PatternEditorForm extends Stage implements Initializable
 {
-    /**
-     * TODO:
-     *  [ ] Get the colors from the main application (through a ColorProfile object)
-     *  [ ] Get the rule from the main app?
-     *  [ ] Simulate with the user defined rule
-     *  [ ] Unit tests for export
-     *  [ ] JavaDoc
-     */
-
     private GenerationTile selectedTile;
     private BoardRenderer boardRenderer;
     private BoardEditor boardEditor;
