@@ -8,8 +8,8 @@ import model.simulation.SimRule;
 import java.util.List;
 
 /**
- * This class wraps relevant information of a loaded pattern into a convenient Pattern object.
- * It supplies getters and setters for this information, as well as a method for generating a GameBoard
+ * This class wraps relevant information of a loaded pattern into a convenient object.
+ * It supplies getters and setters for this information, as well as a method for generating a {@link GameBoard}
  * from the cell data.
  *
  * @author Niklas Johansen
@@ -27,7 +27,7 @@ public class Pattern
     private boolean[][] cellData;
 
     /**
-     * Adds the loaded metadata to the Pattern object.
+     * Adds the loaded metadata to the pattern.
      * The first character in a line determines what kind of metadata it holds.
      * N - Patterns name
      * O - The author of the pattern
@@ -66,7 +66,6 @@ public class Pattern
     public void setRuleString(String ruleString)
     {
         this.ruleString = ruleString;
-
     }
 
     public void setOrigin(String origin)
@@ -99,6 +98,17 @@ public class Pattern
         return cellData;
     }
 
+    public String getRuleString()
+    {
+        return ruleString;
+    }
+
+    /**
+     * Returns a SimRule object from the patterns rule string.
+     * @return A new SimRule
+     * @see CustomRule
+     * @see DefaultRuleSet
+     */
     public SimRule getRule()
     {
         if(ruleString != null && !ruleString.equals("B3/S23"))
@@ -107,13 +117,8 @@ public class Pattern
             return new DefaultRuleSet();
     }
 
-    public String getRuleString()
-    {
-        return ruleString;
-    }
-
     /**
-     * @return A String containing the pattern name, author and additional information
+     * @return A String containing the pattern name, author and additional information.
      */
     public String getAllMetadata()
     {
@@ -125,9 +130,9 @@ public class Pattern
     }
 
     /**
-     * Generates a GameBoard object from the patterns cell data.
+     * Generates a {@link GameBoard} object from the patterns cell data.
      * The method adds a border of dead cells around the pattern.
-     * @return a GameBoard of the type GameBoardDynamic
+     * @return A GameBoard of the type {@link GameBoardDynamic}.
      */
     public GameBoard getGameBoard()
     {

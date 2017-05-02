@@ -1,5 +1,15 @@
 package model.BoardIO;
 
+
+import model.simulation.SimRule;
+
+/**
+ * Utility class for creating a standard formatted rule string.
+ * Used to ensure proper loading and creation of simulation {@link SimRule rules}.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class RuleStringFormatter
 {
     private static final int ABSENT = -1;

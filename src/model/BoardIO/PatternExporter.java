@@ -2,6 +2,12 @@ package model.BoardIO;
 
 import java.io.*;
 
+/**
+ * Handles exporting of a {@link Pattern} object to a .rle file.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
 public class PatternExporter
 {
     /**
@@ -22,7 +28,7 @@ public class PatternExporter
 
         addBoardSizeAndRule(sBuilder, pattern.getCellData(), pattern.getRuleString());
 
-        sBuilder.append(getCellData(pattern.getCellData()));
+        sBuilder.append(getCellDataAsString(pattern.getCellData()));
 
         FileWriter writer = new FileWriter(destinationFile);
         writer.write(sBuilder.toString());
@@ -43,7 +49,7 @@ public class PatternExporter
         sb.append("x = " + data[0].length + ", y = " + data.length + ", rule = " + rule + "\n");
     }
 
-    private String getCellData(boolean[][] data)
+    private String getCellDataAsString(boolean[][] data)
     {
         if(data == null)
             return "";

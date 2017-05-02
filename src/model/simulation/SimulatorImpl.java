@@ -4,14 +4,13 @@ import model.GameBoard;
 import model.Point;
 
 /**
- * This simulator implementation executes a simulation on every cell in a given GameBoard.
- * It uses the GameBoards methods to access and update each cell according to a specific rule.
+ * This simulator implementation executes a simulation on every cell in a given {@link GameBoard}.
+ * It uses the boards methods to access and update each cell according to a specific {@link SimRule}.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @deprecated This implementation is replaced by {@link SimulatorThreaded}
  * @see Simulator
- * @see GameBoard
  * @see SimRule
  */
 public class SimulatorImpl extends Simulator
@@ -22,10 +21,10 @@ public class SimulatorImpl extends Simulator
     }
 
     /**
-     * Executes the simulation on a defined board.
-     *
-     * Iterates through the whole board, gets the amount of living neighbours,
-     * and checks and sets the results for the next generation, and makes next generation current.
+     * Executes the simulation on the given board.
+     * Iterates through the whole board, gets the amount of living neighbours for each cell
+     * and checks and sets the results for the next generation. It then makes the simulated
+     * generation the current active one.
      *
      * @param board The current board.
      */

@@ -1,14 +1,16 @@
 package model.BoardIO;
 
 /**
- * This enum consists of the applications supported file types.
- * Every type entry is associated with a specific parser implementation.
+ * This enum consists of the applications supported file formats.
+ * Every type entry is associated with a specific {@link Parser} implementation.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see RLEParser
+ * @see LIFEParser
  */
 
-public enum FileType
+public enum FileFormat
 {
     rle  { Parser getParser() { return new RLEParser();}},
     lif  { Parser getParser() { return new LIFEParser();}},
@@ -23,12 +25,12 @@ public enum FileType
     /**
      * @return A String array with every supported file on the form "*.type".
      */
-    public static String[] getFileTypes()
+    public static String[] getFileFormats()
     {
-        String[] types = new String[FileType.values().length];
+        String[] types = new String[FileFormat.values().length];
 
         for(int i=0; i < types.length; i++)
-            types[i] = "*." + FileType.values()[i].name();
+            types[i] = "*." + FileFormat.values()[i].name();
 
         return types;
     }

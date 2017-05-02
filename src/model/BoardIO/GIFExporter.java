@@ -10,12 +10,12 @@ import java.io.IOException;
 
 /**
  * This class handles exporting of animated GIFs.
- * It takes in relevant animation parameters and recursively
- * builds the animation frame by frame.
+ * It takes in relevant animation parameters and recursively builds the animation frame by frame
+ * with a {@link Simulator} and a {@link GIFWriter}.
+ *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-
 public class GIFExporter
 {
     private Simulator simulator;

@@ -7,10 +7,11 @@ import java.util.List;
 
 /**
  * This class is a parser implementation for .rle files.
- * Its parse() method reads data from a Reader and returns a Pattern object.
+ * Its parse() method reads data from a Reader and returns a {@link Pattern} object.
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see Pattern
+ * @see Parser
+ * @see FileFormat
  * @see PatternLoader
  */
 public class RLEParser implements Parser

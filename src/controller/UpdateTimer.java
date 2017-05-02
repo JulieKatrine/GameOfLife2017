@@ -3,7 +3,7 @@ package controller;
 /**
  * This class is used for creating timed updates.
  * A separate thread runs independently from the JavaFX thread and calls
- * the Action interface at given intervals. The class enables faster updates
+ * the Runnable interface at given intervals. The class enables faster updates
  * than JavaFxs AnimationTimer, which is limited to 60 frames per second.
  *
  * @author Niklas Johansen
@@ -25,7 +25,7 @@ public class UpdateTimer
 
     /**
      * Creates and starts a new thread.
-     * This thread will call the actions call() method at given intervals while
+     * This thread will call the actions run() method at given intervals while
      * the "running" flag is true. While being false, it makes the thread wait
      * for the runLock object to be notified by either setRunning() or triggerUpdate().
      */

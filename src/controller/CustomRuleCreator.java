@@ -11,13 +11,20 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
- * Created by julie on 18-Apr-17.
+ * A dialog that allows the user to specify their own simulation rule.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
  */
-public class CustomRuleCreator extends TextInputDialog {
-    TextField birth;
-    TextField survival;
-    String newRule = "";
+public class CustomRuleCreator extends TextInputDialog
+{
+    private TextField birth;
+    private TextField survival;
+    private String newRule = "";
 
+    /**
+     * Sets up the dialog window with GUI elements and stylesheet.
+     */
     public CustomRuleCreator()
     {
         this.birth = new TextField();
@@ -26,7 +33,7 @@ public class CustomRuleCreator extends TextInputDialog {
         setUpOKButtonEvent();
     }
 
-    public void designDialogLayout()
+    private void designDialogLayout()
     {
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -39,19 +46,19 @@ public class CustomRuleCreator extends TextInputDialog {
         grid.add(survival, 1, 1);
 
         super.setHeaderText("Please enter the amount of living neighbors\nthat will cause the following state of a cell:");
-        super.getDialogPane().setContent(grid);
         super.setTitle("Create your own rule");
-        ((Stage) super.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
 
         DialogPane dialogPane = super.getDialogPane();
+        dialogPane.setContent(grid);
         dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
         dialogPane.getStyleClass().add("alert");
+        ((Stage) dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
 
         Button cancelButton = (Button) super.getDialogPane().lookupButton( ButtonType.CANCEL );
         cancelButton.getStyleClass().add("cancelButton");
     }
 
-    public void setUpOKButtonEvent()
+    private void setUpOKButtonEvent()
     {
         super.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event ->
         {
@@ -72,10 +79,14 @@ public class CustomRuleCreator extends TextInputDialog {
             {
                 event.consume();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                DialogPane dialogPane = alert.getDialogPane();
+                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+                dialogPane.getStyleClass().add("alert");
                 alert.setTitle("");
                 alert.setHeaderText("");
                 alert.setContentText("The rule has to be integers only");
-                ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+                ((Stage) dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
                 alert.showAndWait();
 
                 birth.clear();
@@ -84,6 +95,11 @@ public class CustomRuleCreator extends TextInputDialog {
         });
     }
 
+    /**
+     * Returns the user specified rule string.
+     * The string will be empty if the user pressed cancel.
+     * @return A string.
+     */
     public String getRuleString()
     {
         return newRule;

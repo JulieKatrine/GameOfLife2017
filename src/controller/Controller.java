@@ -10,7 +10,6 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -22,6 +21,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
 import model.BoardIO.Pattern;
+import model.BoardIO.PatternFormatException;
+import model.BoardIO.RuleStringFormatter;
 import model.Point;
 import model.simulation.CustomRule;
 import model.simulation.DefaultRuleSet;
@@ -29,9 +30,15 @@ import view.BoardRenderer;
 import view.ColorProfile;
 
 /**
- * Controls the screen in co-operation with UserInterface.fxml.
+ * The main controller of the application.
+ * Handles all user interaction, simulation timing and board rendering.
  *
- * Implements Initializable.
+ * It Implements Initializable. All fields tagged with @FXML will be instantiated by
+ * the JavaFx application thread when the associated FXML document is loaded.
+ *
+ * Business logic and board data is accessed through a private {@link GameModel} object. Board rendering
+ * and editing is carried out through private {@link BoardRenderer} and {@link BoardEditor} objects.
+ * An {@link UpdateTimer} is used for timed logic updates on the board data.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -40,10 +47,11 @@ import view.ColorProfile;
 public class Controller implements Initializable
 {
     private GameModel gameModel;
-    private Point lastMousePos;
     private BoardRenderer boardRender;
     private BoardEditor boardEditor;
     private UpdateTimer updateTimer;
+
+    private Point lastMousePos;
     private boolean controlPressed;
     private long drawTimer;
 
@@ -65,11 +73,11 @@ public class Controller implements Initializable
     @FXML private MenuBar menuBar;
 
     /**
-     * Called to initialize the controller after it's root element has been completely processed.
+     * Called to initialize the controller after its root element has been completely processed.
+     * Instantiate and sets up the local objects, adds event listeners and draws the default board.
      *
-     * @param location fill me in
-     * @param resources fill me in
-     * TODO: Finish me!
+     * @param location Relative paths for the root object.
+     * @param resources Resources used to localize the root object.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -121,8 +129,7 @@ public class Controller implements Initializable
             }
         });
 
-        // Moves the camera with horizontal and vertical scroll,
-        // If CTRL is pressed vertical scroll changes the camera zoom
+        // Moves the camera, If CTRL is pressed vertical scroll changes the camera zoom.
         canvas.setOnScroll((ScrollEvent event) ->
         {
             if(controlPressed)
@@ -136,7 +143,7 @@ public class Controller implements Initializable
             drawBoard();
         });
 
-        // Changes the camera-zoom when the cellSizeSlider is changed
+        // Changes the camera-zoom when the cellSizeSlider is changed.
         cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
         {
             boardRender.getCamera().setZoom(new_val.doubleValue());
@@ -148,9 +155,12 @@ public class Controller implements Initializable
         speedSlider.valueProperty().addListener((ov, old_val, new_val) ->
                 updateTimer.setDelayBetweenUpdates((int)speedSlider.getMax() - new_val.intValue()));
 
+
+        // Sets the stage to fullscreen when the fullscreen MenuItem is selected.
         fullscreenMenuItem.setOnAction((ActionEvent event) ->
                 setFullscreen(fullscreenMenuItem.selectedProperty().getValue()));
 
+        // Edits and redraws the board when the mouse is pressed over a cell.
         canvas.setOnMousePressed(event ->
         {
             /* Resets the last mouse position to the current mouse position.
@@ -162,6 +172,8 @@ public class Controller implements Initializable
             drawBoard();
         });
 
+        // Edits the board if left or right mouse button is pressed while dragging.
+        // Moves the camera if the scroll wheel is pressed while dragging.
         canvas.setOnMouseDragged(event ->
         {
             editBoard(event);
@@ -179,6 +191,7 @@ public class Controller implements Initializable
             drawBoard();
         });
 
+        // Increases the board size if a cell was set alive near the edge and the board is of type dynamic.
         canvas.setOnMouseReleased(event ->
         {
             GameBoard board = gameModel.getGameBoard();
@@ -201,6 +214,36 @@ public class Controller implements Initializable
         {
             canvas.setHeight(newValue.doubleValue() - toolBar.getPrefHeight() - menuBar.getHeight());
             drawBoard();
+        });
+
+        // Handles all key events and shortcuts.
+        anchorPane.getScene().setOnKeyPressed(event ->
+        {
+            KeyCode code = event.getCode();
+            if(code == KeyCode.SPACE)
+                startStopSimulation();
+            else if(code == KeyCode.N)
+                simulateNextGeneration();
+            else if(code == KeyCode.C)
+                clearBoard();
+            else if(code == KeyCode.O && controlPressed)
+                loadNewGameBoard();
+            else if(code == KeyCode.S && controlPressed)
+                saveGameBoard();
+            else if(code == KeyCode.CONTROL)
+                controlPressed = true;
+            else if(code == KeyCode.R)
+                reloadPattern();
+            else if(code == KeyCode.F)
+                setFullscreen(!fullscreenMenuItem.isSelected());
+            else if(code == KeyCode.ESCAPE && fullscreenMenuItem.isSelected())
+                setFullscreen(false);
+        });
+
+        anchorPane.getScene().setOnKeyReleased(event ->
+        {
+            if(event.getCode() == KeyCode.CONTROL)
+                controlPressed = false;
         });
     }
 
@@ -242,48 +285,6 @@ public class Controller implements Initializable
     private void drawBoard()
     {
         boardRender.render(gameModel.getGameBoard());
-    }
-
-    /**
-     * Handles the events of a user using the key-board.
-     *
-     * If the user presses "space", the program will call updateTimer.setRunning(),
-     * and start/stop running depending on it's state.
-     *
-     * If the user presses "N", the method will call simulateNextGeneration().
-     *
-     * @param scene Takes in the programs current scene.
-     */
-    public void handleKeyEvent(Scene scene)
-    {
-        scene.setOnKeyPressed(event ->
-        {
-            KeyCode code = event.getCode();
-            if(code == KeyCode.SPACE)
-                startStopSimulation();
-            else if(code == KeyCode.N)
-                simulateNextGeneration();
-            else if(code == KeyCode.C)
-                clearBoard();
-            else if(code == KeyCode.O && controlPressed)
-                loadNewGameBoard();
-            else if(code == KeyCode.S && controlPressed)
-                saveGameBoard();
-            else if(code == KeyCode.CONTROL)
-                controlPressed = true;
-            else if(code == KeyCode.R)
-                reloadPattern();
-            else if(code == KeyCode.F)
-                setFullscreen(!fullscreenMenuItem.isSelected());
-            else if(code == KeyCode.ESCAPE && fullscreenMenuItem.isSelected())
-                setFullscreen(false);
-        });
-
-        scene.setOnKeyReleased(event ->
-        {
-            if(event.getCode() == KeyCode.CONTROL)
-                controlPressed = false;
-        });
     }
 
     @FXML private void enableGridRendering(ActionEvent event)
@@ -425,7 +426,8 @@ public class Controller implements Initializable
         drawBoard();
     }
 
-    @FXML private void informationBox(String title, String headerText, String contentText) {
+    @FXML private void informationBox(String title, String headerText, String contentText)
+    {
         stopSimulation();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
@@ -445,7 +447,10 @@ public class Controller implements Initializable
     @FXML private void gettingStarted()
     {
         stopSimulation();
-        informationBox("Getting Started", "Getting Started", "Use the left " +
+        informationBox(
+                "Getting Started",
+                "Getting Started",
+                "Use the left " +
                 "and right mouse buttons to edit the board. Click the mouse-wheel to move around and " +
                 "ctrl+scroll to zoom.\n(If you are using a touch pad: scroll to move around).\n\n" +
 
@@ -457,7 +462,10 @@ public class Controller implements Initializable
 
     @FXML private void shortcuts()
     {
-        String helpContent =
+        stopSimulation();
+        informationBox(
+                "Shortcuts",
+                "Shortcuts:",
                 "Play/pause: SPACE\n" +
                 "Next: N\n" +
                 "Reload: R\n" +
@@ -465,23 +473,24 @@ public class Controller implements Initializable
                 "Full screen: F\n" +
                 "Save: CTRL+S\n" +
                 "Open pattern: CTRL+O\n" +
-                "Zoom: CTRL+SCROLL\n";
-
-        stopSimulation();
-        informationBox("Shortcuts", "Shortcuts:", helpContent);
+                "Zoom: CTRL+SCROLL\n");
     }
 
     @FXML private void about()
     {
         stopSimulation();
-        informationBox("About", "Information", "This game was created by Niklas Johansen (s306603) " +
+        informationBox(
+                "About",
+                "Information",
+                "This game was created by Niklas Johansen (s306603) " +
                 "and Julie Katrine Høvik (s236518) in the spring of 2017.");
     }
 
-    @FXML private void setNewRuleFromFXML(Event event)
+    @FXML private void setNewRuleFromFXML(Event event) throws PatternFormatException
     {
-        String ruleFromFXML = ((MenuItem)event.getSource()).getId().trim().replaceAll("S", "/S");
-        ruleInfo.setText("Rule: " + ((MenuItem) event.getSource()).getText() + " - " + ruleFromFXML);
+        MenuItem item = (MenuItem) event.getSource();
+        String ruleFromFXML = RuleStringFormatter.format(item.getId());
+        ruleInfo.setText("Rule: " + item.getText() + " - " + ruleFromFXML);
         setNewRule(ruleFromFXML);
     }
 
@@ -491,7 +500,7 @@ public class Controller implements Initializable
         CustomRuleCreator customRuleCreator = new CustomRuleCreator();
         customRuleCreator.showAndWait();
         String rule = customRuleCreator.getRuleString();
-        if(rule.length() > 0)
+        if(!rule.isEmpty())
         {
             setNewRule(rule);
             ruleInfo.setText("Rule: " + rule);

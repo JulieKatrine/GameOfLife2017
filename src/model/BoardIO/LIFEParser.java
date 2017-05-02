@@ -10,10 +10,14 @@ import java.util.List;
 
 /**
  * This class is a parser implementation for .life and .lif files.
- * Its parse() method reads data from a Reader and returns a Pattern object.
+ * It reads data from a supplied Reader object  and returns a {@link Pattern} object.
  * The parser supports Life 1.05, Life 1.06 and XLife 2.0.
+ *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see Parser
+ * @see FileFormat
+ * @see PatternLoader
  */
 public class LIFEParser implements Parser
 {
@@ -28,7 +32,7 @@ public class LIFEParser implements Parser
     }
 
     /**
-     * Reads the reader object and returns a new Pattern from the parsed data.
+     * Reads the reader object and returns a new {@link Pattern} from the parsed data.
      * @param reader A Reader object of type FileReader, InputStreamReader, etc.
      * @return A Pattern object.
      * @throws IOException If a problem occurs while reading the file content.

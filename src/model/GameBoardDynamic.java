@@ -19,7 +19,7 @@ package model;
  * <li>The available lists don't support primitive types, and since we want our application
  * to be able to load the largest common patterns, storing the cell data
  * efficiently is key. The numeric data wrapper for a byte may occupy up to 16 bytes,
- * depending on the platform, and compared to only using on single byte, wrapping the
+ * depending on the platform, and compared to only using one single byte, wrapping the
  * data in an object like this, is not something we want.
  * <li>Smaller memory usage per cell enables more of the board to fit in the processors cache,
  * which in turn causes fewer cache misses and faster simulation.

@@ -3,10 +3,11 @@ package model.BoardIO;
 import java.util.Arrays;
 
 /**
- * The exception thrown when a file parsers fails to load a pattern.
+ * The exception thrown when loading or exporting a {@link Pattern} fails.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
+ * @see PatternLoader
  * @see Parser
  */
 public class PatternFormatException extends Exception
@@ -20,10 +21,11 @@ public class PatternFormatException extends Exception
         UNKNOWN_RULE_FORMAT,
         ERROR_IN_CELL_DATA,
         WRONG_PATH_PREFIX,
-        NO_LIVING_CELLS
+        NO_LIVING_CELLS,
+        NOT_SPECIFIED
     }
 
-    private ErrorCode errorCode;
+    private ErrorCode errorCode = ErrorCode.NOT_SPECIFIED;
 
     public PatternFormatException(ErrorCode code)
     {
@@ -46,15 +48,15 @@ public class PatternFormatException extends Exception
             case UNKNOWN_RULE_FORMAT:
                 return "Failed to load the pattern.\nThe supplied rule has an unknown format.";
 
-            case NO_LIVING_CELLS:
-                return "This pattern contains no living cells.";
-
             case FORMAT_VERSION_NOT_SPECIFIED:
                 return "Failed to load the pattern.\nThe format version is not specified in the file.";
 
+            case NO_LIVING_CELLS:
+                return "This pattern contains no living cells.";
+
             case FILE_FORMAT_NOT_SUPPORTED:
                 return "This format is not yet supported.\nTry loading a file in any of these formats: " +
-                        Arrays.toString(FileType.getFileTypes());
+                        Arrays.toString(FileFormat.getFileFormats());
 
             default:
                 return "Failed to load the pattern.";

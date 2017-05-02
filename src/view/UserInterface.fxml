@@ -24,7 +24,7 @@
           <children>
               <HBox>
                  <children>
-                     <MenuBar fx:id="menuBar" styleClass="barColor" HBox.hgrow="ALWAYS">
+                     <MenuBar fx:id="menuBar" prefHeight="25.0" styleClass="barColor" HBox.hgrow="ALWAYS">
                          <menus>
                              <Menu text="File">
                                  <items>
@@ -78,16 +78,16 @@
                              </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                           <items>
-                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#gettingStarted"  text="Getting Started" />
-                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#shortcuts" text="Shortcuts" />
-                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#about"  text="About" />
+                              <MenuItem mnemonicParsing="false" onAction="#gettingStarted" styleClass="menuItem" text="Getting Started" />
+                              <MenuItem mnemonicParsing="false" onAction="#shortcuts" styleClass="menuItem" text="Shortcuts" />
+                              <MenuItem mnemonicParsing="false" onAction="#about" styleClass="menuItem" text="About" />
                           </items>
                         </Menu>
                          </menus>
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="525.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
+              <Canvas fx:id="canvas" height="530.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
             <ToolBar fx:id="toolBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />

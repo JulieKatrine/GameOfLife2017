@@ -5,18 +5,19 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * This class consists of methods for loading patterns from files.
+ * This class consists of methods for loading {@link Pattern patterns} from files.
  * A file can be obtained through a web address or machine local path.
+ * Supported formats are listed in the {@link FileFormat} class.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see Pattern
+ * @see Parser
  */
 public class PatternLoader
 {
     /**
      * Loads a file from a prefixed path and returns a Pattern object.
-     * The supported prefixes ar FILE:, STREAM:, and URL:.
+     * The supported prefixes are FILE:, STREAM: and URL:.
      *
      * @param path The prefixed path.
      * @return A Pattern object parsed from the specified file.
@@ -51,7 +52,7 @@ public class PatternLoader
     /**
      * Loads a file as a stream and returns a Pattern object.
      * This method is used for loading patterns from the project directory or from
-     * packed JAR files.
+     * a JAR files.
      *
      * @param path The path to the file.
      * @return A Pattern object parsed from the specified file.
@@ -80,33 +81,31 @@ public class PatternLoader
 
     private Pattern loadPattern(Reader reader, String path) throws IOException, PatternFormatException
     {
-        String fileType = extractFileType(path);
-        Parser parser = null;
-
-        for(FileType t : FileType.values())
-            if(fileType.equals(t.name()))
-                parser = t.getParser();
-
-        if(parser != null)
+        String fileFormat = extractFileFormat(path);
+        for(FileFormat f : FileFormat.values())
         {
-            try
+            if(fileFormat.equals(f.name()))
             {
-                Pattern pattern = parser.parse(reader);
-                pattern.setOrigin(path);
-                return  pattern;
-            }
-            catch(PatternFormatException e)
-            {
-                // Close the reader before passing on the exception
-                reader.close();
-                throw e;
+                try
+                {
+                    Pattern pattern = f.getParser().parse(reader);
+                    pattern.setOrigin(path);
+                    return pattern;
+                }
+                catch(PatternFormatException e)
+                {
+                    // Close the reader before passing on the exception.
+                    reader.close();
+                    throw e;
+                }
             }
         }
-        else
-            throw new PatternFormatException(PatternFormatException.ErrorCode.FILE_FORMAT_NOT_SUPPORTED);
+
+        // If the format was not found among the supported formats, throw exception.
+        throw new PatternFormatException(PatternFormatException.ErrorCode.FILE_FORMAT_NOT_SUPPORTED);
     }
 
-    public static String extractFileType(String fileName)
+    private static String extractFileFormat(String fileName)
     {
         int dotPosition = fileName.lastIndexOf('.') + 1;
         if (dotPosition > 0 && dotPosition < fileName.length())

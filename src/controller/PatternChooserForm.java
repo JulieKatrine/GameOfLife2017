@@ -28,6 +28,16 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * A dialog for loading and selecting patterns.
+ * {@link Pattern Patterns} successfully loaded through either the FileChooser or the URL field
+ * will be added as a selectable tile in the window. Tiles will be stored
+ * between new instances of this dialog to enable quick and easy access.
+ *
+ * @author Niklas Johansen
+ * @author Julie Katrine Høvik
+ */
+
 public class PatternChooserForm extends Stage implements Initializable
 {
     private static List<Tile> loadedTiles;
@@ -52,7 +62,8 @@ public class PatternChooserForm extends Stage implements Initializable
     @FXML private VBox leftBar;
 
     /**
-     * The constructor loads the FXML document and sets up the new scene and stage,
+     * Loads the FXML document and sets up the new scene and stage.
+     * Instantiates an ExecutorService for threaded pattern loading.
      */
     public PatternChooserForm()
     {
@@ -85,9 +96,9 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * The method sets up the TilePane and creates new dropshadow effects.
-     * @param location Some location.
-     * @param resources Some resources.
+     * Creates the tile effects, adds event listener and loads the queued patterns.
+     * @param location Relative paths for the root object.
+     * @param resources Resources used to localize the root object.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -107,7 +118,7 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * Adds event listeners stage and JavaFX elements.
+     * Adds event listeners to the stage and GUI elements.
      */
     private void addEventListener()
     {
@@ -152,7 +163,8 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * This method sets all loaded patterns to null, except selectPattern, and closes the stage.
+     * This method frees the loaded patterns from memory, shuts down the ExecutorService
+     * and closes the window.
      */
     private void closeWindow()
     {
@@ -176,12 +188,11 @@ public class PatternChooserForm extends Stage implements Initializable
             addDefaultPatterns();
         }
 
-        // Adds the saved patterns to the chooser.
-        while(fileLoadingQueue != null && fileLoadingQueue.size() > 0)
+        // Adds the queued patterns to the chooser.
+        while(fileLoadingQueue != null && !fileLoadingQueue.isEmpty())
             loadAndAddPatternToForm(fileLoadingQueue.poll());
 
         loadedTiles.forEach(this::addTileEventListener);
-
         tilePane.getChildren().addAll(loadedTiles);
 
         if(selectedPattern != null)
@@ -379,7 +390,7 @@ public class PatternChooserForm extends Stage implements Initializable
     {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GOL Patterns",
-                FileType.getFileTypes()));
+                FileFormat.getFileFormats()));
 
         if(lastDirectoryOpened != null)
             fileChooser.setInitialDirectory(lastDirectoryOpened);

@@ -10,25 +10,25 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>This implementation uses multithreading to carry out a simulation on a given GameBoard.
- * It uses the GameBoards methods to access and update each cell according to a specific rule.
+ * <p>This implementation uses multithreading to carry out a simulation on a given {@link GameBoard}.
+ * It uses the boards methods to access and update each cell according to a specific rule.
  * The implementation creates a fixed pool of threads to be used for simulating different regions of
- * a GameBoard simultaneously. The amount of threads to be used is determined by the boards size
+ * a board simultaneously. The amount of threads to be used is determined by the boards size
  * and the amount of available cores.
  *
- * <p>Every thread is given a horizontal region of the GameBoard to process. The amount of rows for each
+ * <p>Every thread is given a horizontal region of the board to process. The amount of rows for each
  * thread is determined by the calculated thread count. Since the underlying data structure is stored
  * horizontally in memory, we heavily reduce the amount of cache misses by making each thread work on a set
  * of rows, instead of a set of columns.
  *
- * <p>The simulateNextGenerationOn() method uses a CountDownLatches to make sure all threads are done processing before
- * the generation is finalized with GameBoards makeNextGenerationCurrent(). Another latch is used to make
- * sure no threads are accessing the same data at the same time. Synchronization problems will only occur if a
- * slow running thread is accessing data at its to first rows, and a faster thread updates its last rows in
- * the adjacent region. This is solved by blocking all further processing until all threads are past their
- * second row and not allowing any threads to have fewer rows than 4. Boards with a smaller height than 8
+ * <p>The simulateNextGenerationOn() method uses a {@link CountDownLatch} to make sure all threads are done
+ * processing before the generation is finalized with GameBoards makeNextGenerationCurrent(). Another latch
+ * is used to make sure no threads are accessing the same data at the same time. Synchronization problems will
+ * only occur if a slow running thread is accessing data at its to first rows, and a faster thread updates its
+ * last rows in the adjacent region. This is solved by blocking all further processing until all threads are past
+ * their second row and not allowing any threads to have fewer rows than 4. Boards with a smaller height than 8
  * will only utilize one thread. This way of ensuring thread-safe simulation requires no further synchronization
- * code in the GameBoard implementations. But to show how this can be done with either atomic data wrappers or
+ * code in the {@link GameBoard} implementations. But to show how this can be done with either atomic data wrappers or
  * synchronized method calls, see the {@link GameBoardDynamicList} class.
  *
  * @author Niklas Johansen

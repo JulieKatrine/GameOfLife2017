@@ -26,7 +26,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * TODO: Add description
+ * A dialog for exporting a pattern sequence to an animated GIF.
+ * Generates a preview of the final GIF with user specified parameters for size, length and speed.
+ * Uses a {@link GIFExporter} object to create and save the animation to an output file.
+ * A private {@link GameBoard} object stores the board data and a {@link BoardRenderer} draws it
+ * to the canvas. The animation frames are simulated live with a supplied {@link Simulator}.
+ *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
@@ -38,13 +43,12 @@ public class GIFExporterForm extends Stage implements Initializable
     private GameBoard currentBoard;
     private BoardRenderer boardRenderer;
 
+    private int largestFrameWidth;
+    private int largestFrameHeight;
     private int generationCount;
     private int numberOfFrames;
     private int frameRate;
     private int cellSize;
-
-    private int largestFrameWidth;
-    private int largestFrameHeight;
 
     @FXML private Canvas canvas;
     @FXML private TextField framesField;
@@ -58,7 +62,7 @@ public class GIFExporterForm extends Stage implements Initializable
     @FXML private VBox leftBar;
 
     /**
-     * Loads the FXML and sets up the stage.
+     * Loads the FXML document, sets up the stage and adds event listeners to GUI elements.
      * @param startBoard The first generation in the animation.
      * @param simulator The simulator to be used when simulating the next generations.
      * @param numberOfFrames The suggested amount of frames the animation should have.

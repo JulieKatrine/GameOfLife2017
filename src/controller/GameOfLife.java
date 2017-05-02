@@ -8,9 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * The programs main class.
- *
- * Extends Application as fxml is used.
+ * The main class om this application.
+ * Loads the FXML document and sets up the new scene and stage.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -28,21 +27,17 @@ public class GameOfLife extends Application
         AnchorPane root = loader.load();
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
-        Controller controller = loader.getController();
-        controller.handleKeyEvent(scene);
-
         primaryStage.setTitle("Game of Life");
         primaryStage.setMinWidth(root.getMinWidth());
         primaryStage.setMinHeight(root.getMinHeight());
         primaryStage.getIcons().add((APPLICATION_ICON = new Image(getClass().getResourceAsStream("/img/logo.png"))));
         primaryStage.setScene(scene);
+        primaryStage.show();
         primaryStage.setOnCloseRequest(event ->
         {
             event.consume();
-            controller.closeRequest();
+            ((Controller)loader.getController()).closeRequest();
         });
-
-        primaryStage.show();
     }
 
     public static void main(String[] args)
