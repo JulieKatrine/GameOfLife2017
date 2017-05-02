@@ -3,7 +3,11 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
@@ -38,6 +42,13 @@ public class CustomRuleCreator extends TextInputDialog {
         super.getDialogPane().setContent(grid);
         super.setTitle("Create your own rule");
         ((Stage) super.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+
+        DialogPane dialogPane = super.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+        dialogPane.getStyleClass().add("alert");
+
+        Button cancelButton = (Button) super.getDialogPane().lookupButton( ButtonType.CANCEL );
+        cancelButton.getStyleClass().add("cancelButton");
     }
 
     public void setUpOKButtonEvent()

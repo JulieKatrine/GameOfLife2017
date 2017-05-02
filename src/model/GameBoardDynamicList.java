@@ -25,7 +25,7 @@ public class GameBoardDynamicList extends GameBoard
     private final boolean atomicDataStorage;
     private List<List<Cell>> data;
     private Point boardStart;
-    private int[][] neighbourIndex = {{-1, -1}, {0,-1}, {1,-1}, {-1,0}, {1,0}, {-1,1}, {0,1}, {1,1}};
+    private int[][] neighbourIndex = {{-1,-1}, {0,-1}, {1,-1}, {-1,0}, {1,0}, {-1,1}, {0,1}, {1,1}};
 
     /**
      * @param width The width of the board.

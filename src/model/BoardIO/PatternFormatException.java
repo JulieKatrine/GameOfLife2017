@@ -44,13 +44,13 @@ public class PatternFormatException extends Exception
                 return "Failed to load the pattern.\nInformation about the pattern size is missing or corrupted.";
 
             case UNKNOWN_RULE_FORMAT:
-                return "The supplied rule has an unknown format.\nThe default B3/S23 rule will be used.";
+                return "Failed to load the pattern.\nThe supplied rule has an unknown format.";
 
             case NO_LIVING_CELLS:
                 return "This pattern contains no living cells.";
 
             case FORMAT_VERSION_NOT_SPECIFIED:
-                return "The format version is not specified in the file.";
+                return "Failed to load the pattern.\nThe format version is not specified in the file.";
 
             case FILE_FORMAT_NOT_SUPPORTED:
                 return "This format is not yet supported.\nTry loading a file in any of these formats: " +

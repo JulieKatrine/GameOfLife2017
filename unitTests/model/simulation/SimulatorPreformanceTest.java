@@ -5,7 +5,6 @@ import model.BoardIO.Pattern;
 import model.BoardIO.PatternFormatException;
 import model.BoardIO.PatternLoader;
 import model.GameBoard;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.io.IOException;
 public class SimulatorPreformanceTest
 {
     @Test
-    @Ignore
     void testExecutionSpeed() throws IOException, PatternFormatException
     {
         int generations = 500;

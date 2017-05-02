@@ -6,7 +6,6 @@ import model.BoardIO.PatternLoader;
 import model.simulation.DefaultRuleSet;
 import model.simulation.Simulator;
 import model.simulation.SimulatorThreaded;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ public class GameBoardPerformanceTest
 {
 
     @Test
-    @Ignore
     void testPerformanceOnBoardWithStaticSize() throws IOException, PatternFormatException
     {
         System.out.println("No change in board size:");
@@ -24,7 +22,6 @@ public class GameBoardPerformanceTest
 
 
     @Test
-    @Ignore
     void testPerformanceOnBoardWhichChangesSize() throws IOException, PatternFormatException
     {
         System.out.println("Board size increases throughout simulation:");

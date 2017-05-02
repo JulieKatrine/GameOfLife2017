@@ -28,8 +28,8 @@
                          <menus>
                              <Menu text="File">
                                  <items>
-                                     <MenuItem onAction="#loadNewGameBoard" styleClass="menuItem" text="Open File..." />
-                                     <MenuItem onAction="#saveGameBoard" styleClass="menuItem" text="Save As..." />
+                                     <MenuItem onAction="#loadNewGameBoard" styleClass="menuItem" text="Open Pattern" />
+                                     <MenuItem onAction="#saveGameBoard" styleClass="menuItem" text="Edit and save" />
                                      <MenuItem onAction="#closeApplication" styleClass="menuItem" text="Exit" />
                                  </items>
                              </Menu>
@@ -76,17 +76,19 @@
                                      </Menu>
                                  </items>
                              </Menu>
-                        <Menu mnemonicParsing="false" onAction="#shortCuts" text="About">
+                        <Menu mnemonicParsing="false" text="Help">
                           <items>
-                            <MenuItem mnemonicParsing="false" styleClass="menuItem" text="About" />
+                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#gettingStarted"  text="Getting Started" />
+                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#shortcuts" text="Shortcuts" />
+                              <MenuItem mnemonicParsing="false" styleClass="menuItem" onAction="#about"  text="About" />
                           </items>
                         </Menu>
                          </menus>
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="540.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
-            <ToolBar fx:id="toolBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="35.0" styleClass="barColor">
+              <Canvas fx:id="canvas" height="525.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
+            <ToolBar fx:id="toolBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />
                   <Label text="Speed" />

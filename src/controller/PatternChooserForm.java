@@ -6,10 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -277,8 +274,8 @@ public class PatternChooserForm extends Stage implements Initializable
             showAlertDialog(Alert.AlertType.WARNING,
                     "Warning message",
                     "Warning!",
-                    "The application ran out of available memory and failed to load the pattern.\n" +
-                            "The chosen pattern may be to large or to many patterns have been opened at once.");
+                    "The application ran out of available memory and failed to load the pattern. " +
+                            "It may be to large or to many patterns have been opened at once.");
         }
         catch (Exception e)
         {
@@ -303,11 +300,17 @@ public class PatternChooserForm extends Stage implements Initializable
         Platform.runLater(() ->
         {
             Alert alert = new Alert(alertType);
-            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
-            alert.getDialogPane().setPrefWidth(450);
+            DialogPane dialogPane = alert.getDialogPane();
+
+            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+            dialogPane.setPrefWidth(450);
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(content);
+
+            dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+            dialogPane.getStyleClass().add("alert");
+
             alert.showAndWait();
         });
     }

@@ -357,9 +357,14 @@ public class GIFExporterForm extends Stage implements Initializable
             {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+                DialogPane dialogPane = alert.getDialogPane();
+                ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
                 alert.setTitle("Error");
                 alert.setContentText("Exporting the GIF failed horribly and it's probably not your fault!");
+
+                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+                dialogPane.getStyleClass().add("alert");
+
                 alert.showAndWait();
             }
         }

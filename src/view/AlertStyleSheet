@@ -1,0 +1,50 @@
+/*-----Alert Box-----*/
+
+.alert
+{
+    -fx-background-color: #373833;
+}
+
+.alert:header *.header-panel
+{
+    -fx-background-color: #373833;
+}
+
+.alert > .content
+{
+    -fx-text-fill: beige;
+}
+
+.alert .label
+{
+    -fx-text-fill: beige;
+}
+
+.alert:header *.header-panel > .label
+{
+    -fx-text-fill: beige;
+}
+
+.button
+{
+    -fx-background-color: #3D8F13;
+    -fx-text-fill: beige;
+}
+
+.button:hover
+{
+    -fx-background-color: #48ad14;
+    -fx-text-fill: beige;
+}
+
+.cancelButton
+{
+    -fx-background-color: #656563;
+    -fx-text-fill: beige;
+}
+
+.cancelButton:hover
+{
+    -fx-background-color: #757572;
+
+}

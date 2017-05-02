@@ -1,3 +1,4 @@
+
 /*-----User Interface-----*/
 .backGroundColor
 {
@@ -13,18 +14,19 @@
 .GreyButton
 {
     -fx-background-color: #656563;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: beige;
 }
 
 .GreyButton:hover
 {
     -fx-background-color: #757572;
+    -fx-text-fill: beige;
 }
 
 .SelectButton
 {
     -fx-background-color: #3D8F13;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: beige;
 }
 
 .SelectButton:hover

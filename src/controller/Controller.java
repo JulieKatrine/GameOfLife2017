@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.javafx.css.Stylesheet;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -327,6 +328,7 @@ public class Controller implements Initializable
 
     @FXML protected void loadNewGameBoard()
     {
+        stopSimulation();
         PatternChooserForm loader = new PatternChooserForm();
         loader.initModality(Modality.WINDOW_MODAL);
         loader.initOwner(anchorPane.getScene().getWindow());
@@ -336,9 +338,6 @@ public class Controller implements Initializable
         {
             gameModel.setGameBoard(pattern.getGameBoard());
             gameModel.setRule(pattern.getRule());
-            updateTimer.setRunning(false);
-            startStopMenuItem.setText("Start");
-            nextMenuItem.setDisable(false);
             reloadPatternMenuItem.setDisable(false);
             ruleInfo.setText("Rule: " + pattern.getRuleString());
             scaleViewToFitBoard();
@@ -413,28 +412,71 @@ public class Controller implements Initializable
         speed.setText("0 g/s");
     }
 
+    private void stopSimulation()
+    {
+        if(updateTimer.isRunning())
+            startStopSimulation();
+    }
+
     @FXML private void clearBoard()
     {
         gameModel.setGameBoard(new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT));
-        if(updateTimer.isRunning())
-            startStopSimulation();
+        stopSimulation();
         scaleViewToFitBoard();
         drawBoard();
     }
 
-    @FXML private void shortCuts()
-    {
+    @FXML private void informationBox(String title, String headerText, String contentText) {
+        stopSimulation();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
-        alert.setTitle("About");
-        alert.setHeaderText("How to create your own pattern");
-        alert.setContentText("Use the left mouse button to draw, the right mouse button to erase.\n\n" +
-                "If you are using a mouse:\n" +
-                "Click the wheel to move around and scroll to zoom.\n\n" +
-                "If you are using a touch pad:\n" +
-                "Scroll to move around, and ctrl+scroll to zoom.");
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+        dialogPane.getStyleClass().add("alert");
+
+        dialogPane.setPrefWidth(450);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
 
         alert.showAndWait();
+    }
+
+    @FXML private void gettingStarted()
+    {
+        stopSimulation();
+        informationBox("Getting Started", "Getting Started", "Use the left " +
+                "and right mouse buttons to edit the board. Click the mouse-wheel to move around and " +
+                "ctrl+scroll to zoom.\n(If you are using a touch pad: scroll to move around).\n\n" +
+
+                "Open the \"File Chooser\" (ctrl+o) to select a pattern from your disk, " +
+                "a URL or a pre-loaded pattern. Start the simulation with the \"Play\"-button on the toolbar " +
+                "(or with space). You can change the board-colors and change or create your own rules.\n" +
+                "If you want to save your pattern choose: \"File\">\"Edit and save\" (ctrl+s).\n\n");
+    }
+
+    @FXML private void shortcuts()
+    {
+        String helpContent =
+                "Play/pause: SPACE\n" +
+                "Next: N\n" +
+                "Reload: R\n" +
+                "Clear board: C\n" +
+                "Full screen: F\n" +
+                "Save: CTRL+S\n" +
+                "Open pattern: CTRL+O\n" +
+                "Zoom: CTRL+SCROLL\n";
+
+        stopSimulation();
+        informationBox("Shortcuts", "Shortcuts:", helpContent);
+    }
+
+    @FXML private void about()
+    {
+        stopSimulation();
+        informationBox("About", "Information", "This game was created by Niklas Johansen (s306603) " +
+                "and Julie Katrine Høvik (s236518) in the spring of 2017.");
     }
 
     @FXML private void setNewRuleFromFXML(Event event)
@@ -446,6 +488,7 @@ public class Controller implements Initializable
 
     @FXML private void customChangeRule()
     {
+        stopSimulation();
         CustomRuleCreator customRuleCreator = new CustomRuleCreator();
         customRuleCreator.showAndWait();
         String rule = customRuleCreator.getRuleString();
@@ -469,6 +512,7 @@ public class Controller implements Initializable
     {
         closeApplication();
 /*
+        stopSimulation();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
         alert.setTitle("Exit");
