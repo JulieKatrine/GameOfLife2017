@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -12,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.BoardIO.GIFExporter;
+import model.patternIO.GIFExporter;
 import model.GameBoard;
 import model.simulation.Simulator;
 import view.BoardRenderer;
@@ -20,10 +19,8 @@ import view.ColorProfile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * A dialog for exporting a pattern sequence to an animated GIF.
@@ -35,7 +32,7 @@ import java.util.ResourceBundle;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-public class GIFExporterForm extends Stage implements Initializable
+public class GIFExportForm extends Stage
 {
     private File outputFile;
     private Simulator simulator;
@@ -66,9 +63,9 @@ public class GIFExporterForm extends Stage implements Initializable
      * @param startBoard The first generation in the animation.
      * @param simulator The simulator to be used when simulating the next generations.
      * @param numberOfFrames The suggested amount of frames the animation should have.
-     * @param outputFile The file in which the data should be written to. If null, a FileChooser will be opened.
+     * @param outputFile The file in which the data should be written to. If null, a {@link FileChooser} will be opened.
      */
-    public GIFExporterForm(GameBoard startBoard, Simulator simulator, int numberOfFrames, File outputFile)
+    public GIFExportForm(GameBoard startBoard, Simulator simulator, int numberOfFrames, File outputFile)
     {
         this.startBoard = startBoard;
         this.currentBoard = startBoard.deepCopy();
@@ -78,7 +75,7 @@ public class GIFExporterForm extends Stage implements Initializable
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/GifExporterForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AnimationExporter.fxml"));
             loader.setController(this);
             Scene scene = new Scene(loader.load());
 
@@ -96,11 +93,9 @@ public class GIFExporterForm extends Stage implements Initializable
 
     /**
      * Sets up the boardRenderer, AnimationTimer and the pattern repetition hint.
-     * @param location A location.
-     * @param resources A resource.
      */
-    @Override
-    public void initialize(URL location, ResourceBundle resources)
+    @FXML
+    public void initialize()
     {
         boardRenderer = new BoardRenderer(canvas);
         ColorProfile cProfile = new ColorProfile(Color.WHITESMOKE,Color.BLACK, Color.GRAY);
@@ -182,12 +177,14 @@ public class GIFExporterForm extends Stage implements Initializable
             }
         });
 
+        // Updates the canvas width when the window is resized.
         super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
             canvas.setWidth(newVal.intValue() - leftBar.getPrefWidth());
             drawBoard();
         });
 
+        // Updates the canvas height when the window is resized.
         super.getScene().heightProperty().addListener((a, b, newVal) ->
         {
             canvas.setHeight(newVal.intValue());
@@ -197,8 +194,7 @@ public class GIFExporterForm extends Stage implements Initializable
 
     /**
      * Creates a new AnimationTimer and starts it.
-     * The timer draws and simulates a new frame of the animation at
-     * the given frame rate.
+     * The timer draws and simulates a new frame of the animation at the given frame rate.
      */
     private void createAndStartAnimationTimer()
     {
@@ -255,13 +251,13 @@ public class GIFExporterForm extends Stage implements Initializable
 
     /**
      * Searches for repetition and notifies the user if the generations
-     * repeat after a certain amount of frames. If setFrameFiled is true,
+     * repeat themselves after a certain amount of frames. If setFrameFiled is true,
      * the Frames input field will be set to the amount of frames in the repeating pattern.
      * @param setFramesField Whether or not FramesField should be updated.
      */
     private void updateRepeatingPatternHint(boolean setFramesField)
     {
-        int result = lastIndexOfRepeatingPattern(getHashCodes(numberOfFrames * 2));
+        int result = locateLastIndexOfRepeatingPattern(getHashCodes(numberOfFrames * 2));
         if(result != -1)
         {
             framesTextLabel.setText("Detected a repeating pattern after " + result + " frames");
@@ -272,12 +268,15 @@ public class GIFExporterForm extends Stage implements Initializable
     }
 
     /**
-     * Searches for repetition in a list of hash codes.
-     * Only generations repeating from the start will be found.
+     * Searches for a repeated sequence of generations.
+     *
+     * Compares all generations to the first one in the list, if it finds a match it
+     * checks for a matching sequence with the same length.
+     *
      * @param hashCodes A list hash codes.
      * @return The last index in the first occurrence of the repeating pattern.
      */
-    public static int lastIndexOfRepeatingPattern(List<Integer> hashCodes)
+    public static int locateLastIndexOfRepeatingPattern(List<Integer> hashCodes)
     {
         if(hashCodes == null || hashCodes.size() == 0)
             return -1;
@@ -323,10 +322,10 @@ public class GIFExporterForm extends Stage implements Initializable
     }
 
     /**
-     * This method is called when the user presses the Export button.
-     * It creates a GIFExporter and sends in the user specified data.
-     * If this form was opened form the generation strip in the PatternEditorForm,
-     * no output file has been selected and a FileChooser is opened.
+     * This method is called when the user presses the CreateGIF button.
+     * It creates a {@link GIFExporter} and sends in the user specified data.
+     * (If this form was opened form the generation strip in the {@link PatternEditorForm},
+     * no output file has been selected and a FileChooser is opened.)
      * @see GIFExporter
      */
     @FXML
@@ -366,7 +365,7 @@ public class GIFExporterForm extends Stage implements Initializable
                 alert.setTitle("Error");
                 alert.setContentText("Exporting the GIF failed horribly and it's probably not your fault!");
 
-                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
                 dialogPane.getStyleClass().add("alert");
 
                 alert.showAndWait();

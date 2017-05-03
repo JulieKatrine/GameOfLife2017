@@ -5,17 +5,17 @@ import model.Point;
 
 /**
  * This simulator implementation executes a simulation on every cell in a given {@link GameBoard}.
- * It uses the boards methods to access and update each cell according to a specific {@link SimRule}.
+ * It uses the boards methods to access and update each cell according to a specific {@link SimulationRule}.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @deprecated This implementation is replaced by {@link SimulatorThreaded}
+ * @deprecated This implementation is replaced by {@link ThreadedSimulatorImpl}
  * @see Simulator
- * @see SimRule
+ * @see SimulationRule
  */
 public class SimulatorImpl extends Simulator
 {
-    public SimulatorImpl(SimRule rule)
+    public SimulatorImpl(SimulationRule rule)
     {
         super(rule);
     }
@@ -37,7 +37,7 @@ public class SimulatorImpl extends Simulator
             {
                 int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                SimRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
+                SimulationRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
 
                 switch(result)
                 {

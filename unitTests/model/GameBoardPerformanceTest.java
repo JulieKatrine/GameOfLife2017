@@ -1,11 +1,11 @@
 package model;
 
-import model.BoardIO.Pattern;
-import model.BoardIO.PatternFormatException;
-import model.BoardIO.PatternLoader;
-import model.simulation.DefaultRuleSet;
+import model.patternIO.Pattern;
+import model.patternIO.PatternFormatException;
+import model.patternIO.PatternLoader;
+import model.simulation.DefaultRule;
 import model.simulation.Simulator;
-import model.simulation.SimulatorThreaded;
+import model.simulation.ThreadedSimulatorImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class GameBoardPerformanceTest
         PatternLoader loader = new PatternLoader();
         Pattern pattern = loader.loadAsStream(patternPath);
         GameBoard board = pattern.getGameBoard();
-        Simulator simulator = new SimulatorThreaded(new DefaultRuleSet());
+        Simulator simulator = new ThreadedSimulatorImpl(new DefaultRule());
 
         // ----------------------------- DYNAMIC ATOMIC LIST -----------------------------
 

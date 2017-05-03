@@ -1,17 +1,17 @@
 package model.simulation;
 
-import model.BoardIO.RuleStringFormatter;
+import model.patternIO.RuleStringFormatter;
 
 /**
- * This SimRule implementation is used for custom made rules.
+ * This SimulationRule implementation is used for custom made rules.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see SimRule
+ * @see SimulationRule
  * @see Result
  * @see Simulator
  */
-public class CustomRule implements SimRule
+public class CustomRule implements SimulationRule
 {
     private final Result[] calculatedResult;
     private String rule;

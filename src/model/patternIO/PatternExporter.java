@@ -1,4 +1,4 @@
-package model.BoardIO;
+package model.patternIO;
 
 import java.io.*;
 

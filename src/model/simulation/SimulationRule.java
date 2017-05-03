@@ -6,12 +6,12 @@ package model.simulation;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @see CustomRule
- * @see DefaultRuleSet
+ * @see DefaultRule
  */
-public interface SimRule
+public interface SimulationRule
 {
     /**
-     * The different states a SimRule can return after being executed on a cell.
+     * The different states a SimulationRule can return after being executed on a cell.
      */
     enum Result
     {

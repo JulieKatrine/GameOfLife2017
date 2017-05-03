@@ -3,7 +3,6 @@ package controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -21,10 +20,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.BoardEditor;
-import model.BoardIO.Pattern;
-import model.BoardIO.PatternExporter;
-import model.BoardIO.PatternFormatException;
-import model.BoardIO.RuleStringFormatter;
+import model.patternIO.Pattern;
+import model.patternIO.PatternExporter;
+import model.patternIO.PatternFormatException;
+import model.patternIO.RuleStringFormatter;
 import model.GameBoard;
 import model.Point;
 import model.simulation.*;
@@ -33,10 +32,9 @@ import view.ColorProfile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Optional;
 
 /**
  * This is the stage and controller class for the pattern editor/saver.
@@ -44,14 +42,17 @@ import java.util.ResourceBundle;
  * @author Julie Katrine Høvik
  */
 
-public class PatternEditorForm extends Stage implements Initializable
+public class PatternEditorForm extends Stage
 {
+    private final int MAX_BOARD_SIZE = 4000000;
+
     private GenerationTile selectedTile;
     private BoardRenderer boardRenderer;
     private BoardEditor boardEditor;
     private Image createGIFImage;
     private Image loopImage;
     private Simulator simulator;
+    private GameBoard selectedGameBoard;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -71,34 +72,34 @@ public class PatternEditorForm extends Stage implements Initializable
      */
     public PatternEditorForm(GameBoard board, Simulator simulator)
     {
-        selectedTile = new GenerationTile(board.trimmedCopy(1));
-        this.simulator = simulator;
-
-        try
+        if(showSizeWarning(board, simulator))
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditorForm.fxml"));
-            loader.setController(this);
-            Scene scene = new Scene(loader.load());
+            selectedTile = new GenerationTile(board.trimmedCopy(1));
+            this.simulator = simulator;
 
-            super.setTitle("Edit and save your pattern");
-            super.getIcons().add(GameOfLife.APPLICATION_ICON);
-            super.setScene(scene);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditorForm.fxml"));
+                loader.setController(this);
+                Scene scene = new Scene(loader.load());
 
-            addEventListeners();
+                super.setTitle("Edit and save your pattern");
+                super.getIcons().add(GameOfLife.APPLICATION_ICON);
+                super.setScene(scene);
+
+                addEventListeners();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        else
+            closeWindow();
     }
 
     /**
      * Sets up the local objects, updates the generation strip and draw the board.
-     * @param location Some location.
-     * @param resources Some resource.
      */
-    @Override
-    public void initialize(URL location, ResourceBundle resources)
+    @FXML
+    public void initialize()
     {
         boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
@@ -111,6 +112,62 @@ public class PatternEditorForm extends Stage implements Initializable
         Platform.runLater(() -> scrollPane.requestFocus());
         updateGenerationStrip();
         drawBoard();
+    }
+
+    //TODO: finish me
+    private boolean showSizeWarning(GameBoard gameBoard, Simulator simulator)
+    {
+       if(gameBoard.getHeight()*gameBoard.getWidth() >= MAX_BOARD_SIZE)
+       {
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           DialogPane dialogPane = alert.getDialogPane();
+           ButtonType tryAnywayButton = new ButtonType("Try anyway");
+           ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+           ButtonType save = new ButtonType("Save");
+
+           //dialogPane.lookupButton( ButtonType.CANCEL ).getStyleClass().add("cancelButton");
+
+           ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+           dialogPane.setPrefWidth(450);
+           alert.setTitle("Warning");
+           alert.setHeaderText("");
+           alert.setContentText("The board might be too large for editing. Would you like to " +
+                   "save it directly or try editing anyway?\n\n");
+           alert.getButtonTypes().setAll(save, tryAnywayButton, cancel);
+
+           dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+           dialogPane.getStyleClass().add("alert");
+
+           Optional<ButtonType> result = alert.showAndWait();
+           if (result.get() == cancel)
+               return false;
+           else if (result.get() == tryAnywayButton)
+               return true;
+           else if (result.get() == save)
+           {
+               FileChooser fileChooser = new FileChooser();
+               fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"));
+               File file = fileChooser.showSaveDialog(this);
+               if(file != null)
+               {
+                   selectedGameBoard = gameBoard;
+                   Pattern pattern = new Pattern();
+                   pattern.setMetadata(new ArrayList<>());
+                   pattern.setRuleString(simulator.getSimulationRule().toString());
+                   addCellData(pattern);
+                   PatternExporter exporter = new PatternExporter();
+                   try {
+                       exporter.export(pattern, file);
+                   } catch (IOException e) {
+                       e.printStackTrace();
+                   }
+               }
+
+
+               return false;
+           }
+       }
+        return true;
     }
 
     /**
@@ -250,6 +307,8 @@ public class PatternEditorForm extends Stage implements Initializable
 
         // Set the selected tile to the first one in the strip.
         selectedTile = (GenerationTile) tilePane.getChildren().get(0);
+        selectedGameBoard = selectedTile.getGameBoard().trimmedCopy();
+
         addSelectedEffectTo(selectedTile);
 
         // Clean up the strip by removing repetition
@@ -301,13 +360,13 @@ public class PatternEditorForm extends Stage implements Initializable
 
     /**
      * Replaces repeating patterns with an option to export the remaining tiles to a GIF.
-     * This method uses a search function provided by the GIFExporterForm.
+     * This method uses a search function provided by the GIFExportForm.
      * @param hashCodeList A list of hash codes matching the generations in the tilePane.
-     * @see GIFExporterForm
+     * @see GIFExportForm
      */
     private void replaceRepeatingPatternsWithGIFExport(List<Integer> hashCodeList)
     {
-        int result = GIFExporterForm.lastIndexOfRepeatingPattern(hashCodeList);
+        int result = GIFExportForm.locateLastIndexOfRepeatingPattern(hashCodeList);
         if(result != -1)
         {
             // Remove all tiles after the first sequence.
@@ -329,7 +388,7 @@ public class PatternEditorForm extends Stage implements Initializable
      */
     private void openGIFExporterDialog(File file)
     {
-        GIFExporterForm exporterForm = new GIFExporterForm(
+        GIFExportForm exporterForm = new GIFExportForm(
                 selectedTile.getGameBoard(),
                 simulator,
                 tilePane.getChildren().size(),
@@ -403,18 +462,30 @@ public class PatternEditorForm extends Stage implements Initializable
      */
     private Pattern createPattern() throws PatternFormatException
     {
-        GameBoard board = selectedTile.getGameBoard().trimmedCopy();
-
-        if(board.getPopulation() == 0)
+        if(selectedGameBoard.getPopulation() == 0)
             throw new PatternFormatException(PatternFormatException.ErrorCode.NO_LIVING_CELLS);
 
-        // Creates a new data array and copies the data over.
-        boolean[][] cellData = new boolean[board.getHeight()][board.getWidth()];
-        Point cellPos = new Point();
-        for (cellPos.y = 0; cellPos.y < board.getHeight(); cellPos.y++)
-            for (cellPos.x = 0; cellPos.x < board.getWidth(); cellPos.x++)
-                cellData[cellPos.y][cellPos.x] = board.isCellAliveInThisGeneration(cellPos);
+        // Creates a new pattern and adds the data to it.
+        Pattern pattern = new Pattern();
+        addCellData(pattern);
+        addMetaData(pattern);
+        return pattern;
+    }
 
+    private void addCellData(Pattern pattern)
+    {
+        // Creates a new data array and copies the data over.
+        boolean[][] cellData = new boolean[selectedGameBoard.getHeight()][selectedGameBoard.getWidth()];
+        Point cellPos = new Point();
+        for (cellPos.y = 0; cellPos.y < selectedGameBoard.getHeight(); cellPos.y++)
+            for (cellPos.x = 0; cellPos.x < selectedGameBoard.getWidth(); cellPos.x++)
+                cellData[cellPos.y][cellPos.x] = selectedGameBoard.isCellAliveInThisGeneration(cellPos);
+
+        pattern.setCellData(cellData);
+    }
+
+    private void addMetaData(Pattern pattern)
+    {
         // Gets all the text from the TextFields.
         String rule = ruleTextField.getText();
         String author = authorTextField.getText();
@@ -428,12 +499,8 @@ public class PatternEditorForm extends Stage implements Initializable
         for(String c : description.split("\n"))
             metaData.add("#C " + c);
 
-        // Creates a new pattern and adds the data to it.
-        Pattern pattern = new Pattern();
         pattern.setMetadata(metaData);
-        pattern.setCellData(cellData);
         pattern.setRuleString(rule);
-        return pattern;
     }
 
     /**
@@ -450,7 +517,8 @@ public class PatternEditorForm extends Stage implements Initializable
 
     public void setColorProfile(ColorProfile profile)
     {
-        boardRenderer.setColorProfile(profile);
+        if(boardRenderer != null)
+            boardRenderer.setColorProfile(profile);
     }
 
     /**

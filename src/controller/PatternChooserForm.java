@@ -3,7 +3,6 @@ package controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,11 +18,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.BoardIO.*;
+import model.patternIO.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,7 +36,7 @@ import java.util.concurrent.Executors;
  * @author Julie Katrine Høvik
  */
 
-public class PatternChooserForm extends Stage implements Initializable
+public class PatternChooserForm extends Stage
 {
     private static List<Tile> loadedTiles;
     private static Queue<String> fileLoadingQueue;
@@ -72,7 +70,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternChooserForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternChooser.fxml"));
             loader.setController(this);
             HBox root = loader.load();
 
@@ -97,11 +95,9 @@ public class PatternChooserForm extends Stage implements Initializable
 
     /**
      * Creates the tile effects, adds event listener and loads the queued patterns.
-     * @param location Relative paths for the root object.
-     * @param resources Resources used to localize the root object.
      */
-    @Override
-    public void initialize(URL location, ResourceBundle resources)
+    @FXML
+    public void initialize()
     {
         hourGlassImage = new Image(getClass().getResourceAsStream("/img/hourglass.png"));
         dropShadowEffect = new DropShadow();
@@ -214,7 +210,7 @@ public class PatternChooserForm extends Stage implements Initializable
      * Loads the pattern from the path if it is not already loaded.
      * The method passes the task to a ExecutorService to not block
      * the JavaFX thread while loading large patterns.
-     * @param path The path prefixed with either FILE: or URL:
+     * @param path The path prefixed with either FILE:, URL: or STREAM:
      */
     private void loadAndAddPatternToForm(String path)
     {
@@ -263,7 +259,7 @@ public class PatternChooserForm extends Stage implements Initializable
      * "STREAM:" - the path to a application resource.
      * "URL:" - the web address to the file.
      * The method handles all exceptions and will inform the user if errors occur while loading.
-     * @param path The path prefixed with either FILE: or URL:
+     * @param path The path.
      * @return A pattern object.
      */
     private Pattern loadPattern(String path)
@@ -319,7 +315,7 @@ public class PatternChooserForm extends Stage implements Initializable
             alert.setHeaderText(header);
             alert.setContentText(content);
 
-            dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+            dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
             dialogPane.getStyleClass().add("alert");
 
             alert.showAndWait();
@@ -328,10 +324,10 @@ public class PatternChooserForm extends Stage implements Initializable
 
     /**
      * This method adds the onMouseClicked event to a Tile.
-     * When a tile is clicked the event will check if the tile has a loaded pattern
-     * and set this as the selectedEffect one. If the Tile was loaded in a previous PatternChooseForm instance,
+     * When a Tile is clicked the event will check if the Tile has a loaded pattern
+     * and set this as the selected one. If the Tile was loaded in a previous PatternChooseForm instance,
      * its pattern will no longer exist in memory and has to be reloaded. The "dropshadow" effect is applied
-     * to all Tiles and the clicked tile gets the "selectedEffect" effect. The textArea is also updated with the
+     * to all Tiles and the clicked Tile gets the "selectedEffect" effect. The textArea is also updated with the
      * patterns metadata.
      * @param tile A Tile object.
      */
@@ -408,11 +404,10 @@ public class PatternChooserForm extends Stage implements Initializable
 
     /**
      * The method is called when the user hovers a file over the application window.
-     * It accepts the action and a "move" GUI-element will show that this application
-     * accepts this type of file loading.
+     * The file is only allowed to move into the current focused window.
      * @param event The DragEvent
      */
-    @FXML private void fileOver(DragEvent event)
+    @FXML private void fileIsHoveringOverApplication(DragEvent event)
     {
         Dragboard board = event.getDragboard();
         if (board.hasFiles())
@@ -420,11 +415,11 @@ public class PatternChooserForm extends Stage implements Initializable
     }
 
     /**
-     * The method is called when the user drops one or more files over the application window.
+     * The method is called when the user drops one or more files into the application window.
      * It reads in the files and adds them as patterns to the tilePane.
      * @param event The DragEvent
      */
-    @FXML private void fileDropped(DragEvent event)
+    @FXML private void fileIsDroppedOnApplication(DragEvent event)
     {
         event.getDragboard().getFiles().forEach(file -> loadAndAddPatternToForm("FILE:" + file));
     }
@@ -451,7 +446,7 @@ public class PatternChooserForm extends Stage implements Initializable
         fileLoadingQueue.add("FILE:" + file);
     }
 
-    public static boolean isOpened()
+    public static boolean isWindowOpened()
     {
         return isOpened;
     }
@@ -460,7 +455,7 @@ public class PatternChooserForm extends Stage implements Initializable
     /**
      * This private Tile class adds some functionality to JavaFX ImageView.
      * It stores the associated pattern and a path to where this pattern where loaded from.
-     * This is done so big pattern objects can be freed from memory when the PatternChooserForm
+     * This is done so that big pattern objects can be freed from memory when the PatternChooserForm
      * is closed. When the form gets reopened this path is used to reload the Pattern back in.
      */
     private class Tile extends ImageView
@@ -486,7 +481,7 @@ public class PatternChooserForm extends Stage implements Initializable
 
         /**
          * This method samples the patterns cell data and creates a scaled image to be used as preview.
-         * @return A image.
+         * @return An image.
          */
         private Image createTileImage()
         {
@@ -519,13 +514,14 @@ public class PatternChooserForm extends Stage implements Initializable
             return origin;
         }
 
-        public void releasePattern()
-        {
-            pattern = null;
-        }
         public Pattern getPattern()
         {
             return pattern;
+        }
+
+        public void releasePattern()
+        {
+            pattern = null;
         }
     }
 }

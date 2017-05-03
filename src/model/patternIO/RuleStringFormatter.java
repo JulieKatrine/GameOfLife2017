@@ -1,11 +1,11 @@
-package model.BoardIO;
+package model.patternIO;
 
 
-import model.simulation.SimRule;
+import model.simulation.SimulationRule;
 
 /**
  * Utility class for creating a standard formatted rule string.
- * Used to ensure proper loading and creation of simulation {@link SimRule rules}.
+ * Used to ensure proper loading and creation of simulation {@link SimulationRule rules}.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik

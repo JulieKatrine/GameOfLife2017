@@ -13,7 +13,7 @@ class SimulatorTest
     void executeOn()
     {
         GameBoard board = TestUtils.getGameBoardImplementation(5, 5);
-        Simulator simulator = new SimulatorImpl(new DefaultRuleSet());
+        Simulator simulator = new SimulatorImpl(new DefaultRule());
         String glider = "010001111";
 
         // Add the glider pattern to the board
@@ -32,7 +32,7 @@ class SimulatorTest
     @Test
     void testSimulationTime() throws InterruptedException
     {
-        Simulator simulator = new Simulator(new DefaultRuleSet())
+        Simulator simulator = new Simulator(new DefaultRule())
         {
             @Override
             public void executeOn(GameBoard board)
@@ -54,7 +54,7 @@ class SimulatorTest
     void testGenerationCountPerSecond() throws InterruptedException
     {
         GameBoard board = TestUtils.getGameBoardImplementation(10, 10);
-        Simulator simulator = new Simulator(new DefaultRuleSet())
+        Simulator simulator = new Simulator(new DefaultRule())
         {
             @Override
             protected void executeOn(GameBoard board)
@@ -76,11 +76,11 @@ class SimulatorTest
     @Test
     void testGetterAndSetters()
     {
-        SimRule defaultRule = new DefaultRuleSet();
+        SimulationRule defaultRule = new DefaultRule();
         Simulator simulator = new SimulatorImpl(defaultRule);
         assertEquals(defaultRule, simulator.getSimulationRule());
 
-        SimRule customRule = new CustomRule("B3/S23");
+        SimulationRule customRule = new CustomRule("B3/S23");
         simulator.setRule(customRule);
         assertEquals(customRule, simulator.getSimulationRule());
     }

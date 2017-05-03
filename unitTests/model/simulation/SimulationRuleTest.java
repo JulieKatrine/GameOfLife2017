@@ -1,16 +1,16 @@
 package model.simulation;
 
 import org.junit.jupiter.api.Test;
-import model.simulation.SimRule.Result;
+import model.simulation.SimulationRule.Result;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimRuleTest
+class SimulationRuleTest
 {
     @Test
     void testCustomRule()
     {
-        SimRule rule = new CustomRule("B024/S57");
+        SimulationRule rule = new CustomRule("B024/S57");
 
         Result[] expected =
         {

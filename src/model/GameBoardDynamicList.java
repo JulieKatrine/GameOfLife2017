@@ -1,7 +1,7 @@
 package model;
 
 
-import model.simulation.SimulatorThreaded;
+import model.simulation.ThreadedSimulatorImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,12 +182,12 @@ public class GameBoardDynamicList extends GameBoard
 
     /**
      * This cell implementation uses atomic data wrappers to ensure thread safe simulation.
-     * NOTE: The current SimulatorThreaded implementation is made to not cause any concurrency problems
+     * NOTE: The current ThreadedSimulatorImpl implementation is made to not cause any concurrency problems
      * and none of these thread-safe cell implementations are needed. They where made to show how
      * it can be done. Our tests show how this type of lock-based synchronization is slow and unnecessary for
      * this particular problem.
      * See the performance results in GameBoardPerformanceTest in the unitTests source folder.
-     * @see SimulatorThreaded
+     * @see ThreadedSimulatorImpl
      */
     private class AtomicCell extends Cell
     {

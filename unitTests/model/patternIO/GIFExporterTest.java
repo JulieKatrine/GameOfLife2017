@@ -1,15 +1,13 @@
-package model.BoardIO;
+package model.patternIO;
 
 import model.GameBoard;
 import model.TestUtils;
-import model.simulation.DefaultRuleSet;
+import model.simulation.DefaultRule;
 import model.simulation.SimulatorImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 class GIFExporterTest
@@ -22,7 +20,7 @@ class GIFExporterTest
 
         GIFExporter exporter = new GIFExporter(
                 outputFile,
-                new SimulatorImpl(new DefaultRuleSet()),
+                new SimulatorImpl(new DefaultRule()),
                 10,
                 5,
                 5,

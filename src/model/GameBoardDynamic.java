@@ -95,7 +95,7 @@ public class GameBoardDynamic extends GameBoard
     /**
      * Sets the state of a cell in the current generation.
      * NOTE: this method has the side effect of updating the living neighbour count of nearby cells.
-     * This method is synchronized to prevent concurrency problems with the SimulatorThreaded implementation.
+     * This method is synchronized to prevent concurrency problems with the ThreadedSimulatorImpl implementation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param p The position of the cell to be set.
      */

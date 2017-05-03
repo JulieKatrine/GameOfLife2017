@@ -19,12 +19,12 @@ public class GameModel
     private Simulator simulator;
 
     /**
-     * The constructor sets up a default GameBoard and a default Simulator with the DefaultRuleSet.
+     * The constructor sets up a default GameBoard and a default Simulator with the DefaultRule.
      */
     public GameModel()
     {
         gameBoard = new GameBoardDynamic(GameBoard.DEFAULT_BOARD_WIDTH, GameBoard.DEFAULT_BOARD_HEIGHT);
-        simulator = new SimulatorThreaded(new DefaultRuleSet());
+        simulator = new ThreadedSimulatorImpl(new DefaultRule());
     }
 
     public void simulateNextGeneration()
@@ -42,7 +42,7 @@ public class GameModel
         this.gameBoard = board;
     }
 
-    public void setRule(SimRule simulatorRule)
+    public void setRule(SimulationRule simulatorRule)
     {
         simulator.setRule(simulatorRule);
     }

@@ -1,9 +1,9 @@
 package model.simulation;
 
 
-import model.BoardIO.Pattern;
-import model.BoardIO.PatternFormatException;
-import model.BoardIO.PatternLoader;
+import model.patternIO.Pattern;
+import model.patternIO.PatternFormatException;
+import model.patternIO.PatternLoader;
 import model.GameBoard;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class SimulatorPreformanceTest
         // ----------------------------- SimulatorImpl -----------------------------
 
         GameBoard board = pattern.getGameBoard();
-        Simulator simulator = new SimulatorImpl(new DefaultRuleSet());
+        Simulator simulator = new SimulatorImpl(new DefaultRule());
         long simulatorTime = 0;
         for(int i = 0; i < generations; i++)
         {
@@ -30,10 +30,10 @@ public class SimulatorPreformanceTest
             simulatorTime +=  simulator.getSimulationTime();
         }
 
-        // ----------------------------- SimulatorThreaded -----------------------------
+        // ----------------------------- ThreadedSimulatorImpl -----------------------------
 
         board = pattern.getGameBoard();
-        simulator = new SimulatorThreaded(new DefaultRuleSet());
+        simulator = new ThreadedSimulatorImpl(new DefaultRule());
         long simulatorThreadedTime = 0;
         for(int i = 0; i < generations; i++)
         {
@@ -45,6 +45,6 @@ public class SimulatorPreformanceTest
 
         System.out.println(generations + " generations of " + patternPath + "\n" +
                 " - SimulatorImpl:      " + simulatorTime + " ms\n" +
-                " - SimulatorThreaded:  " + simulatorThreadedTime + " ms\n");
+                " - ThreadedSimulatorImpl:  " + simulatorThreadedTime + " ms\n");
     }
 }

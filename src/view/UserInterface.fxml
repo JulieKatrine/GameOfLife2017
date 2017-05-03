@@ -35,7 +35,7 @@
                              </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                           <items>
-                              <MenuItem fx:id="reloadPatternMenuItem" disable="true" mnemonicParsing="false" onAction="#reloadPattern" styleClass="menuItem" text="Reload pattern" />
+                              <MenuItem fx:id="reloadPatternMenuItem" disable="true" mnemonicParsing="false" onAction="#reloadGameBoard" styleClass="menuItem" text="Reload pattern" />
                                      <MenuItem onAction="#clearBoard" styleClass="menuItem" text="Clear board" />
                             <MenuItem mnemonicParsing="false" onAction="#trimBoardToSize" styleClass="menuItem" text="Trim to size" />
                           </items>
@@ -46,16 +46,16 @@
                                      <MenuItem fx:id="nextMenuItem" onAction="#simulateNextGeneration" styleClass="menuItem" text="Next" />
                               <Menu mnemonicParsing="false" styleClass="menuItem" text="Change Rule">
                                 <items>
-                                    <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Default Rule" />
-                                    <MenuItem fx:id="B3S12345" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Maze" />
-                                    <MenuItem fx:id="B3678S34678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Day and Night" />
-                                    <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Replicator" />
-                                    <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Fredkin" />
-                                    <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Live Free or Die" />
-                                    <MenuItem fx:id="B3S012345678" mnemonicParsing="false" onAction="#setNewRuleFromFXML" styleClass="menuItem" text="Life without death" />
+                                    <MenuItem fx:id="B3S23" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Default Rule" />
+                                    <MenuItem fx:id="B3S12345" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Maze" />
+                                    <MenuItem fx:id="B3678S34678" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Day and Night" />
+                                    <MenuItem fx:id="B1357S1357" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Replicator" />
+                                    <MenuItem fx:id="B1357S02468" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Fredkin" />
+                                    <MenuItem fx:id="B2S0" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Live Free or Die" />
+                                    <MenuItem fx:id="B3S012345678" mnemonicParsing="false" onAction="#setRuleFromMenuBar" styleClass="menuItem" text="Life without death" />
 
                                     <SeparatorMenuItem> </SeparatorMenuItem>
-                                    <MenuItem fx:id="customRule" mnemonicParsing="false" onAction="#customChangeRule" styleClass="menuItem" text="Custom Rule" />
+                                    <MenuItem fx:id="customRule" mnemonicParsing="false" onAction="#openCustomRuleCreator" styleClass="menuItem" text="Custom Rule" />
                                 </items>
                               </Menu>
                                  </items>
@@ -63,7 +63,7 @@
                              <Menu text="View">
                                  <items>
                               <CheckMenuItem mnemonicParsing="false" onAction="#enableGridRendering" selected="true" styleClass="menuItem" text="Draw grid" />
-                              <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomAction" styleClass="menuItem" text="Auto zoom" />
+                              <CheckMenuItem fx:id="autoZoomMenuItem" mnemonicParsing="false" onAction="#autoZoomState" styleClass="menuItem" text="Auto zoom" />
                               <CheckMenuItem fx:id="fullscreenMenuItem" mnemonicParsing="false" styleClass="menuItem" text="Fullscreen" />
                                      <Menu styleClass="menuItem" text="Cell size">
                                         <items>
@@ -78,16 +78,16 @@
                              </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                           <items>
-                              <MenuItem mnemonicParsing="false" onAction="#gettingStarted" styleClass="menuItem" text="Getting Started" />
-                              <MenuItem mnemonicParsing="false" onAction="#shortcuts" styleClass="menuItem" text="Shortcuts" />
-                              <MenuItem mnemonicParsing="false" onAction="#about" styleClass="menuItem" text="About" />
+                              <MenuItem mnemonicParsing="false" onAction="#openGettingStartedDialog" styleClass="menuItem" text="Getting Started" />
+                              <MenuItem mnemonicParsing="false" onAction="#openShortcutDialog" styleClass="menuItem" text="Shortcuts" />
+                              <MenuItem mnemonicParsing="false" onAction="#openAboutDialog" styleClass="menuItem" text="About" />
                           </items>
                         </Menu>
                          </menus>
                      </MenuBar>
                  </children>
               </HBox>
-              <Canvas fx:id="canvas" height="530.0" onDragDropped="#fileDropped" onDragOver="#fileOver" width="800" />
+              <Canvas fx:id="canvas" height="530.0" onDragDropped="#fileIsDroppedOnApplication" onDragOver="#fileIsHoveringOverApplication" width="800" />
             <ToolBar fx:id="toolBar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="45.0" styleClass="barColor">
                <items>
                   <ToggleButton fx:id="startStopButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#startStopSimulation" prefWidth="60.0" styleClass="buttonImage" />

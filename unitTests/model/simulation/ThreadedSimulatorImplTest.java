@@ -1,7 +1,7 @@
 package model.simulation;
 
-import model.BoardIO.PatternFormatException;
-import model.BoardIO.PatternLoader;
+import model.patternIO.PatternFormatException;
+import model.patternIO.PatternLoader;
 import model.GameBoard;
 import model.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimulatorThreadedTest
+class ThreadedSimulatorImplTest
 {
     /**
      * This test simulates 6000 generations of a 6-period pattern.
@@ -27,7 +27,7 @@ class SimulatorThreadedTest
 
         String expected = TestUtils.trimmedGameBoardToString(board);
 
-        Simulator simulator = new SimulatorThreaded(new DefaultRuleSet());
+        Simulator simulator = new ThreadedSimulatorImpl(new DefaultRule());
         for(int i = 0; i < 6 * 1000; i++)
             simulator.simulateNextGenerationOn(board);
 

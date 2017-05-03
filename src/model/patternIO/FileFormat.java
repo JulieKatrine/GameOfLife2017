@@ -1,4 +1,4 @@
-package model.BoardIO;
+package model.patternIO;
 
 /**
  * This enum consists of the applications supported file formats.

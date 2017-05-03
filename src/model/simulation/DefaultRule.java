@@ -5,11 +5,11 @@ package model.simulation;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see SimRule
+ * @see SimulationRule
  * @see Result
  * @see Simulator
  */
-public class DefaultRuleSet implements SimRule
+public class DefaultRule implements SimulationRule
 {
     public Result execute(int numberOfLivingNeighbors)
     {

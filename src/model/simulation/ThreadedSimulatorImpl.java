@@ -35,10 +35,10 @@ import java.util.concurrent.TimeUnit;
  * @author Julie Katrine Høvik
  * @see Simulator
  * @see GameBoard
- * @see SimRule
+ * @see SimulationRule
  */
 
-public class SimulatorThreaded extends Simulator
+public class ThreadedSimulatorImpl extends Simulator
 {
     private ExecutorService executorService;
     private CountDownLatch simulationExecutedLatch;
@@ -46,14 +46,14 @@ public class SimulatorThreaded extends Simulator
     private int availableProcessors;
 
     /**
-     * The constructor takes in a SimRule and sets up the simulator.
+     * The constructor takes in a SimulationRule and sets up the simulator.
      * It retrieves the amount of available cores (doubled if CPU is hyperthreaded)
      * and creates a fixed thread pool with this amount. It also adds a shutdown hook
      * for the ExecutorService to be shut down gracefully on application exit.
      *
      * @param rule The rule to be used under simulation.
      */
-    public SimulatorThreaded(SimRule rule)
+    public ThreadedSimulatorImpl(SimulationRule rule)
     {
         super(rule);
         this.availableProcessors = Runtime.getRuntime().availableProcessors();
@@ -165,7 +165,7 @@ public class SimulatorThreaded extends Simulator
                 {
                     int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                    SimRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
+                    SimulationRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
 
                     switch(result)
                     {

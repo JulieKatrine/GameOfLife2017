@@ -1,5 +1,5 @@
 controller
 model
-model.BoardIO
+model.patternIO
 model.simulation
 view

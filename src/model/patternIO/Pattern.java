@@ -1,9 +1,9 @@
-package model.BoardIO;
+package model.patternIO;
 
 import model.*;
 import model.simulation.CustomRule;
-import model.simulation.DefaultRuleSet;
-import model.simulation.SimRule;
+import model.simulation.DefaultRule;
+import model.simulation.SimulationRule;
 
 import java.util.List;
 
@@ -104,17 +104,17 @@ public class Pattern
     }
 
     /**
-     * Returns a SimRule object from the patterns rule string.
-     * @return A new SimRule
+     * Returns a SimulationRule object from the patterns rule string.
+     * @return A new SimulationRule
      * @see CustomRule
-     * @see DefaultRuleSet
+     * @see DefaultRule
      */
-    public SimRule getRule()
+    public SimulationRule getRule()
     {
         if(ruleString != null && !ruleString.equals("B3/S23"))
             return new CustomRule(ruleString);
         else
-            return new DefaultRuleSet();
+            return new DefaultRule();
     }
 
     /**

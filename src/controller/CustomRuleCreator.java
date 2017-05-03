@@ -3,11 +3,7 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
@@ -40,17 +36,17 @@ public class CustomRuleCreator extends TextInputDialog
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
+        super.setTitle("Create your own rule");
+        super.setHeaderText("Please enter the amount of living neighbors\nthat will cause the following state of a cell:");
+
         grid.add(new Label("Birth:"), 0, 0);
         grid.add(birth, 1, 0);
         grid.add(new Label("Survival:"), 0, 1);
         grid.add(survival, 1, 1);
 
-        super.setHeaderText("Please enter the amount of living neighbors\nthat will cause the following state of a cell:");
-        super.setTitle("Create your own rule");
-
         DialogPane dialogPane = super.getDialogPane();
         dialogPane.setContent(grid);
-        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
         ((Stage) dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
 
@@ -73,7 +69,6 @@ public class CustomRuleCreator extends TextInputDialog
                 newRule += "B" + birth.getText() + "/S" + survival.getText();
 
                 super.close();
-
             }
             catch(NumberFormatException e)
             {
@@ -81,7 +76,7 @@ public class CustomRuleCreator extends TextInputDialog
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
                 DialogPane dialogPane = alert.getDialogPane();
-                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
                 dialogPane.getStyleClass().add("alert");
                 alert.setTitle("");
                 alert.setHeaderText("");

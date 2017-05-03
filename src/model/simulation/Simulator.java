@@ -4,16 +4,16 @@ import model.GameBoard;
 
 /**
  * This class is used to execute a simulation on a given {@link GameBoard}.
- * The simulation is carried out according to a specific {@link SimRule}.
+ * The simulation is carried out according to a specific {@link SimulationRule}.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see SimulatorThreaded
+ * @see ThreadedSimulatorImpl
  * @see SimulatorImpl
  */
 public abstract class Simulator
 {
-    protected SimRule simulationRule;
+    protected SimulationRule simulationRule;
     private long simulationTimeInMilliSeconds;
 
     private int generationCount;
@@ -23,7 +23,7 @@ public abstract class Simulator
     /**
      * @param rule The rule to be used under simulation.
      */
-    public Simulator(SimRule rule)
+    public Simulator(SimulationRule rule)
     {
         this.simulationRule = rule;
     }
@@ -32,7 +32,7 @@ public abstract class Simulator
     protected abstract void executeOn(GameBoard board);
 
     /**
-     * Simulates the next generation on the given board according to the set {@link SimRule}.
+     * Simulates the next generation on the given board according to the set {@link SimulationRule}.
      * Takes the time of the simulation and
      * @param board The {@link GameBoard} to be used under the simulation.
      */
@@ -77,17 +77,17 @@ public abstract class Simulator
 
     /**
      * Sets the new active simulation rule.
-     * @param simRule A rule.
+     * @param simulationRule A rule.
      */
-    public void setRule(SimRule simRule)
+    public void setRule(SimulationRule simulationRule)
     {
-        simulationRule = simRule;
+        this.simulationRule = simulationRule;
     }
 
     /**
      * @return The current active simulation rule.
      */
-    public SimRule getSimulationRule()
+    public SimulationRule getSimulationRule()
     {
         return simulationRule;
     }
