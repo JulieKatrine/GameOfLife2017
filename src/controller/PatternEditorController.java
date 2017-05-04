@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -36,8 +37,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static model.simulation.SimulationRule.DEFAULT_RULE_STRING;
+
 /**
  * This is the stage and controller class for the editor/saver window.
+ *
+ * This dialog window lets the user edit the pattern, view the following generations
+ * and save the pattern to .rle or create a GIF with {@link AnimationExportController}.
+ *
+ * It handles the rendering of a {@link GameBoard} with the private class {@link BoardRenderer}, the simulation with
+ * the private class {@link Simulator} and editing with {@link BoardEditor}.
+ *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
@@ -48,11 +58,13 @@ public class PatternEditorController extends Stage
 
     private GenerationTile selectedTile;
     private BoardRenderer boardRenderer;
+    private GameBoard selectedGameBoard;
     private BoardEditor boardEditor;
+    private Simulator simulator;
     private Image createGIFImage;
     private Image loopImage;
-    private Simulator simulator;
-    private GameBoard selectedGameBoard;
+    private DropShadow dropShadowEffect;
+    private DropShadow selectedEffect;
 
     @FXML private Canvas canvas;
     @FXML private TilePane tilePane;
@@ -77,7 +89,8 @@ public class PatternEditorController extends Stage
             selectedTile = new GenerationTile(board.trimmedCopy(1));
             this.simulator = simulator;
 
-            try {
+            try
+            {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/layout/PatternEditor.fxml"));
                 loader.setController(this);
                 Scene scene = new Scene(loader.load());
@@ -87,7 +100,9 @@ public class PatternEditorController extends Stage
                 super.setScene(scene);
 
                 addEventListeners();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
@@ -96,22 +111,23 @@ public class PatternEditorController extends Stage
     }
 
     /**
-     * Sets up the local objects, updates the generation strip and draw the board.
+     * Sets up the local objects, updates the generation strip and draws the board.
      */
     @FXML
     public void initialize()
     {
+        createGIFImage = new Image(getClass().getResourceAsStream("/img/newCreateGIF.png"));
+        selectedEffect = new DropShadow(15, Color.BLACK);
+        dropShadowEffect = new DropShadow(15, Color.rgb(124, 120, 118));
         boardRenderer = new BoardRenderer(canvas);
         boardEditor = new BoardEditor(boardRenderer.getCamera());
-
-        createGIFImage = new Image(getClass().getResourceAsStream("/img/newCreateGIF.png"));
         loopImage = new Image(getClass().getResourceAsStream("/img/loop.png"));
+
         ruleTextField.setText(simulator.getSimulationRule().getStringRule());
-        boardRenderer.setColorProfile(new ColorProfile(Color.BLACK, Color.color(0.0275, 0.9882, 0), Color.GRAY ));
 
         Platform.runLater(() -> scrollPane.requestFocus());
         updateGenerationStrip();
-        drawBoard();
+        scaleViewAndDrawBoard();
     }
 
     //TODO: finish me
@@ -125,18 +141,18 @@ public class PatternEditorController extends Stage
            ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
            ButtonType save = new ButtonType("Save");
 
-           //dialogPane.lookupButton( ButtonType.CANCEL ).getStyleClass().add("cancelButton");
-
            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
            dialogPane.setPrefWidth(450);
            alert.setTitle("Warning");
            alert.setHeaderText("");
            alert.setContentText("The board might be too large for editing. Would you like to " +
                    "save it directly or try editing anyway?\n\n");
-           alert.getButtonTypes().setAll(save, tryAnywayButton, cancel);
+
 
            dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
            dialogPane.getStyleClass().add("alert");
+
+           alert.getButtonTypes().setAll(save, tryAnywayButton, cancel);
 
            Optional<ButtonType> result = alert.showAndWait();
            if (result.get() == cancel)
@@ -162,8 +178,6 @@ public class PatternEditorController extends Stage
                        e.printStackTrace();
                    }
                }
-
-
                return false;
            }
        }
@@ -175,6 +189,7 @@ public class PatternEditorController extends Stage
      */
     private void addEventListeners()
     {
+        // Closes window and takes you back to the main stage.
         super.setOnCloseRequest(event -> closeWindow());
 
         canvas.setOnMouseDragged(this::editBoard);
@@ -182,21 +197,24 @@ public class PatternEditorController extends Stage
         canvas.setOnMouseReleased(event ->
         {
             updateGenerationStrip();
-            drawBoard();
+            scaleViewAndDrawBoard();
         });
 
+        // Updates the canvas width when the window is resized.
         super.getScene().widthProperty().addListener((a, b, newVal) ->
         {
             canvas.setWidth(newVal.intValue() - leftBar.getPrefWidth());
-            drawBoard();
+            scaleViewAndDrawBoard();
         });
 
+        // Updates the canvas height when the window is resized.
         super.getScene().heightProperty().addListener((a, b, newVal) ->
         {
             canvas.setHeight(newVal.intValue() - tilePane.getPrefHeight());
-            drawBoard();
+            scaleViewAndDrawBoard();
         });
 
+        // Changes the selected tile with arrow keys if the scroll pane is focused.
         super.addEventHandler(KeyEvent.ANY, event ->
         {
             KeyCode code = event.getCode();
@@ -211,7 +229,7 @@ public class PatternEditorController extends Stage
                     {
                         addSelectedEffectTo(selectedTile = tile);
                         scrollPane.setHvalue(scrollPane.getHvalue() + (0.8 / tilePane.getPrefColumns()) * direction);
-                        drawBoard();
+                        scaleViewAndDrawBoard();
                     }
                 }
             }
@@ -220,23 +238,22 @@ public class PatternEditorController extends Stage
 
     /**
      * This method is called when the Apply button i pressed.
-     * It reads the rule text field and formats its to the standard form.
+     * It reads the rule text field and sets the rule. If the format is wrong, the method corrects it.
      * Unknown format will be replaced with the default rule.
      */
     @FXML private void applyRule()
     {
-        String rule = ruleTextField.getText();
         try
         {
-            rule = RuleStringFormatter.format(rule);
+            String rule = RuleStringFormatter.format(ruleTextField.getText());
             ruleTextField.setText(rule);
+            simulator.setRule(new CustomRule(rule));
         }
         catch (PatternFormatException e)
         {
-            rule = "B3/S23";
-            ruleTextField.setText(rule);
+            ruleTextField.setText(DEFAULT_RULE_STRING);
+            simulator.setRule(new DefaultRule());
         }
-        simulator.setRule(new CustomRule(rule));
         updateGenerationStrip();
     }
 
@@ -259,20 +276,22 @@ public class PatternEditorController extends Stage
     {
         if (event.getButton() == MouseButton.SECONDARY)
         {
-            boardEditor.edit(selectedTile.getGameBoard(), new Point((int) event.getX(), (int) event.getY()), false);
-            drawBoard();
+            boardEditor.edit(selectedTile.getGameBoard(),
+                    new Point((int) event.getX(), (int) event.getY()), false);
+            scaleViewAndDrawBoard();
         }
         else if (event.getButton() == MouseButton.PRIMARY)
         {
-            boardEditor.edit(selectedTile.getGameBoard(), new Point((int) event.getX(), (int) event.getY()), true);
-            drawBoard();
+            boardEditor.edit(selectedTile.getGameBoard(),
+                    new Point((int) event.getX(), (int) event.getY()), true);
+            scaleViewAndDrawBoard();
         }
     }
 
     /**
      * Scales the board to size and renders it to the canvas.
      */
-    private void drawBoard()
+    private void scaleViewAndDrawBoard()
     {
         boardRenderer.scaleViewToFitBoard(selectedTile.getGameBoard());
         boardRenderer.render(selectedTile.getGameBoard());
@@ -317,20 +336,20 @@ public class PatternEditorController extends Stage
     }
 
     /**
-     * Resets the effect of all tiles and adds the green selected effect
+     * Resets the effect of all tiles and adds the black selected effect
      * to the given tile.
      * @param tile The tile to get the selected effect.
      */
     private void addSelectedEffectTo(GenerationTile tile)
     {
-        tilePane.getChildren().forEach(e -> e.setEffect(new DropShadow()));
-        tile.setEffect(new DropShadow(10, Color.GREEN));
+        tilePane.getChildren().forEach(e -> e.setEffect(dropShadowEffect));
+        tile.setEffect(selectedEffect);
     }
 
     /**
      *  Removes all unnecessary static generations.
      *  It uses the boards hash codes to compare and remove similar generations,
-     *  starting from the back of the strip. Leaves the first tile if all tiles are the same.
+     *  starting from the back of the strip, leaving the three first tiles if all tiles are the same.
      *  @param hashCodeList A list of hash codes matching the generations in the tilePane.
      */
     private void removeStaticGenerationTiles(List<Integer> hashCodeList)
@@ -340,7 +359,8 @@ public class PatternEditorController extends Stage
         {
             if (!hashCodeList.get(i).equals(hashCodeList.get(i - 1)) || i == 1)
             {
-                i += 3; // Show some of the repeated patterns
+                // Show some of the repeated patterns
+                i += 3;
                 if (i < hashCodeList.size() - 1 && i < tilePane.getChildren().size() - 1)
                 {
                     tilePane.getChildren().remove(i, hashCodeList.size());
@@ -352,7 +372,6 @@ public class PatternEditorController extends Stage
                     Tooltip.install(tile, new Tooltip("This pattern repeats indefinitely"));
                     tilePane.getChildren().add(tile);
                 }
-
                 break;
             }
         }
@@ -360,9 +379,8 @@ public class PatternEditorController extends Stage
 
     /**
      * Replaces repeating patterns with an option to export the remaining tiles to a GIF.
-     * This method uses a search function provided by the AnimationExportController.
+     * This method uses a search function provided by the {@link AnimationExportController}.
      * @param hashCodeList A list of hash codes matching the generations in the tilePane.
-     * @see AnimationExportController
      */
     private void replaceRepeatingPatternsWithGIFExport(List<Integer> hashCodeList)
     {
@@ -374,7 +392,6 @@ public class PatternEditorController extends Stage
 
             // Add a special GIF-button tile to the strip.
             GenerationTile tile = new GenerationTile(null);
-
             tile.setImage(createGIFImage);
             tile.setOnMouseClicked(event -> openGIFExporterDialog(null));
             Tooltip.install(tile, new Tooltip("Create a GIF of this repeating pattern"));
@@ -411,7 +428,7 @@ public class PatternEditorController extends Stage
 
     /**
      * This method is called when the Save button is pressed.
-     * It opens a FileChooser and saves the pattern in the selected file.
+     * It opens a FileChooser and saves the pattern in the selected file to .gif or .rle.
      * The new pattern gets added to the PatternChooser for later access.
      */
     @FXML private void save()
@@ -443,10 +460,13 @@ public class PatternEditorController extends Stage
         catch (PatternFormatException e)
         {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
-            alert.getDialogPane().setPrefWidth(450);
+            DialogPane dialogPane = alert.getDialogPane();
+            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
+            dialogPane.setPrefWidth(450);
             alert.setTitle("Empty board");
             alert.setContentText(e.getErrorMessage());
+            dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
+            dialogPane.getStyleClass().add("alert");
             alert.showAndWait();
         }
         catch (IOException e)
@@ -456,7 +476,7 @@ public class PatternEditorController extends Stage
     }
 
     /**
-     * The method creates a Pattern object from the select GenerationTile and the text filds.
+     * The method creates a Pattern object from the select GenerationTile and the text fields.
      * @return A Pattern object.
      * @throws PatternFormatException When there is no living cells on the board.
      */
@@ -492,7 +512,7 @@ public class PatternEditorController extends Stage
         String name = patternNameTextField.getText();
         String description = descriptionTextArea.getText();
 
-        // Adds the text to an ArrayList.
+        // Adds the text to an ArrayList in the correct format.
         ArrayList<String> metaData = new ArrayList<>();
         metaData.add(name == null ? "" : "#N " + name);
         metaData.add(author == null ? "" : "#O " + author);
@@ -534,13 +554,13 @@ public class PatternEditorController extends Stage
         {
             this.board = board;
             super.setImage(createTileImage());
-            super.setEffect(new DropShadow());
+            super.setEffect(dropShadowEffect);
             super.setCursor(Cursor.HAND);
             super.setOnMouseClicked(event ->
             {
                 selectedTile = this;
                 addSelectedEffectTo(this);
-                drawBoard();
+                scaleViewAndDrawBoard();
             });
         }
 
@@ -555,20 +575,21 @@ public class PatternEditorController extends Stage
 
             WritableImage writableImage = new WritableImage(width, height);
             PixelWriter pw = writableImage.getPixelWriter();
+            Color deadColor = Color.rgb(244, 244, 244);
+            Color liveColor = Color.BLACK;
 
             Point pos = new Point();
             for(pos.y = 0; pos.y < board.getHeight(); pos.y++)
             {
                 for (pos.x = 0; pos.x < board.getWidth(); pos.x++)
                 {
-                    Color color = board.isCellAliveInThisGeneration(pos) ? Color.BLACK : Color.rgb(244, 244, 244);
+                    Color color = board.isCellAliveInThisGeneration(pos) ? liveColor : deadColor;
 
                     for (int dy = 0; dy < scale; dy++)
                         for (int dx = 0; dx < scale; dx++)
                             pw.setColor((int)(pos.x * scale + dx),(int)(pos.y * scale + dy), color);
                 }
             }
-
             return writableImage;
         }
 

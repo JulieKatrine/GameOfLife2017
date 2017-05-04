@@ -100,12 +100,8 @@ public class PatternChooserController extends Stage
     public void initialize()
     {
         hourGlassImage = new Image(getClass().getResourceAsStream("/img/hourglass.png"));
-        dropShadowEffect = new DropShadow();
-        dropShadowEffect.setRadius(15);
-        dropShadowEffect.setColor(Color.rgb(124, 120, 118));
-
-        selectedEffect = new DropShadow();
-        selectedEffect.setRadius(15);
+        dropShadowEffect = new DropShadow(15, Color.rgb(124, 120, 118));
+        selectedEffect = new DropShadow(15, Color.BLACK);
 
         addEventListener();
         addLoadedTiles();

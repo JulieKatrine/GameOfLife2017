@@ -24,6 +24,10 @@ import model.simulation.DefaultRule;
 import view.BoardRenderer;
 import view.ColorProfile;
 
+import java.util.Optional;
+
+import static model.simulation.SimulationRule.DEFAULT_RULE_STRING;
+
 /**
  * The main controller of the application.
  * Handles all user interactions, simulation timing and board rendering in the main application window.
@@ -266,7 +270,7 @@ public class MainController
     public void closeRequest()
     {
         closeApplication();
-        /*
+/*
         stopSimulation();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -490,7 +494,7 @@ public class MainController
 
     private void setNewRule(String rule)
     {
-        if (rule.equals("B3/S23"))
+        if (rule.equals(DEFAULT_RULE_STRING))
             gameModel.setRule(new DefaultRule());
         else
             gameModel.setRule(new CustomRule(rule));

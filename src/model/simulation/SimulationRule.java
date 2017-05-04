@@ -10,6 +10,8 @@ package model.simulation;
  */
 public interface SimulationRule
 {
+    String DEFAULT_RULE_STRING = "B3/S23";
+
     /**
      * The different states a SimulationRule can return after being executed on a cell.
      */

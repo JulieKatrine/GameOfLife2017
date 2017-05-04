@@ -7,6 +7,8 @@ import model.simulation.SimulationRule;
 
 import java.util.List;
 
+import static model.simulation.SimulationRule.DEFAULT_RULE_STRING;
+
 /**
  * This class wraps relevant information of a loaded pattern into a convenient object.
  * It supplies getters and setters for this information, as well as a method for generating a {@link GameBoard}
@@ -111,7 +113,7 @@ public class Pattern
      */
     public SimulationRule getRule()
     {
-        if(ruleString != null && !ruleString.equals("B3/S23"))
+        if(ruleString != null && !ruleString.equals(DEFAULT_RULE_STRING))
             return new CustomRule(ruleString);
         else
             return new DefaultRule();
@@ -124,7 +126,7 @@ public class Pattern
     {
         return (name != null ? ("Name: " + name + '\n') : "")  +
                 (author != null ? ("Author: " + author + '\n') : "") +
-                (ruleString != null ? ("Rule: " + ruleString + '\n') : "Default ruleset: B3/S23 \n") +
+                (ruleString != null ? ("Rule: " + ruleString + '\n') : "Default ruleset: " + DEFAULT_RULE_STRING + "\n") +
                 "Size: " + cellData[0].length + " x " + cellData.length + "\n" +
                 (!comments.isEmpty() ? ("\nComments: \n" + comments) : "");
     }

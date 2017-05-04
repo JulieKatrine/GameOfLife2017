@@ -37,7 +37,8 @@ public class CustomRuleCreator extends TextInputDialog
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         super.setTitle("Create your own rule");
-        super.setHeaderText("Please enter the amount of living neighbors\nthat will cause the following state of a cell:");
+        super.setHeaderText("Please enter the amount of living neighbors\n" +
+                "that will cause the following state of a cell:");
 
         grid.add(new Label("Birth:"), 0, 0);
         grid.add(birth, 1, 0);
@@ -46,7 +47,8 @@ public class CustomRuleCreator extends TextInputDialog
 
         DialogPane dialogPane = super.getDialogPane();
         dialogPane.setContent(grid);
-        dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource
+                ("/view/layout/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
         ((Stage) dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
@@ -76,7 +78,8 @@ public class CustomRuleCreator extends TextInputDialog
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
                 DialogPane dialogPane = alert.getDialogPane();
-                dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource
+                        ("/view/layout/AlertStyleSheet.css").toExternalForm());
                 dialogPane.getStyleClass().add("alert");
                 alert.setTitle("");
                 alert.setHeaderText("");
