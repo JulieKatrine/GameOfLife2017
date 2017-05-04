@@ -20,12 +20,10 @@ public class PatternExporter
     {
         StringBuilder sBuilder = new StringBuilder();
 
-        addMetadata(sBuilder, "#N ", pattern.getName());
-        addMetadata(sBuilder, "#O ", pattern.getAuthor());
+        addMetadataLine(sBuilder, "#N ", pattern.getName());
+        addMetadataLine(sBuilder, "#O ", pattern.getAuthor());
 
-        for(String comment : pattern.getComments().split("\n"))
-            addMetadata(sBuilder, "#C ", comment);
-
+        addComments(sBuilder, pattern.getComments());
         addBoardSizeAndRule(sBuilder, pattern.getCellData(), pattern.getRuleString());
 
         sBuilder.append(getCellDataAsString(pattern.getCellData()));
@@ -35,7 +33,14 @@ public class PatternExporter
         writer.close();
     }
 
-    private void addMetadata(StringBuilder sb, String prefix, String data)
+    private void addComments(StringBuilder sb, String data)
+    {
+        if(data != null && !data.isEmpty())
+        for(String comment : data.split("\n"))
+            addMetadataLine(sb, "#C ", comment);
+    }
+
+    private void addMetadataLine(StringBuilder sb, String prefix, String data)
     {
         if(data != null && data.length() > 0)
             sb.append(prefix + data + "\n");

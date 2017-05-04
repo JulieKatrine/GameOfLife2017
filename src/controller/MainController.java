@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -266,32 +267,35 @@ public class MainController
             startStopSimulation();
     }
 
-    //TODO: Activate me!! And add correct style class to cancel button!
     public void closeRequest()
     {
-        closeApplication();
-/*
         stopSimulation();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
         alert.setTitle("Exit");
         alert.setHeaderText("Are you sure you want to exit?");
-        ButtonType exitButton = new ButtonType("Exit");
-        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType exitButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType cancel = new ButtonType("Cancel");
         ButtonType fileChooser = new ButtonType("Open file chooser");
-        alert.getButtonTypes().setAll(exitButton, fileChooser, cancel);
+        alert.getButtonTypes().setAll(fileChooser, cancel, exitButton);
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
+
+        for(Node n : dialogPane.getChildren())
+            if(n instanceof ButtonBar)
+                for (Node node : ((ButtonBar) n).getButtons())
+                    if(!((Button) node).getText().equals("Exit"))
+                        node.getStyleClass().add("cancelButton");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == exitButton)
             closeApplication();
         else if (result.get() == fileChooser)
             loadNewGameBoard();
-*/
+
     }
 
     @FXML private void closeApplication()

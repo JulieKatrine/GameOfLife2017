@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -63,6 +64,7 @@ public class PatternEditorController extends Stage
     private Simulator simulator;
     private Image createGIFImage;
     private Image loopImage;
+    private boolean openStage;
     private DropShadow dropShadowEffect;
     private DropShadow selectedEffect;
 
@@ -84,7 +86,9 @@ public class PatternEditorController extends Stage
      */
     public PatternEditorController(GameBoard board, Simulator simulator)
     {
-        if(showSizeWarning(board, simulator))
+        openStage = showSizeWarning(board, simulator);
+
+        if(openStage)
         {
             selectedTile = new GenerationTile(board.trimmedCopy(1));
             this.simulator = simulator;
@@ -133,13 +137,13 @@ public class PatternEditorController extends Stage
     //TODO: finish me
     private boolean showSizeWarning(GameBoard gameBoard, Simulator simulator)
     {
-       if(gameBoard.getHeight()*gameBoard.getWidth() >= MAX_BOARD_SIZE)
+       if(gameBoard.getHeight() * gameBoard.getWidth() >= MAX_BOARD_SIZE)
        {
            Alert alert = new Alert(Alert.AlertType.WARNING);
            DialogPane dialogPane = alert.getDialogPane();
            ButtonType tryAnywayButton = new ButtonType("Try anyway");
-           ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-           ButtonType save = new ButtonType("Save");
+           ButtonType cancel = new ButtonType("Cancel");
+           ButtonType save = new ButtonType("Save", ButtonBar.ButtonData.CANCEL_CLOSE);
 
            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
            dialogPane.setPrefWidth(450);
@@ -147,12 +151,15 @@ public class PatternEditorController extends Stage
            alert.setHeaderText("");
            alert.setContentText("The board might be too large for editing. Would you like to " +
                    "save it directly or try editing anyway?\n\n");
-
-
+           alert.getButtonTypes().setAll(tryAnywayButton, cancel, save);
            dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
            dialogPane.getStyleClass().add("alert");
 
-           alert.getButtonTypes().setAll(save, tryAnywayButton, cancel);
+           for(Node n : dialogPane.getChildren())
+               if(n instanceof ButtonBar)
+                   for (Node node : ((ButtonBar) n).getButtons())
+                       if(!((Button) node).getText().equals("Save"))
+                           node.getStyleClass().add("cancelButton");
 
            Optional<ButtonType> result = alert.showAndWait();
            if (result.get() == cancel)
@@ -161,27 +168,21 @@ public class PatternEditorController extends Stage
                return true;
            else if (result.get() == save)
            {
-               FileChooser fileChooser = new FileChooser();
-               fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"));
-               File file = fileChooser.showSaveDialog(this);
-               if(file != null)
-               {
-                   selectedGameBoard = gameBoard;
-                   Pattern pattern = new Pattern();
-                   pattern.setMetadata(new ArrayList<>());
-                   pattern.setRuleString(simulator.getSimulationRule().toString());
-                   addCellData(pattern);
-                   PatternExporter exporter = new PatternExporter();
-                   try {
-                       exporter.export(pattern, file);
-                   } catch (IOException e) {
-                       e.printStackTrace();
-                   }
-               }
+               selectedGameBoard = gameBoard;
+               save();
                return false;
            }
        }
         return true;
+    }
+
+    @Override
+    public void showAndWait()
+    {
+        if(openStage)
+            super.showAndWait();
+        else
+            super.close();
     }
 
     /**
@@ -437,9 +438,15 @@ public class PatternEditorController extends Stage
         {
             Pattern pattern = createPattern();
             FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"),
-                    new FileChooser.ExtensionFilter("Animation", " *.gif"));
+
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("GOL Pattern", "*.rle"));
+
+            // Adds the gif export option if the editor is opened.
+            if(openStage)
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("Animation", " *.gif"));
+
             fileChooser.setInitialFileName(pattern.getName());
             File file = fileChooser.showSaveDialog(this);
 
@@ -506,6 +513,10 @@ public class PatternEditorController extends Stage
 
     private void addMetaData(Pattern pattern)
     {
+        // Skips adding metadata if the pattern is to large for the editor and is being saved directly.
+        if(!openStage)
+            return;
+
         // Gets all the text from the TextFields.
         String rule = ruleTextField.getText();
         String author = authorTextField.getText();
