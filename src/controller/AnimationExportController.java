@@ -75,7 +75,7 @@ public class AnimationExportController extends Stage
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AnimationExporter.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/layout/AnimationExporter.fxml"));
             loader.setController(this);
             Scene scene = new Scene(loader.load());
 
@@ -365,7 +365,7 @@ public class AnimationExportController extends Stage
                 alert.setTitle("Error");
                 alert.setContentText("Exporting the GIF failed horribly and it's probably not your fault!");
 
-                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
                 dialogPane.getStyleClass().add("alert");
 
                 alert.showAndWait();

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This is the stage and controller class for the pattern editor/saver.
+ * This is the stage and controller class for the editor/saver window.
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
@@ -78,7 +78,7 @@ public class PatternEditorController extends Stage
             this.simulator = simulator;
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditor.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/layout/PatternEditor.fxml"));
                 loader.setController(this);
                 Scene scene = new Scene(loader.load());
 
@@ -135,7 +135,7 @@ public class PatternEditorController extends Stage
                    "save it directly or try editing anyway?\n\n");
            alert.getButtonTypes().setAll(save, tryAnywayButton, cancel);
 
-           dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+           dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
            dialogPane.getStyleClass().add("alert");
 
            Optional<ButtonType> result = alert.showAndWait();

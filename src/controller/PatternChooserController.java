@@ -70,7 +70,7 @@ public class PatternChooserController extends Stage
 
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternChooser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/layout/PatternChooser.fxml"));
             loader.setController(this);
             HBox root = loader.load();
 
@@ -315,7 +315,7 @@ public class PatternChooserController extends Stage
             alert.setHeaderText(header);
             alert.setContentText(content);
 
-            dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+            dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
             dialogPane.getStyleClass().add("alert");
 
             alert.showAndWait();

@@ -46,7 +46,7 @@ public class CustomRuleCreator extends TextInputDialog
 
         DialogPane dialogPane = super.getDialogPane();
         dialogPane.setContent(grid);
-        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
         ((Stage) dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
@@ -76,7 +76,7 @@ public class CustomRuleCreator extends TextInputDialog
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
                 DialogPane dialogPane = alert.getDialogPane();
-                dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+                dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
                 dialogPane.getStyleClass().add("alert");
                 alert.setTitle("");
                 alert.setHeaderText("");

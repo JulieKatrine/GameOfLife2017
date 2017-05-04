@@ -507,7 +507,7 @@ public class MainController
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/view/layout/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
 
         dialogPane.setPrefWidth(450);
