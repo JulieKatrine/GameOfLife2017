@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
  * @author Julie Katrine Høvik
  */
 
-public class PatternChooserForm extends Stage
+public class PatternChooserController extends Stage
 {
     private static List<Tile> loadedTiles;
     private static Queue<String> fileLoadingQueue;
@@ -63,7 +63,7 @@ public class PatternChooserForm extends Stage
      * Loads the FXML document and sets up the new scene and stage.
      * Instantiates an ExecutorService for threaded pattern loading.
      */
-    public PatternChooserForm()
+    public PatternChooserController()
     {
         this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         isOpened = true;
@@ -82,7 +82,7 @@ public class PatternChooserForm extends Stage
 
             Scene scene = new Scene(root, width, height);
             super.setTitle("Choose your pattern");
-            super.getIcons().add(GameOfLife.APPLICATION_ICON);
+            super.getIcons().add(Main.APPLICATION_ICON);
             super.setMaximized(maximized);
             super.setScene(scene);
         }
@@ -173,7 +173,7 @@ public class PatternChooserForm extends Stage
 
     /**
      * This method adds previously loaded tiles to the form.
-     * The first time a PatternChooserForm is created the loadedTiles-list is
+     * The first time a PatternChooserController is created the loadedTiles-list is
      * instantiated and the default patterns added to it.
      */
     private void addLoadedTiles()
@@ -309,7 +309,7 @@ public class PatternChooserForm extends Stage
             Alert alert = new Alert(alertType);
             DialogPane dialogPane = alert.getDialogPane();
 
-            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+            ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
             dialogPane.setPrefWidth(450);
             alert.setTitle(title);
             alert.setHeaderText(header);
@@ -455,7 +455,7 @@ public class PatternChooserForm extends Stage
     /**
      * This private Tile class adds some functionality to JavaFX ImageView.
      * It stores the associated pattern and a path to where this pattern where loaded from.
-     * This is done so that big pattern objects can be freed from memory when the PatternChooserForm
+     * This is done so that big pattern objects can be freed from memory when the PatternChooserController
      * is closed. When the form gets reopened this path is used to reload the Pattern back in.
      */
     private class Tile extends ImageView

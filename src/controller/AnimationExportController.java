@@ -32,7 +32,7 @@ import java.util.List;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-public class GIFExportForm extends Stage
+public class AnimationExportController extends Stage
 {
     private File outputFile;
     private Simulator simulator;
@@ -65,7 +65,7 @@ public class GIFExportForm extends Stage
      * @param numberOfFrames The suggested amount of frames the animation should have.
      * @param outputFile The file in which the data should be written to. If null, a {@link FileChooser} will be opened.
      */
-    public GIFExportForm(GameBoard startBoard, Simulator simulator, int numberOfFrames, File outputFile)
+    public AnimationExportController(GameBoard startBoard, Simulator simulator, int numberOfFrames, File outputFile)
     {
         this.startBoard = startBoard;
         this.currentBoard = startBoard.deepCopy();
@@ -80,7 +80,7 @@ public class GIFExportForm extends Stage
             Scene scene = new Scene(loader.load());
 
             super.setTitle("Save your animation");
-            super.getIcons().add(GameOfLife.APPLICATION_ICON);
+            super.getIcons().add(Main.APPLICATION_ICON);
             super.setScene(scene);
 
             addEventListeners();
@@ -324,7 +324,7 @@ public class GIFExportForm extends Stage
     /**
      * This method is called when the user presses the CreateGIF button.
      * It creates a {@link GIFExporter} and sends in the user specified data.
-     * (If this form was opened form the generation strip in the {@link PatternEditorForm},
+     * (If this form was opened form the generation strip in the {@link PatternEditorController},
      * no output file has been selected and a FileChooser is opened.)
      * @see GIFExporter
      */
@@ -361,7 +361,7 @@ public class GIFExportForm extends Stage
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 DialogPane dialogPane = alert.getDialogPane();
-                ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+                ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
                 alert.setTitle("Error");
                 alert.setContentText("Exporting the GIF failed horribly and it's probably not your fault!");
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#fileDropped" onDragOver="#fileOver" prefHeight="500.0" prefWidth="800.0" stylesheets="@StyleSheet" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#fileIsDroppedOnApplication" onDragOver="#fileIsHoveringOverApplication" prefHeight="500.0" prefWidth="800.0" stylesheets="@DefaultStyleSheet.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox fx:id="leftBar" alignment="TOP_CENTER" minWidth="-Infinity" prefHeight="600.0" prefWidth="250.0" styleClass="backgroundColor">
          <children>

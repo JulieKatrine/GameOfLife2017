@@ -42,7 +42,7 @@ import java.util.Optional;
  * @author Julie Katrine Høvik
  */
 
-public class PatternEditorForm extends Stage
+public class PatternEditorController extends Stage
 {
     private final int MAX_BOARD_SIZE = 4000000;
 
@@ -70,7 +70,7 @@ public class PatternEditorForm extends Stage
      * @param board The GameBoard to be used as the first generation.
      * @param simulator The simulator to update the generation strip.
      */
-    public PatternEditorForm(GameBoard board, Simulator simulator)
+    public PatternEditorController(GameBoard board, Simulator simulator)
     {
         if(showSizeWarning(board, simulator))
         {
@@ -78,12 +78,12 @@ public class PatternEditorForm extends Stage
             this.simulator = simulator;
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditorForm.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PatternEditor.fxml"));
                 loader.setController(this);
                 Scene scene = new Scene(loader.load());
 
                 super.setTitle("Edit and save your pattern");
-                super.getIcons().add(GameOfLife.APPLICATION_ICON);
+                super.getIcons().add(Main.APPLICATION_ICON);
                 super.setScene(scene);
 
                 addEventListeners();
@@ -127,7 +127,7 @@ public class PatternEditorForm extends Stage
 
            //dialogPane.lookupButton( ButtonType.CANCEL ).getStyleClass().add("cancelButton");
 
-           ((Stage)dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+           ((Stage)dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
            dialogPane.setPrefWidth(450);
            alert.setTitle("Warning");
            alert.setHeaderText("");
@@ -360,13 +360,13 @@ public class PatternEditorForm extends Stage
 
     /**
      * Replaces repeating patterns with an option to export the remaining tiles to a GIF.
-     * This method uses a search function provided by the GIFExportForm.
+     * This method uses a search function provided by the AnimationExportController.
      * @param hashCodeList A list of hash codes matching the generations in the tilePane.
-     * @see GIFExportForm
+     * @see AnimationExportController
      */
     private void replaceRepeatingPatternsWithGIFExport(List<Integer> hashCodeList)
     {
-        int result = GIFExportForm.locateLastIndexOfRepeatingPattern(hashCodeList);
+        int result = AnimationExportController.locateLastIndexOfRepeatingPattern(hashCodeList);
         if(result != -1)
         {
             // Remove all tiles after the first sequence.
@@ -388,7 +388,7 @@ public class PatternEditorForm extends Stage
      */
     private void openGIFExporterDialog(File file)
     {
-        GIFExportForm exporterForm = new GIFExportForm(
+        AnimationExportController exporterForm = new AnimationExportController(
                 selectedTile.getGameBoard(),
                 simulator,
                 tilePane.getChildren().size(),
@@ -433,8 +433,8 @@ public class PatternEditorForm extends Stage
                     PatternExporter exporter = new PatternExporter();
                     exporter.export(pattern, file);
 
-                    // Add the file to the PatternChooserForm
-                    PatternChooserForm.addFileToLoadingQueue(file);
+                    // Add the file to the PatternChooserController
+                    PatternChooserController.addFileToLoadingQueue(file);
                 }
                 else if(file.getName().endsWith(".gif"))
                     openGIFExporterDialog(file);
@@ -443,7 +443,7 @@ public class PatternEditorForm extends Stage
         catch (PatternFormatException e)
         {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
             alert.getDialogPane().setPrefWidth(450);
             alert.setTitle("Empty board");
             alert.setContentText(e.getErrorMessage());

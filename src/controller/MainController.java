@@ -38,7 +38,7 @@ import view.ColorProfile;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  */
-public class Controller
+public class MainController
 {
     private GameModel gameModel;
     private BoardRenderer boardRenderer;
@@ -270,7 +270,7 @@ public class Controller
         stopSimulation();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
         alert.setTitle("Exit");
         alert.setHeaderText("Are you sure you want to exit?");
         ButtonType exitButton = new ButtonType("Exit");
@@ -352,8 +352,8 @@ public class Controller
     @FXML private void saveGameBoard()
     {
         stopSimulation();
-        PatternEditorForm editorForm =
-                new PatternEditorForm(gameModel.getGameBoard(), gameModel.getSimulator());
+        PatternEditorController editorForm =
+                new PatternEditorController(gameModel.getGameBoard(), gameModel.getSimulator());
         editorForm.setColorProfile(boardRenderer.getColorProfile());
         editorForm.initModality(Modality.WINDOW_MODAL);
         editorForm.initOwner(anchorPane.getScene().getWindow());
@@ -372,12 +372,12 @@ public class Controller
     @FXML protected void loadNewGameBoard()
     {
         stopSimulation();
-        PatternChooserForm loader = new PatternChooserForm();
+        PatternChooserController loader = new PatternChooserController();
         loader.initModality(Modality.WINDOW_MODAL);
         loader.initOwner(anchorPane.getScene().getWindow());
         loader.showAndWait();
 
-        Pattern pattern = PatternChooserForm.getSelectedPattern();
+        Pattern pattern = PatternChooserController.getSelectedPattern();
         if(pattern != null)
         {
             gameModel.setGameBoard(pattern.getGameBoard());
@@ -391,10 +391,10 @@ public class Controller
 
     @FXML private void reloadGameBoard()
     {
-        Pattern pattern = PatternChooserForm.getSelectedPattern();
+        Pattern pattern = PatternChooserController.getSelectedPattern();
         if(pattern != null)
         {
-            gameModel.setGameBoard(PatternChooserForm.getSelectedPattern().getGameBoard());
+            gameModel.setGameBoard(PatternChooserController.getSelectedPattern().getGameBoard());
             gameModel.setRule(pattern.getRule());
             scaleViewToFitBoard();
             drawBoard();
@@ -439,7 +439,7 @@ public class Controller
     @FXML private void fileIsHoveringOverApplication(DragEvent event)
     {
         Dragboard board = event.getDragboard();
-        if (board.hasFiles() && !PatternChooserForm.isWindowOpened())
+        if (board.hasFiles() && !PatternChooserController.isWindowOpened())
             event.acceptTransferModes(TransferMode.ANY);
     }
 
@@ -451,7 +451,7 @@ public class Controller
      */
     @FXML private void fileIsDroppedOnApplication(DragEvent event)
     {
-        event.getDragboard().getFiles().forEach(PatternChooserForm::addFileToLoadingQueue);
+        event.getDragboard().getFiles().forEach(PatternChooserController::addFileToLoadingQueue);
         Platform.runLater(this::loadNewGameBoard);
     }
 
@@ -504,7 +504,7 @@ public class Controller
     {
         stopSimulation();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());

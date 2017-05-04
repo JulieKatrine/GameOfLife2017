@@ -48,7 +48,7 @@ public class CustomRuleCreator extends TextInputDialog
         dialogPane.setContent(grid);
         dialogPane.getStylesheets().add(getClass().getResource("/view/AlertStyleSheet.css").toExternalForm());
         dialogPane.getStyleClass().add("alert");
-        ((Stage) dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+        ((Stage) dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         Button cancelButton = (Button) super.getDialogPane().lookupButton( ButtonType.CANCEL );
         cancelButton.getStyleClass().add("cancelButton");
@@ -81,7 +81,7 @@ public class CustomRuleCreator extends TextInputDialog
                 alert.setTitle("");
                 alert.setHeaderText("");
                 alert.setContentText("The rule has to be integers only");
-                ((Stage) dialogPane.getScene().getWindow()).getIcons().add(GameOfLife.APPLICATION_ICON);
+                ((Stage) dialogPane.getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
                 alert.showAndWait();
 
                 birth.clear();

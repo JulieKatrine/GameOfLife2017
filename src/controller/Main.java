@@ -13,21 +13,21 @@ import javafx.stage.Stage;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see Controller
+ * @see MainController
  */
-public class GameOfLife extends Application
+public class Main extends Application
 {
     public static Image APPLICATION_ICON;
 
     /**
      * Is called from the JavaFX application thread.
-     * @param primaryStage GameOfLife stage for the application.
+     * @param primaryStage Main stage for the application.
      * */
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/UserInterface.fxml"));
+        loader.setLocation(getClass().getResource("/view/MainUserInterface.fxml"));
 
         AnchorPane root = loader.load();
         Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
@@ -42,7 +42,7 @@ public class GameOfLife extends Application
         primaryStage.setOnCloseRequest(event ->
         {
             event.consume();
-            ((Controller)loader.getController()).closeRequest();
+            ((MainController)loader.getController()).closeRequest();
         });
     }
 
@@ -52,6 +52,6 @@ public class GameOfLife extends Application
      */
     public static void main(String[] args)
     {
-        Application.launch(GameOfLife.class, args);
+        Application.launch(Main.class, args);
     }
 }
