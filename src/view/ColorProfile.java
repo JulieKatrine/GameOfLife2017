@@ -1,11 +1,12 @@
 package view;
 
 import javafx.scene.paint.Paint;
+import model.GameBoard;
 
 /**
- * Color profile for the game board.
- *
- * Allows you to set and get the colors of the cells and grid of the pattern. You can also decide weather or not the grid should be drawn.
+ * Color profile for the {@link GameBoard}.
+ * Allows you to set and get the cell- and grid-colors.
+ * You can also set weather or not the grid should be drawn.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -18,7 +19,7 @@ public class ColorProfile
     private boolean renderGrid = true;
 
     /**
-     * Constructs the color profile of the pattern.
+     * Constructs the color profile.
      * @param deadColor The color of dead cells.
      * @param aliveColor The color of living cells.
      * @param gridColor The color of the grid.

@@ -389,7 +389,7 @@ public class MainController
         if(pattern != null)
         {
             gameModel.setGameBoard(pattern.getGameBoard());
-            gameModel.setRule(pattern.getRule());
+            gameModel.getSimulator().setRule(pattern.getRule());
             reloadPatternMenuItem.setDisable(false);
             ruleInfo.setText("Rule: " + pattern.getRuleString());
             scaleViewToFitBoard();
@@ -403,7 +403,7 @@ public class MainController
         if(pattern != null)
         {
             gameModel.setGameBoard(PatternChooserController.getSelectedPattern().getGameBoard());
-            gameModel.setRule(pattern.getRule());
+            gameModel.getSimulator().setRule(pattern.getRule());
             scaleViewToFitBoard();
             drawBoard();
         }
@@ -499,9 +499,9 @@ public class MainController
     private void setNewRule(String rule)
     {
         if (rule.equals(DEFAULT_RULE_STRING))
-            gameModel.setRule(new DefaultRule());
+            gameModel.getSimulator().setRule(new DefaultRule());
         else
-            gameModel.setRule(new CustomRule(rule));
+            gameModel.getSimulator().setRule(new CustomRule(rule));
     }
 
 

@@ -34,7 +34,7 @@ public class RLEParser implements Parser
     }
 
     /**
-     * Reads a Reader object character by character and returns the parsed data in a Pattern object.
+     * Reads a Reader object character-by-character and returns the parsed data in a Pattern object.
      * @param reader A Reader object of type FileReader, InputStreamReader, etc.
      * @return A Pattern object.
      * @throws IOException If a problem occurs while reading the file content.
@@ -84,7 +84,8 @@ public class RLEParser implements Parser
      * @throws IOException If the reading fails.
      * @throws PatternFormatException If it fails to load the pattern dimensions.
      */
-    private void readBoardDefinitionAndInstantiateBoardDataArray(Reader reader) throws IOException, PatternFormatException
+    private void readBoardDefinitionAndInstantiateBoardDataArray(Reader reader)
+            throws IOException, PatternFormatException
     {
         int character;
         int number = 0;
@@ -93,7 +94,9 @@ public class RLEParser implements Parser
             if (height == INVALID)
             {
                 if (Character.isDigit((char) character))
+                {
                     number = number * 10 + (character - '0');
+                }
                 else if (number != 0)
                 {
                     if (width == INVALID)
@@ -118,7 +121,7 @@ public class RLEParser implements Parser
     }
 
     /**
-     * Parses the cell data character by character and adds it to the boardData array.
+     * Parses the cell data character-by-character and adds it to the boardData array.
      * @param reader The reader to read the data from.
      * @throws IOException If the reading fails.
      * @throws PatternFormatException If the cell data is defined outside of the given dimensions.
@@ -133,8 +136,9 @@ public class RLEParser implements Parser
         while ((character = reader.read()) != INVALID && character != END_OF_DATA)
         {
             if (Character.isDigit((char) character))
+            {
                 number = number * 10 + (character - '0');
-
+            }
             else if (character == LIVING_CELL)
             {
                 number = Math.max(1, number);

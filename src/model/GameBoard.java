@@ -22,7 +22,7 @@ public abstract class GameBoard
     /**
      * @param width The width of the board
      * @param height The height of the board
-     * @throws IllegalArgumentException If size is less than one.
+     * @throws IllegalArgumentException If size of the board is less than one.
      */
     public GameBoard(int width, int height)
     {
@@ -78,9 +78,9 @@ public abstract class GameBoard
 
     /**
      * Edits the state of a cell in the current generation.
+     * Typically used when generating a board or changing cell states after a simulation.
      * NOTE: Bounding checks are not performed before data access and an IndexOutOfBoundsException
      * will be thrown if the coordinates are out of bounds.
-     * Typically used when generating a board or changing cell states after a simulation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param point The position of the cell to be set.
      */
@@ -112,6 +112,8 @@ public abstract class GameBoard
      * This is useful for comparing the similarity between boards.
      * This implementation is based on the Arrays.hashCode() algorithm.
      * @return A hash code representing this generation.
+     * @see controller.AnimationExportController
+     * @see controller.PatternEditorController
      */
     @Override
     public int hashCode()
@@ -186,7 +188,7 @@ public abstract class GameBoard
     }
 
     /**
-     * Creates a new bord from the given start and stop coordinates.
+     * Creates a new board containing a copy of an area of this board from the given start and stop coordinates.
      * @param start The start point of the sub area on the GameBoard.
      * @param stop The end point of the sub area on the GameBoard.
      * @return A sub area of the GameBoard

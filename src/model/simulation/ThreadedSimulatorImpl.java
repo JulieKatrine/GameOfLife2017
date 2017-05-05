@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * <p>The simulateNextGenerationOn() method uses a {@link CountDownLatch} to make sure all threads are done
  * processing before the generation is finalized with GameBoards makeNextGenerationCurrent(). Another latch
  * is used to make sure no threads are accessing the same data at the same time. Synchronization problems will
- * only occur if a slow running thread is accessing data at its to first rows, and a faster thread updates its
+ * only occur if a slow running thread is accessing data at its to first rows, while a faster thread updates its
  * last rows in the adjacent region. This is solved by blocking all further processing until all threads are past
  * their second row and not allowing any threads to have fewer rows than 4. Boards with a smaller height than 8
  * will only utilize one thread. This way of ensuring thread-safe simulation requires no further synchronization
@@ -71,6 +71,7 @@ public class ThreadedSimulatorImpl extends Simulator
     @Override
     protected void executeOn(GameBoard board)
     {
+        // Limits the number of threads in relation to the board height
         int numberOfThreads = Math.max(1, Math.min(availableProcessors, (board.getHeight() / 4)));
         int rowsPerThread = board.getHeight() / numberOfThreads;
 
@@ -79,6 +80,8 @@ public class ThreadedSimulatorImpl extends Simulator
 
         for (int i = 0; i < numberOfThreads; i++)
         {
+            // Adds additional rows to the last worker
+            // in case the number of rows are not divisible by the number of threads.
             int additionalRows = 0;
             if(i == numberOfThreads - 1)
                 additionalRows = board.getHeight() % numberOfThreads;
@@ -100,9 +103,6 @@ public class ThreadedSimulatorImpl extends Simulator
         board.makeNextGenerationCurrent();
     }
 
-    /**
-     * Shuts down the executor service.
-     */
     private void shutdownExecutor()
     {
         executorService.shutdown();
@@ -121,7 +121,7 @@ public class ThreadedSimulatorImpl extends Simulator
      * This private class is used for simulating a region of a GameBoard.
      * It takes in a GameBoard object and parameters for the region to be processed.
      */
-    public class Worker implements Runnable
+    private class Worker implements Runnable
     {
         private GameBoard board;
         private int numberOfRows;
@@ -152,7 +152,7 @@ public class ThreadedSimulatorImpl extends Simulator
         /**
          * This method iterates over and updates all the cells in its region.
          * It waits until all threads are done simulating their first two rows
-         * before proceeding. This is done to prevent synchronization issues, and
+         * before proceeding. This is done to prevent synchronization issues and
          * works as a faster alternative to either using synchronized method calls or
          * atomic data wrappers.
          */
@@ -165,9 +165,7 @@ public class ThreadedSimulatorImpl extends Simulator
                 {
                     int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                    SimulationRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
-
-                    switch(result)
+                    switch(simulationRule.execute(numberOfLivingNeighbors))
                     {
                         case DEATH:
                             board.setStateInNextGeneration(false, cellPos);
@@ -183,7 +181,7 @@ public class ThreadedSimulatorImpl extends Simulator
                     }
                 }
 
-                // Done with the second row, wait for the other threads.
+                // Before it starts simulating the third row, it waits for the other threads.
                 if(cellPos.y == rowIndexStart + 1)
                 {
                     try

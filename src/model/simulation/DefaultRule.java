@@ -1,7 +1,9 @@
 package model.simulation;
 
 /**
- * Implements the original rule from Conway's Game of Life.
+ * Implements the original rule from Conway's Game of Life, B3/S23.
+ * This class is implemented because it is faster than running the
+ * {@link CustomRule} class with the default rule string.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik

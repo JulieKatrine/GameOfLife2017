@@ -1,12 +1,17 @@
 package model;
 
 /**
- * <p>This class is a dynamic implementation of GameBoard.
- * Its size will increase when living cells comes close to the edge. This is done
+ * <p>This class is a dynamic implementation of {@link GameBoard}.
+ * Its size will increase when living cells appears close to the edge. This is done
  * by searching the edges for living cells and increasing the width and height variables
- * accordingly. The static byte arrays is larger than what these variables shows, and when
- * the variables gets near the actual array size, new larger arrays will be allocated
- * and the data copied over.
+ * accordingly.
+ *
+ * The initial width and height variables from {@link GameBoard} represent the area that the user sees.
+ * This area is only a small part of the allocated byte-arrays
+ * (see variables: thisGeneration and nextGeneration) which represents the board that runs in the background.
+ * The reason for having a larger board than what needs to be simulated, is to avoid having to continuously create
+ * new arrays for every extending row or column
+ * - now this only needs to be done when the size of the simulated area approaches the byte-array size.
  *
  * <p>The byte arrays store information about the state of a cell and how many living
  * neighbours it has. The neighbour count for a cell is updated when a nearby cell is
@@ -18,9 +23,9 @@ package model;
  * <ul>
  * <li>The available lists don't support primitive types, and since we want our application
  * to be able to load the largest common patterns, storing the cell data
- * efficiently is key. The numeric data wrapper for a byte may occupy up to 16 bytes,
- * depending on the platform, and compared to only using one single byte, wrapping the
- * data in an object like this, is not something we want.
+ * efficiently is key. The numeric data wrapper for a byte may occupy up to 16 bytes
+ * depending on the platform. Compared to only using one single byte, wrapping the
+ * data in an object like this is not something we want.
  * <li>Smaller memory usage per cell enables more of the board to fit in the processors cache,
  * which in turn causes fewer cache misses and faster simulation.
  * <li>The different List implementations all perform internal bounding checks on data access.
@@ -38,7 +43,6 @@ package model;
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see GameBoard
  */
 public class GameBoardDynamic extends GameBoard
 {
@@ -81,7 +85,7 @@ public class GameBoardDynamic extends GameBoard
 
     /**
      * Sets the state of a cell in the next generation.
-     * NOTE: this method has the side effect of updating the living neighbour count of nearby cells.
+     * NOTE: this method has the side effect of updating the neighbour-count of nearby cells.
      * It should therefor only be called once per simulation step.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param p The position of the cell to be set.
@@ -94,7 +98,7 @@ public class GameBoardDynamic extends GameBoard
 
     /**
      * Sets the state of a cell in the current generation.
-     * NOTE: this method has the side effect of updating the living neighbour count of nearby cells.
+     * NOTE: this method has the side effect of updating the neighbour-count of nearby cells.
      * This method is synchronized to prevent concurrency problems with the ThreadedSimulatorImpl implementation.
      * @param state The state indicating whether the cell should be living (true) or dead (false).
      * @param p The position of the cell to be set.
@@ -109,7 +113,7 @@ public class GameBoardDynamic extends GameBoard
     }
 
     /**
-     * Sets the state of a specified cell and increments/decrements the living-
+     * Sets the state of a specified cell and increments/decrements the
      * neighbour-count on the eight adjacent cells.
      * @param state True = alive / false = dead
      * @param x The x coordinate.
@@ -215,7 +219,7 @@ public class GameBoardDynamic extends GameBoard
     }
 
     /**
-     * Allocates new larger arrays and copies the data over.
+     * Allocates new larger arrays and copies the existing data into them.
      */
     private void increaseArraySize(boolean xDir, boolean yDir)
     {
@@ -240,7 +244,7 @@ public class GameBoardDynamic extends GameBoard
         }
         catch (OutOfMemoryError e)
         {
-            // Set the new limit
+            // Sets the new limit
             maxCellCount = arrayWidth * arrayHeight;
             e.printStackTrace();
         }
@@ -251,5 +255,4 @@ public class GameBoardDynamic extends GameBoard
     {
         return new GameBoardDynamic(width, height);
     }
-
 }

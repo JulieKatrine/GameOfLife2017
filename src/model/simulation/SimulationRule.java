@@ -2,6 +2,8 @@ package model.simulation;
 
 /**
  * Interface used to enable multiple rule implementations for the {@link Simulator}.
+ * The interface contains an enum of Results
+ * and a final variable "DEFAULT_RULE_STRING" that is used throughout the application.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik

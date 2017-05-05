@@ -52,7 +52,7 @@ public class PatternLoader
     /**
      * Loads a file as a stream and returns a Pattern object.
      * This method is used for loading patterns from the project directory or from
-     * a JAR files.
+     * JAR files.
      *
      * @param path The path to the file.
      * @return A Pattern object parsed from the specified file.

@@ -1,15 +1,19 @@
 
 /*-----User Interface-----*/
-.backGroundColor
+
+.mainUserInterfaceBackgroundColor
 {
     -fx-background-color: #5c605a;
 }
 
 /*-----File Chooser-----*/
-.backgroundColor
+
+.fileChooserBackgroundColor
 {
     -fx-background-color: #373833;
 }
+
+/*-----Gray Button-----*/
 
 .GreyButton
 {
@@ -23,6 +27,8 @@
     -fx-text-fill: beige;
 }
 
+/*-----Green button-----*/
+
 .SelectButton
 {
     -fx-background-color: #3D8F13;
@@ -35,7 +41,7 @@
 
 }
 
-/*-----Pattern-----*/
+/*-----Pattern colors-----*/
 
 #deadCellColor
 {
@@ -47,7 +53,7 @@
     -fx-color-label-visible: false;
 }
 
-/*-----Menu- & Tool- Bar-----*/
+/*-----Menu&Tool-Bar-----*/
 .root
 {
     -fx-accent: #3D8F13;

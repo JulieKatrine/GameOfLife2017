@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * The exception thrown when loading or exporting a {@link Pattern} fails.
- *
+ * It supplies appropriate error codes and messages.
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @see PatternLoader
@@ -12,6 +12,9 @@ import java.util.Arrays;
  */
 public class PatternFormatException extends Exception
 {
+    /**
+     * The available error codes for this exception.
+     */
     public enum ErrorCode
     {
         FORMAT_VERSION_NOT_SPECIFIED,
@@ -32,6 +35,10 @@ public class PatternFormatException extends Exception
         this.errorCode = code;
     }
 
+    /**
+     * Gives a description that specifies what failed.
+     * @return An error message string.
+     */
     public String getErrorMessage()
     {
         switch (errorCode)
@@ -57,12 +64,14 @@ public class PatternFormatException extends Exception
             case FILE_FORMAT_NOT_SUPPORTED:
                 return "This format is not yet supported.\nTry loading a file in any of these formats: " +
                         Arrays.toString(FileFormat.getFileFormats());
-
             default:
                 return "Failed to load the pattern.";
         }
     }
 
+    /**
+     * @return The set error code.
+     */
     public ErrorCode getErrorCode()
     {
         return errorCode;

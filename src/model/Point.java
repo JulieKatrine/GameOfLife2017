@@ -1,8 +1,8 @@
 package model;
 
 /**
- * This class wraps a X and Y coordinate into one basic object.
- * It's main purpose is to decrease the parameter count in method calls
+ * This class wraps a X and Y coordinate into one object.
+ * Its main purpose is to decrease the parameter count in method calls
  * and further increase readability.
  *
  * @author Niklas Johansen

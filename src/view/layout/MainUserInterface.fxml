@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="545.0" prefHeight="600.0" prefWidth="800.0" styleClass="backGroundColor" stylesheets="@DefaultStyleSheet.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="545.0" prefHeight="600.0" prefWidth="800.0" styleClass="mainUserInterfaceBackgroundColor" stylesheets="@DefaultStyleSheet.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>

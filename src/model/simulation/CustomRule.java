@@ -3,7 +3,8 @@ package model.simulation;
 import model.patternIO.RuleStringFormatter;
 
 /**
- * This SimulationRule implementation is used for custom made rules.
+ * This SimulationRule implementation is used to interpret all other rules than the Conway default rule.
+ * The implementation parses a string containing the standard formatted rule and calculates the appropriate results.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -35,7 +36,6 @@ public class CustomRule implements SimulationRule
         for(int i = rule.length() - 1; i >= 0; i--)
             if(Character.isDigit(rule.charAt(i)))
                 calculatedResult[rule.charAt(i) - '0'] = (i < indexOfSlash) ? Result.BIRTH : Result.SURVIVE;
-
     }
 
     @Override

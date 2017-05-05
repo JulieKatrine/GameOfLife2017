@@ -37,9 +37,7 @@ public class SimulatorImpl extends Simulator
             {
                 int numberOfLivingNeighbors = board.getAmountOfLivingNeighbours(cellPos);
 
-                SimulationRule.Result result = simulationRule.execute(numberOfLivingNeighbors);
-
-                switch(result)
+                switch(simulationRule.execute(numberOfLivingNeighbors))
                 {
                     case DEATH:
                         board.setStateInNextGeneration(false, cellPos);

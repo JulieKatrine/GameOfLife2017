@@ -2,6 +2,8 @@ package model.patternIO;
 
 import java.io.*;
 
+import static model.simulation.SimulationRule.DEFAULT_RULE_STRING;
+
 /**
  * Handles exporting of a {@link Pattern} object to a .rle file.
  *
@@ -36,8 +38,8 @@ public class PatternExporter
     private void addComments(StringBuilder sb, String data)
     {
         if(data != null && !data.isEmpty())
-        for(String comment : data.split("\n"))
-            addMetadataLine(sb, "#C ", comment);
+            for(String comment : data.split("\n"))
+                addMetadataLine(sb, "#C ", comment);
     }
 
     private void addMetadataLine(StringBuilder sb, String prefix, String data)
@@ -48,8 +50,8 @@ public class PatternExporter
 
     private void addBoardSizeAndRule(StringBuilder sb, boolean[][] data, String rule)
     {
-        if(rule == null || rule.length() == 0)
-            rule = "B3/S23";
+        if(rule == null || rule.isEmpty())
+            rule = DEFAULT_RULE_STRING;
 
         sb.append("x = " + data[0].length + ", y = " + data.length + ", rule = " + rule + "\n");
     }
@@ -79,7 +81,7 @@ public class PatternExporter
             }
 
             // If the whole row was empty, only add the $
-            if((count == rowLength && !cellState) == false)
+            if(!(count == rowLength && !cellState))
             {
                 sb.append(count == 1 ? "" : count);
                 sb.append(cellState ? 'o' : 'b');

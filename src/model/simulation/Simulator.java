@@ -3,7 +3,7 @@ package model.simulation;
 import model.GameBoard;
 
 /**
- * This class is used to execute a simulation on a given {@link GameBoard}.
+ * This abstract class is used to execute a simulation on a given {@link GameBoard}.
  * The simulation is carried out according to a specific {@link SimulationRule}.
  *
  * @author Niklas Johansen
@@ -21,19 +21,18 @@ public abstract class Simulator
     private int generationsPerSecond;
 
     /**
-     * @param rule The rule to be used under simulation.
+     * @param rule The rule to be used for simulation.
      */
     public Simulator(SimulationRule rule)
     {
         this.simulationRule = rule;
     }
 
-
-    protected abstract void executeOn(GameBoard board);
-
     /**
      * Simulates the next generation on the given board according to the set {@link SimulationRule}.
-     * Takes the time of the simulation and
+     * Measures the time of the simulation and calculates the amount of generations per second
+     * by calling the private method calculateGenerationPerSecond().
+     *
      * @param board The {@link GameBoard} to be used under the simulation.
      */
     public void simulateNextGenerationOn(GameBoard board)
@@ -46,6 +45,8 @@ public abstract class Simulator
 
         calculateGenerationPerSecond();
     }
+
+    protected abstract void executeOn(GameBoard board);
 
     private void calculateGenerationPerSecond()
     {

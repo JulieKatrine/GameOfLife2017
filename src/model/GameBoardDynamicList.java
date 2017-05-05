@@ -1,6 +1,5 @@
 package model;
 
-
 import model.simulation.ThreadedSimulatorImpl;
 
 import java.util.ArrayList;
@@ -8,8 +7,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * This class is a dynamic implementation of GameBoard utilizing Collection Lists.
- * It works in the same way as GameBoardDynamic, but stores the data in a List of ArrayLists.
+ * This class is a dynamic implementation of {@link GameBoard} utilizing Collection Lists.
+ * It works in the same way as {@link GameBoardDynamic}, but stores the data in a List of ArrayLists.
  * This implementation only serves the purpose of showing List-usage and thread-safing with atomic
  * data wrappers and synchronized blocks. See the {@link GameBoardDynamic} class for a faster
  * and more memory efficient solution.
@@ -17,7 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @deprecated This implementation had been replaced by {@link GameBoardDynamic}
- * @see GameBoard
  */
 
 public class GameBoardDynamicList extends GameBoard
@@ -49,10 +47,7 @@ public class GameBoardDynamicList extends GameBoard
 
     private Cell getNewCell()
     {
-        if(atomicDataStorage)
-            return new AtomicCell();
-        else
-            return new ConcurrentByteCell();
+        return atomicDataStorage ? new AtomicCell() : new ConcurrentByteCell();
     }
 
     @Override

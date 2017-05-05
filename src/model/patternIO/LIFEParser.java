@@ -8,6 +8,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static model.simulation.SimulationRule.DEFAULT_RULE_STRING;
+
 /**
  * This class is a parser implementation for .life and .lif files.
  * It reads data from a supplied Reader object  and returns a {@link Pattern} object.
@@ -23,7 +25,7 @@ public class LIFEParser implements Parser
 {
     private List<String> metadata;
     private String format;
-    private String rule = "B3/S23";
+    private String rule = DEFAULT_RULE_STRING;
     private boolean[][] boardData;
 
     public LIFEParser()
@@ -125,11 +127,11 @@ public class LIFEParser implements Parser
             }
         }
 
-        // Calculate the width and height from the max and min points,
+        // Calculate the width and height from the max and min points
         int width = maxX - minX;
         int height = maxY - minY;
 
-        // Trow a PatternFormatException if the size is not set correctly
+        // Throw a PatternFormatException if the size is not set correctly
         if(width < 1 || height < 1)
             throw new PatternFormatException(PatternFormatException.ErrorCode.PATTERN_SIZE_NOT_DEFINED);
 
@@ -191,7 +193,7 @@ public class LIFEParser implements Parser
         int width = maxX - minX;
         int height = maxY - minY;
 
-        // Trows a PatternFormatException if the size is not set correctly
+        // Throws a PatternFormatException if the size is not set correctly
         if(width < 1 || height < 1)
             throw new PatternFormatException(PatternFormatException.ErrorCode.PATTERN_SIZE_NOT_DEFINED);
 

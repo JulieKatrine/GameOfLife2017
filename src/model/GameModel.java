@@ -3,14 +3,12 @@ package model;
 import model.simulation.*;
 
 /**
- * This class packs the applications main game logic and data into one neat object.
- * It supplies getters and setter for the GameBoard and Simulator objects, as well
+ * This class contains the applications main game logic and data.
+ * It supplies getters and setter for the {@link GameBoard} and {@link Simulator} objects, as well
  * as a simulateNextGeneration() method to carry out the logic on the data.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see Simulator
- * @see GameBoard
  */
 
 public class GameModel
@@ -19,7 +17,7 @@ public class GameModel
     private Simulator simulator;
 
     /**
-     * The constructor sets up a default GameBoard and a default Simulator with the DefaultRule.
+     * The constructor sets up a default GameBoard and Simulator with the DefaultRule.
      */
     public GameModel()
     {
@@ -27,6 +25,9 @@ public class GameModel
         simulator = new ThreadedSimulatorImpl(new DefaultRule());
     }
 
+    /**
+     * Simulates the next generation on the set board with the set rule.
+     * */
     public void simulateNextGeneration()
     {
         simulator.simulateNextGenerationOn(getGameBoard());
@@ -36,19 +37,14 @@ public class GameModel
     {
         return gameBoard;
     }
+    
+    public Simulator getSimulator()
+    {
+        return simulator;
+    }
 
     public void setGameBoard(GameBoard board)
     {
         this.gameBoard = board;
-    }
-
-    public void setRule(SimulationRule simulatorRule)
-    {
-        simulator.setRule(simulatorRule);
-    }
-
-    public Simulator getSimulator()
-    {
-        return simulator;
     }
 }

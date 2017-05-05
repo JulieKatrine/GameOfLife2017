@@ -25,6 +25,8 @@
     -fx-text-fill: beige;
 }
 
+/*-----Green button-----*/
+
 .button
 {
     -fx-background-color: #3D8F13;
@@ -37,6 +39,8 @@
     -fx-text-fill: beige;
 }
 
+/*-----Gray Button-----*/
+
 .cancelButton
 {
     -fx-background-color: #656563;
@@ -46,5 +50,4 @@
 .cancelButton:hover
 {
     -fx-background-color: #757572;
-
 }

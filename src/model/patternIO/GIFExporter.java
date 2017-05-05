@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * This class handles exporting of animated GIFs.
- * It takes in relevant animation parameters and recursively builds the animation frame by frame
+ * It takes in relevant animation parameters and recursively builds the animation frame-by-frame
  * with a {@link Simulator} and a {@link GIFWriter}.
  *
  * @author Niklas Johansen
@@ -26,7 +26,7 @@ public class GIFExporter
     private boolean trimmedAndCentered;
 
     /**
-     * Takes in the animation parameters and instantiates the GIFWriter.
+     * Takes in the animation parameters and instantiates the {@link GIFWriter}.
      * @param file The file in which to save the animation.
      * @param simulator The simulator containing the rule to be used.
      * @param frameRate The frame rate of the animation.
@@ -36,14 +36,16 @@ public class GIFExporter
      * @param trimmedAndCentered Whether or not the pattern should be trimmed to size and centered for each frame.
      * @throws IOException If creating the GIFWriter fails.
      */
-    public GIFExporter(File file, Simulator simulator, int frameRate, int cellSize, int width, int height, boolean trimmedAndCentered) throws IOException
+    public GIFExporter(File file, Simulator simulator, int frameRate, int cellSize, int width, int height,
+                       boolean trimmedAndCentered) throws IOException
     {
         this.simulator = simulator;
         this.cellSize = cellSize;
         this.width = width;
         this.height = height;
         this.trimmedAndCentered = trimmedAndCentered;
-        this.writer = new GIFWriter(width * cellSize, height * cellSize, file.getCanonicalPath(), 1000 / frameRate);
+        this.writer = new GIFWriter(width * cellSize, height * cellSize,
+                file.getCanonicalPath(), 1000 / frameRate);
     }
 
     /**
@@ -72,7 +74,7 @@ public class GIFExporter
     }
 
     /**
-     * Draws the living cells of the GameBoard to a GIF frame
+     * Draws the living cells of the GameBoard to a GIF frame.
      * @param board The GameBoard to be used for the frame.
      * @throws IOException If writing to the GIF file fails.
      */

@@ -5,7 +5,7 @@ import model.GameBoard;
 import model.Point;
 
 /**
- * This class holds positional information about where a GameBoard should be rendered.
+ * This class holds positional information about where a {@link GameBoard} should be rendered on the Canvas.
  * It supplies methods for calculating the rendering position of a given GameBoard, as
  * well as methods for changing the view.
  *
@@ -28,11 +28,12 @@ public class Camera
         this.canvas = canvas;
     }
 
-    public double getZoom()
-    {
-        return zoom;
-    }
-
+    /**
+     * Calculates the rendering position of a given board.
+     * The position is centered as default, and can be changed with the move() method.
+     * @param board The board to calculate the position from.
+     * @return A Point containing the starting coordinates of where the board should be rendered.
+     */
     public Point getCenterOffsetRenderingPosition(GameBoard board)
     {
         Point offsetPos = new Point();
@@ -49,11 +50,26 @@ public class Camera
         return offsetPos;
     }
 
+    /**
+     * Sets the zoom value.
+     * @param newZoomValue The zoom value - minimum value is 1.
+     */
     public void setZoom(double newZoomValue)
     {
         zoom = Math.max(newZoomValue, 1);
     }
 
+    public double getZoom()
+    {
+        return zoom;
+    }
+
+    /**
+     * Moves the camera.
+     * @param board The board that is currently rendered.
+     * @param x How much the camera should be moved horizontally.
+     * @param y How much the camera should be moved vertically.
+     */
     public void move(GameBoard board, double x, double y)
     {
         posX -= x / (board.getWidth() * zoom);
@@ -63,10 +79,12 @@ public class Camera
         posY = Math.min(0.5, Math.max(-0.5, posY));
     }
 
+    /**
+     * Resets the camera zoom and position.
+     */
     public void reset()
     {
         zoom = DEFAULT_ZOOM_VALUE;
         posX = posY = 0;
     }
-
 }

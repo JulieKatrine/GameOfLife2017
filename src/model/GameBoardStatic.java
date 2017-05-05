@@ -2,12 +2,11 @@ package model;
 
 /**
  * This class is a static implementation of GameBoard.
- * It uses our old way of counting neighbours and is slower than its newer dynamic version.
+ * It uses a simpler way of counting neighbours and is slower than our newer {@link GameBoardDynamic dynamic version}.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
  * @deprecated This implementation had been replaced by {@link GameBoardDynamic}
- * @see GameBoardDynamic
  * @see GameBoard
  */
 
@@ -32,13 +31,9 @@ public class GameBoardStatic extends GameBoard
         int countNeighbors = 0;
 
         for(cellPos.y = startPoint.y; cellPos.y < stopPoint.y; cellPos.y++)
-        {
             for (cellPos.x = startPoint.x; cellPos.x < stopPoint.x; cellPos.x++)
-            {
                 if (isCellAliveInThisGeneration(cellPos))
                     countNeighbors++;
-            }
-        }
 
         if (isCellAliveInThisGeneration(p))
             countNeighbors--;
@@ -67,7 +62,7 @@ public class GameBoardStatic extends GameBoard
     @Override
     public void makeNextGenerationCurrent()
     {
-        // Flips the generation buffers so the nextGeneration becomes thisGeneration
+        // Flips the generation buffers so the thisGeneration becomes nextGeneration
         boolean[][] temp = thisGeneration;
         thisGeneration = nextGeneration;
         nextGeneration = temp;

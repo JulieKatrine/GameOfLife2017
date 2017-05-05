@@ -3,12 +3,13 @@ package view;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import model.GameBoard;
 import model.Point;
 
 /**
- * This class renders the board with Canvas.
+ * This class renders a {@link GameBoard} using Canvas and a {@link Camera}.
+ * The cells are drawn according to a {@link ColorProfile}, set from the ColoPickers in the main Stage.
+ * It contains methods for drawing the grid and the cells, and for scaling the view.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
@@ -34,7 +35,7 @@ public class BoardRenderer
     }
 
     /**
-     * Clears the board, and then renders respectively the dead cells, the grid and the living cells.
+     * Renders the grid and the cells. Scales the view if the scaleViewOnRender parameter is set to true.
      * @param board The current board.
      */
     public void render(GameBoard board)
@@ -163,12 +164,15 @@ public class BoardRenderer
         return colorProfile;
     }
 
-
     public void setColorProfile(ColorProfile profile)
     {
         this.colorProfile = profile;
     }
 
+    /**
+     * Enables automatic scaling of the view on every render call.
+     * @param state Whether or not the view should be scaled.
+     */
     public void setScaleViewOnRender(boolean state)
     {
         this.scaleViewOnRender = state;

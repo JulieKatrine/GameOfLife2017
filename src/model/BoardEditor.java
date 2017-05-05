@@ -3,14 +3,12 @@ package model;
 import view.Camera;
 
 /**
- * This class enables the user to edit the cells of a given GameBoard.
- * It uses the positional information in the Camera class to determine
+ * This class enables the user to edit the cells of a given {@link GameBoard}.
+ * It uses the positional information in the {@link Camera} class to determine
  * which cell to edit at a given mouse position.
  *
  * @author Niklas Johansen
  * @author Julie Katrine Høvik
- * @see GameBoard
- * @see Camera
  */
 
 public class BoardEditor
@@ -23,7 +21,7 @@ public class BoardEditor
     }
 
     /**
-     * Edits a cell at a given position inside the window.
+     * Edits a cell at a given coordinates of the mouse-position.
      *
      * @param board The GameBoard to edit.
      * @param mousePosition The mouse position inside the window.
