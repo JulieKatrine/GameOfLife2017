@@ -137,20 +137,19 @@ public class PatternChooserController extends Stage
         // Get the position of the vertical scroll bar.
         scrollPane.vvalueProperty().addListener((a, b, newVal) -> scrollBarPos = newVal.doubleValue());
 
-        // Sets the position of the scrollbar
+        // Sets the position of the scrollbar.
         Platform.runLater(() ->
         {
             scrollPane.layout();
             scrollPane.setVvalue(scrollBarPos);
         });
 
+        // Handles key events.
         super.addEventHandler(KeyEvent.ANY, event ->
         {
             if(event.getCode() == KeyCode.SPACE)
-            {
                 if (selectedPattern != null)
                     closeWindow();
-            }
         });
     }
 
@@ -184,9 +183,13 @@ public class PatternChooserController extends Stage
         while(fileLoadingQueue != null && !fileLoadingQueue.isEmpty())
             loadAndAddPatternToForm(fileLoadingQueue.poll());
 
+        // Adds event listeners to the loaded tiles.
         loadedTiles.forEach(this::addTileEventListener);
+
+        // Adds the tiles to the tilpane
         tilePane.getChildren().addAll(loadedTiles);
 
+        // Adds metadata from the selected pattern to the text area.
         if(selectedPattern != null)
             textArea.setText(selectedPattern.getAllMetadata());
     }
@@ -196,7 +199,15 @@ public class PatternChooserController extends Stage
      */
     private void addDefaultPatterns()
     {
-        String[] defaultPatterns = { "test01.rle", "blockstacker.rle"};
+        String[] defaultPatterns =
+        {
+            "blockstacker.rle",
+            "c5greyship.rle",
+            "p69060p5h2v0gun.rle",
+            "turingmachine.rle",
+            "spacefiller2.rle",
+            "vgun.rle"
+        };
 
         for(String s : defaultPatterns)
             loadAndAddPatternToForm("STREAM:/patterns/" + s);

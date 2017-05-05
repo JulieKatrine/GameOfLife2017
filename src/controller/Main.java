@@ -52,6 +52,7 @@ public class Main extends Application
     /**
      * The main method of the application.
      * The first method called from JVM.
+     * @param args Arguments for the applications
      */
     public static void main(String[] args)
     {

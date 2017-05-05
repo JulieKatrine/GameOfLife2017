@@ -38,13 +38,12 @@ public class UpdateTimer
                 if(!running)
                     waitToStart();
 
-                if(System.currentTimeMillis() > lastTime + delayInMilliseconds)
+                if(System.currentTimeMillis() >= lastTime + delayInMilliseconds)
                 {
                     action.run();
                     lastTime = System.currentTimeMillis();
                 }
             }
-
         }).start();
     }
 

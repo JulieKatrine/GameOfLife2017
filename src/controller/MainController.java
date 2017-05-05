@@ -366,6 +366,7 @@ public class MainController
         editorForm.initModality(Modality.WINDOW_MODAL);
         editorForm.initOwner(anchorPane.getScene().getWindow());
         editorForm.showAndWait();
+        controlPressed = false;
 
         GameBoard selectedGameBoard = editorForm.getSelectedGameBoard();
         if(selectedGameBoard != null)
@@ -384,6 +385,7 @@ public class MainController
         loader.initModality(Modality.WINDOW_MODAL);
         loader.initOwner(anchorPane.getScene().getWindow());
         loader.showAndWait();
+        controlPressed = false;
 
         Pattern pattern = PatternChooserController.getSelectedPattern();
         if(pattern != null)
@@ -498,10 +500,8 @@ public class MainController
 
     private void setNewRule(String rule)
     {
-        if (rule.equals(DEFAULT_RULE_STRING))
-            gameModel.getSimulator().setRule(new DefaultRule());
-        else
-            gameModel.getSimulator().setRule(new CustomRule(rule));
+        gameModel.getSimulator().setRule(
+                rule.equals(DEFAULT_RULE_STRING) ? new DefaultRule() : new CustomRule(rule));
     }
 
 

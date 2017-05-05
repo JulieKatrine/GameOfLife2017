@@ -57,6 +57,7 @@ public abstract class Simulator
         {
             generationCount = 0;
             generationCountTimer = now;
+
         }
     }
 
