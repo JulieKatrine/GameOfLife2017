@@ -69,7 +69,7 @@
                                         <items>
                                             <CustomMenuItem styleClass="menuSlider">
                                                 <content>
-                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.6" max="50" min="0.1" value="20" />
+                                                    <Slider fx:id="cellSizeSlider" blockIncrement="0.5" max="50" min="0.01" value="20" />
                                                 </content>
                                             </CustomMenuItem>
                                         </items>

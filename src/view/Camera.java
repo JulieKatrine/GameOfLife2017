@@ -16,6 +16,7 @@ import model.Point;
 public class Camera
 {
     private final double DEFAULT_ZOOM_VALUE = 20;
+    private final double MIN_ZOOM = 0.3;
 
     private double posX = 0;
     private double posY = 0;
@@ -56,7 +57,7 @@ public class Camera
      */
     public void setZoom(double newZoomValue)
     {
-        zoom = Math.max(newZoomValue, 1);
+        zoom = Math.max(newZoomValue, MIN_ZOOM);
     }
 
     public double getZoom()

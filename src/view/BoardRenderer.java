@@ -131,8 +131,8 @@ public class BoardRenderer
                     gc.fillRect(
                             camPos.x + cellPos.x * cellSize,
                             yCoordinate,
-                            cellSize - 0.5,
-                            cellSize - 0.5);
+                            cellSize,
+                            cellSize);
                 }
             }
         }
@@ -154,8 +154,8 @@ public class BoardRenderer
     private Point calculateStopPoint(GameBoard board, Point startPos)
     {
         Point stopPos = new Point(board.getWidth(),board.getHeight());
-        stopPos.x = Math.min(board.getWidth(),  startPos.x + (int)(canvas.getWidth()  / camera.getZoom()) + 1);
-        stopPos.y = Math.min(board.getHeight(), startPos.y + (int)(canvas.getHeight() / camera.getZoom()) + 1);
+        stopPos.x = Math.min(board.getWidth(),  startPos.x + (int)(canvas.getWidth()  / camera.getZoom()) + 2);
+        stopPos.y = Math.min(board.getHeight(), startPos.y + (int)(canvas.getHeight() / camera.getZoom()) + 2);
         return stopPos;
     }
 
