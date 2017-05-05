@@ -134,7 +134,6 @@ public class PatternEditorController extends Stage
         scaleViewAndDrawBoard();
     }
 
-    //TODO: finish me
     private boolean showSizeWarning(GameBoard gameBoard, Simulator simulator)
     {
        if(gameBoard.getHeight() * gameBoard.getWidth() >= MAX_BOARD_SIZE)
@@ -586,21 +585,20 @@ public class PatternEditorController extends Stage
 
             WritableImage writableImage = new WritableImage(width, height);
             PixelWriter pw = writableImage.getPixelWriter();
-            Color deadColor = Color.rgb(244, 244, 244);
-            Color liveColor = Color.BLACK;
 
             Point pos = new Point();
             for(pos.y = 0; pos.y < board.getHeight(); pos.y++)
             {
                 for (pos.x = 0; pos.x < board.getWidth(); pos.x++)
                 {
-                    Color color = board.isCellAliveInThisGeneration(pos) ? liveColor : deadColor;
+                    Color color = board.isCellAliveInThisGeneration(pos) ? Color.BLACK : Color.rgb(244, 244, 244);
 
                     for (int dy = 0; dy < scale; dy++)
                         for (int dx = 0; dx < scale; dx++)
                             pw.setColor((int)(pos.x * scale + dx),(int)(pos.y * scale + dy), color);
                 }
             }
+
             return writableImage;
         }
 
