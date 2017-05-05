@@ -143,6 +143,7 @@ public class MainController
         cellSizeSlider.valueProperty().addListener((ov, old_val, new_val) ->
         {
             boardRenderer.getCamera().setZoom(new_val.doubleValue());
+            disableAutoZoom();
             drawBoard();
         });
 
