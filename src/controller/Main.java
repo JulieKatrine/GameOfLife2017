@@ -1,6 +1,3 @@
-/**
- * dfghjhgfdfghjhgfd
- */
 package controller;
 
 import javafx.application.Application;

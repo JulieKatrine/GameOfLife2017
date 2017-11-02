@@ -1,48 +1,37 @@
-# Game-of-Life-2017
-Assignment in Program Development - DATS1600
+# Game of Life
+Semester assignment in Program Development (DATS1600) - spring 2017 at HiOA.
 Created by Julie Katrine Høvik and Niklas Johansen
+![Screenshot](demo.gif "A gif demoing pattern loading and simulation")
 
-Completed assignments:
-•	Assignment 1 – The first obligatory task was completed and handed in the 02.02.17 in Fronter.
+### Features
+ * Simulation with customizable rulesets
+ * Pattern editor with export of .rle files and animated GIFs
+ * Import and preview of .rle, .lif and .life formatted patterns
+ * Memory efficient and dynamically expandable gameboard
+ * Fast multithreaded simulation
+ * Responsive and scalable UI
 
-•	Assignment 2 – we created a static board (see GameBoardStatic) that was later replaced with a dynamic board (see GameBoardDynamic).
+### Code License
+```
+    MIT License
 
-•	Assignment 3 – implemented AnimationTimer for animation. We later discovered that this class was slowing the simulation down
-	– and we replaced it with our own timer class (see UpdateTimer).
+    Copyright (c) 2017 Julie Katrine Høvik & Niklas Johansen
 
-•	Assignment 4 – implemented Simulator class with support for dynamic rules with the SimulationRule Interface.
-    Created Javadoc and UnitTests.
-	o	Extension: We optimized the board in a different way than suggested in the assignment, see JavaDoc for GameBoardDynamic.
-	o	Extension: Implemented dynamic rules for the user to select or create.
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-•	Assignment 5 (Obligatory task 2) – file import implemented for .rle, .lif and .life. See model.patternIO package.
-	Handles all exceptions with try and catch, and appropriate alert boxes for the user, see PatternFormatException.
-	o	Extension: Support for loading and exporting metadata.
-	o	Extension: Camera movement. Drag-and-move is implemented, see menu-bar in application Help>Getting Started.
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
 
-•	Assignment 6 – dynamic board implemented see GameBoardDynamic.
-	Similar to the “Valgfri Ekstraoppgave” we implemented our dynamic board class in a similar way as the ArrayList works internally,
-	which increased the speed remarkably and decreased the memory usage.
-	To make sure we fulfilled the requirements of the assignment we also created the class GameBoardDynamicList.
-
-•	Assignment 7 – Implemented threads.
-	o	Extension: Implemented threaded simulation of the board using a fixed thread pool.
-		We chose to avoid the common lock-based synchronization, see Javadoc for ThreadedSimulationImpl for a deeper explanation.
-
-
-Additional extensions and other features:
-•	“Manipulering og GIF”: Pattern editor with support for exporting .rle and .gif.
-	The editor recognizes repeating patterns and suggests GIF-export from the generation-strip.
-	See the PatternEditorController and the AnimationExportCotroller classes.
-
-•	Pattern Chooser – We created our own pattern chooser dialog (Click: File>Open Pattern, in the application),
-	where the user can read the metadata and preview the loaded patterns. Some preloaded patterns come with the game.
-	Files can be loaded through FileChooser, URL or drag-and-drop.
-
-•	We have a consistent layout-theme throughout the whole application, implemented with CSS.
-    Making the application responsive has also been a priority for us.
-	I.e. Threaded pattern loading and scalable GUI.
-
-
-Information:
-•	UnitTests are localized in GameOfLife2017>unitTests
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+```

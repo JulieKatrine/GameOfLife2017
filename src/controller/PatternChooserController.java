@@ -246,6 +246,7 @@ public class PatternChooserController extends Stage
                     tilePane.getChildren().add(0, tile);
                     loadedTiles.add(0, tile);
                     selectedPattern = tile.pattern;
+                    textArea.setText(tile.pattern.getAllMetadata());
                 });
             }
 
