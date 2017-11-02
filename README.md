@@ -1,6 +1,8 @@
 # Game of Life
 Semester assignment in Program Development (DATS1600) - spring 2017 at HiOA.
+
 Created by Julie Katrine Høvik and Niklas Johansen
+
 ![Screenshot](demo.gif "A gif demoing pattern loading and simulation")
 
 ### Features
